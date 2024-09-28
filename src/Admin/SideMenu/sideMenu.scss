@@ -1,0 +1,35 @@
+.amdin-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+}
+.side-main {
+    position: relative;
+    height:100vh;
+}
+.delete-ac {
+    border: solid orange 1px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    position:absolute;
+    bottom: 20px;
+    left: 15px;
+}
+.delete-ac:hover {
+    background-color: orange;
+    color: white;
+}
+.nav-link {
+    padding: 7px 10px;
+    transition: background-color 0.3s ease; 
+}
+.nav-link:hover {
+    background-color: #10564f;
+    color: #75e6da;
+    border-radius: 8px;
+  }
+.nav-link.active {
+    background-color: #10564f;
+    color: white;
+    border-radius: 8px;
+  }
