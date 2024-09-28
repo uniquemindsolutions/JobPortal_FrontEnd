@@ -1,0 +1,154 @@
+import React from 'react';
+
+const MyJobs = () => {
+    return (
+        <main className='mt-4'>
+
+            <div className="d-flex justify-content-between">
+                <div><h4>My Jobs</h4></div>
+                <div className='text-end'>
+                    <div className="d-flex">
+                        <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill px-3">All</button>
+                        <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill px-3 ms-3">New </button>
+                        <div className="dropdown ms-3">
+                            <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-toggle="dropdown">
+                            Short by
+                            </button>
+                            <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
+                                <li>
+                                    <a className="dropdown-item" href="#">  Active</a>
+                                </li>
+                                <li>
+                                    <a className="dropdown-item" href="#"> Pedding</a>
+                                </li>
+                                <li>
+                                    <a className="dropdown-item" href="#"> Expaired</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="custom-card">
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead>
+                            <tr className='bg-light '>
+                                <th className='text-primary'>Title</th>
+                                <th className='text-primary'>Job Created</th>
+                                <th className='text-primary'>Applicants</th>
+                                <th className='text-primary'>Status</th>
+                                <th className='text-primary'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody className="border-0">
+                            <tr>
+                                <td>
+                                    <div className="fw-bold">Brand &amp; Producr Designer</div>
+                                    <div className="info1">Fulltime . Spain</div>
+                                </td>
+                                <td>05 Jun, 2023</td>
+                                <td>130 Applications</td>
+                                <td><span className='status-active'></span> active</td>
+                                <td className='text-end'>
+                                    <div className="dropdown">
+                                        <button type="button" className="btn border-0" data-bs-toggle="dropdown">
+                                            <i className="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-eye"></i> View</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-share"></i> Share</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-pencil-square"></i> Edit</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-trash"></i> Delete</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div className="fw-bold">Brand &amp; Producr Designer</div>
+                                    <div className="info1">Fulltime . Spain</div>
+                                </td>
+                                <td>05 Jun, 2023</td>
+                                <td>130 Applications</td>
+                                <td><span className='status-pedding'></span> Pendding</td>
+                                <td className='text-end'>
+                                    <div className="dropdown">
+                                        <button type="button" className="btn border-0" data-bs-toggle="dropdown">
+                                            <i className="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-eye"></i> View</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-share"></i> Share</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-pencil-square"></i> Edit</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-trash"></i> Delete</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div className="fw-bold">Brand &amp; Producr Designer</div>
+                                    <div className="info1">Fulltime . Spain</div>
+                                </td>
+                                <td>05 Jun, 2023</td>
+                                <td>130 Applications</td>
+                                <td><span className='status-expired'></span> Expired</td>
+                                <td className='text-end'>
+                                    <div className="dropdown">
+                                        <button type="button" className="btn border-0" data-bs-toggle="dropdown">
+                                            <i className="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-eye"></i> View</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-share"></i> Share</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-pencil-square"></i> Edit</a>
+                                            </li>
+                                            <li><a className="dropdown-item" href="#">
+                                                <i className="bi bi-trash"></i> Delete</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="pagination justify-content-center">
+                    <ul className="pagination">
+                        <li className="page-item disabled"><a className="page-link" href="#"><i className="bi bi-caret-left"></i></a></li>
+                        <li className="page-item"><a className="page-link" href="#">1</a></li>
+                        <li className="page-item"><a className="page-link" href="#">2</a></li>
+                        <li className="page-item"><a className="page-link" href="#">3</a></li>
+                        <li className="page-item"><a className="page-link" href="#"><i className="bi bi-caret-right"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    )
+}
+
+export default MyJobs

@@ -1,0 +1,16 @@
+.btn-skills {
+    display: inline;
+    background-color: #f1f1f1;
+    color: #333;
+    padding: 2px 10px;
+    border-radius: 18px;
+    margin-right: 5px;
+    border: solid 1px #cfcdcd;
+    font-size: 13px;
+    transition: 0.5s;
+}
+.btn-skills:hover {
+    background-color: #818181;
+    color: white;
+    transition: 0.5s;
+}

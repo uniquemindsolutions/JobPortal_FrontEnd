@@ -1,0 +1,45 @@
+// .dashboard-container {
+//     height: 100vh;
+//   }
+  
+//   .sidebar {
+//     width: 250px;
+//     transition: all 0.3s ease;
+//     background: #fff;
+//     color: #333;
+//   }
+  
+//   .sidebar.closed {
+//     width: 60px;
+//   }
+  
+//   .content {
+//     flex-grow: 1;
+//   }
+  
+//   .stat-item {
+//     border-radius: 10px;
+//   }
+
+
+
+
+  .job-section .card {
+    border: none;
+    border-radius: 12px;
+  }
+  
+  .chart-placeholder {
+    height: 250px; /* Adjust height to suit your chart */
+    border-radius: 10px;
+    border: 1px dashed #ccc;
+  }
+  
+  .btn-outline-secondary.active {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .dropdown-menu {
+    min-width: 120px;
+  }
