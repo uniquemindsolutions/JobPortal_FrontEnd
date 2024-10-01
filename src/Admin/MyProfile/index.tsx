@@ -1,31 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
-
-interface myProfile {
+interface MyProfile {
+    id: number;
     photo: string;
-    employee_Name: string,
+    employee_Name: string | null;
     website: string;
-    email: string;
+    email: string | null;
     company_size: number;
     founded_date: string;
-    category: string,
-    phone_number: number;
-    about_company: string;
-    country: string;
-    city: string;
+    category: string | null;
+    phone_number: string; // Changed to string to accommodate phone formats
+    about_company: string | null;
+    address: string | null;
+    country: number;
+    state: number;
+    city: number;
     zip_code: number;
-    state: string;
-    map_location: string;
+    map_location: string | null;
 }
 
-
-
-interface myProfileResponse {
+interface MyProfileResponse {
     success: boolean;
     message: string;
 }
+
 const MyProfile = () => {
-    const [profileFormData, setProfileFormData] = useState<myProfile>({
+    const [profileFormData, setProfileFormData] = useState<MyProfile>({
+        id: 0,
         photo: '',
         employee_Name: '',
         website: '',
@@ -33,63 +34,115 @@ const MyProfile = () => {
         company_size: 0,
         founded_date: '',
         category: '',
-        phone_number: 0,
+        phone_number: '',
         about_company: '',
-        country: '',
-        city: '',
+        address: '',
+        country: 0,
+        state: 0,
+        city: 0,
         zip_code: 0,
-        state: '',
         map_location: ''
     });
 
-
+    const [countries, setCountries] = useState<any[]>([]);
+    const [states, setStates] = useState<any[]>([]);
+    const [cities, setCities] = useState<any[]>([]);
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [selectedCountry, setSelectedCountry] = useState<string>('');
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const { name, value } = e.target;
-        setProfileFormData({
-            ...profileFormData,
-            [name]: value
-        });
+    // Fetch countries, states, cities and profile data on component mount
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/countries/')
+            .then((response) => response.json())
+            .then((data) => setCountries(data))
+            .catch((error) => console.error("Error fetching countries:", error));
+
+        // Fetch profile data
+        fetch('http://127.0.0.1:8000/myprofile/') // Adjust the endpoint if necessary
+            .then((response) => response.json())
+            .then((data: MyProfile) => {
+                setProfileFormData(data);
+                // Fetch states and cities based on the profile's country and state
+                fetchStates(data.country);
+                fetchCities(data.state);
+            })
+            .catch((error) => console.error("Error fetching profile data:", error));
+    }, []);
+
+    const fetchStates = (countryId: number) => {
+        fetch(`http://127.0.0.1:8000/states/`)
+            .then((response) => response.json())
+            .then((data) => setStates(data))
+            .catch((error) => console.error("Error fetching states:", error));
     };
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCountry(e.target.value); // Update the selected country in state
-      };
+    const fetchCities = (stateId: number) => {
+        fetch(`http://127.0.0.1:8000/cities/`)
+            .then((response) => response.json())
+            .then((data) => setCities(data))
+            .catch((error) => console.error("Error fetching cities:", error));
+    };
 
-    
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setProfileFormData((prevData) => ({
+            ...prevData,
+            [name]: value || '' // Ensure the value is never undefined
+        }));
 
-    const handleSubmit = async (e: React.FormEvent) => {
+        // Fetch states when country changes
+        if (name === 'country') {
+            fetchStates(Number(value));
+            setProfileFormData((prevData) => ({
+                ...prevData,
+                state: 0, // Reset state and city when country changes
+                city: 0
+            }));
+        }
+
+        // Fetch cities when state changes
+        if (name === 'state') {
+            fetchCities(Number(value));
+            setProfileFormData((prevData) => ({
+                ...prevData,
+                city: 0 // Reset city when state changes
+            }));
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
-        try {
-            const response = await fetch('http://127.0.0.1:8000/myprofile/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(profileFormData) // Send form data to API
-            });
-
-            const result: myProfileResponse = await response.json();
-            console.log("===== result", result)
-
+        // Fetch request using .then() and .catch() for POST method
+        fetch('http://127.0.0.1:8000/myprofile/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(profileFormData)
+        })
+        .then((response) => {
             if (!response.ok) {
-                throw new Error(result.message || ' Profile Registration failed.');
+                return response.json().then((data) => {
+                    throw new Error(data.message || 'Profile registration failed.');
+                });
             }
-            setResponseMessage(result.message);
-
-        } catch (error) {
-            setError((error as Error).message);
-        } finally {
+            return response.json();
+        })
+        .then((data: MyProfileResponse) => {
+            setResponseMessage(data.message);
+            console.log("Response received:", data);
+        })
+        .catch((error) => {
+            setError(error.message);
+            console.error("Error occurred:", error);
+        })
+        .finally(() => {
             setLoading(false);
-        }
+        });
     };
 
     return (
@@ -99,9 +152,9 @@ const MyProfile = () => {
                 <div className="custom-card">
                     <div className="d-flex mb-3">
                         <div className="d-flex align-items-center">
-                            <img className='amdin-pic' src={window.location.origin + '/images/avtar-pic.avif'} style={{ width: '60px', height: '60px' }} />
+                            <img className='admin-pic' src={profileFormData.photo || window.location.origin + '/images/avtar-pic.avif'} style={{ width: '60px', height: '60px' }} alt="Profile" />
                             <div className="ms-3">
-                                <button className="btn btn-success me-3">Upload new photo</button>
+                                <button className="file_button_container btn btn-success me-3">Upload new photo<input type="file" /></button>
                                 <button className="btn btn-outline-danger btn-sm">Delete</button>
                             </div>
                         </div>
@@ -111,149 +164,101 @@ const MyProfile = () => {
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label htmlFor="employee_Name" className="form-label">Employer Name*</label>
-                            <input type="text" className="form-control" 
-                                id="employee_Name" placeholder="John Doe"
-                                name="employee_Name"
-                                value={profileFormData.employee_Name}
-                                onChange={handleInputChange}
-                                required />
+                            <input type="text" className="form-control" id="employee_Name" name="employee_Name" value={profileFormData.employee_Name || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="website" className="form-label">Website*</label>
-                            <input type="url" className="form-control" id="website" placeholder="http://somename.com" name="website"
-                            value={profileFormData.website}
-                            onChange={handleInputChange}
-                            required />
+                            <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label htmlFor="email" className="form-label">Email*</label>
-                            <input type="email" className="form-control" id="email" placeholder="companyinc@gmail.com" 
-                                name="email"
-                                value={profileFormData.email}
-                                onChange={handleInputChange}
-                                required />
-                                 
+                            <input type="email" className="form-control" id="email" name="email" value={profileFormData.email || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="companySize" className="form-label">Company Size*</label>
-                            <input type="number" className="form-control" id="companySize" placeholder="700"  
-                            name="company_size"
-                            value={profileFormData.company_size}
-                            onChange={handleInputChange}
-                            required/>
+                            <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label htmlFor="foundedDate" className="form-label">Founded Date*</label>
-                            <input type="date" className="form-control" id="foundedDate" 
-                             name="founded_data"
-                             value={profileFormData.founded_date}
-                             onChange={handleInputChange}
-                             required/>
-                             
+                            <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="category" className="form-label">Category*</label>
-                            <input type="text" className="form-control" id="category" placeholder="Account, Finance, Marketing" 
-                            name="category"
-                            value={profileFormData.category}
-                            onChange={handleInputChange}
-                            required/>
+                            <input type="text" className="form-control" id="category" name="category" value={profileFormData.category || ''} onChange={handleInputChange} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label htmlFor="phoneNumber" className="form-label">Phone Number*</label>
-                            <input type="tel" className="form-control" id="phoneNumber" placeholder="+880 01723801729" 
-                            name="phone_number"
-                            value={profileFormData.phone_number}
-                            onChange={handleInputChange}
-                            required/>
+                            <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange} required />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="aboutCompany" className="form-label">About Company*</label>
+                            <textarea className="form-control" id="aboutCompany" name="about_company" value={profileFormData.about_company || ''} onChange={handleInputChange} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
-                        <div className="col-md-12">
-                            <label htmlFor="AboutCompany" className="form-label">About Company</label>
-                            <textarea className="form-control" id="AboutCompany" rows={5} cols={20} 
-                            name="about_company"
-                            value={profileFormData.about_company}
-                            // onChange={handleInputChange}
-                            required/>
+                        <div className="col-md-4">
+                            <label htmlFor="address" className="form-label">Address*</label>
+                            <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="country" className="form-label">Country*</label>
+                            <select className="form-select" id="country" name="country" value={profileFormData.country || 0} onChange={handleInputChange} required>
+                                <option value="">Select Country</option>
+                                {countries.map((country) => (
+                                    <option key={country.id} value={country.id}>{country.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="state" className="form-label">State*</label>
+                            <select className="form-select" id="state" name="state" value={profileFormData.state || 0} onChange={handleInputChange} required>
+                                <option value="">Select State</option>
+                                {states.map((state) => (
+                                    <option key={state.id} value={state.id}>{state.name}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
-                </div>
-
-
-                <div className="custom-card mt-4">
                     <div className="row mb-3">
-                        <div className="col-md-12">
-                            <label htmlFor="Address" className="form-label">Address*</label>
-                            <textarea className='form-control' name="addr" id="addr" style={{ height: '60px' }}></textarea>
+                        <div className="col-md-4">
+                            <label htmlFor="city" className="form-label">City*</label>
+                            <select className="form-select" id="city" name="city" value={profileFormData.city || 0} onChange={handleInputChange} required>
+                                <option value="">Select City</option>
+                                {cities.map((city) => (
+                                    <option key={city.id} value={city.id}>{city.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="zipCode" className="form-label">Zip Code*</label>
+                            <input type="number" className="form-control" id="zipCode" name="zip_code" value={profileFormData.zip_code || 0} onChange={handleInputChange} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="mapLocation" className="form-label">Map Location*</label>
+                            <input type="text" className="form-control" id="mapLocation" name="map_location" value={profileFormData.map_location || ''} onChange={handleInputChange} required />
                         </div>
                     </div>
 
-                    <div className="row mb-3">
-                        <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="Country" className="form-label">Country</label>
-                            <select className="form-select" name="Country" id="Country">
-                                <option value="">India</option>
-                            </select>
-                            {/* <select className="form-select" id="country"
-                            name="country"
-                            value={profileFormData.country}
-                            onChange={handleInputChange}
-                            required/>
-                            {profileFormData.map( (ctry, index)=>(
-                                    <option key={index} value={ctry.country}>{ctry.country}</option>
-                                ))
-                            }
-                               
-                            </select> */}
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="State" className="form-label">State </label>
-                            <select className="form-select" name="State" id="State">
-                                <option value="">TS</option>
-                            </select>
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="city" className="form-label">City</label>
-                            
-                            <select className="form-select" name="State" id="city">
-                                <option value="">Hyderabad</option>
-                            </select>
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="ZipCode" className="form-label">Zip Code</label>
-                            <input type='number' className="form-control" name="ZipCode" id="ZipCode" />
-
-                        </div>
-                        
-
-                        <div className="col-md-12 mb-3">
-                            <label htmlFor="MapLocation" className="form-label">Map Location</label>
-                            <input type='number' className="form-control" name="MapLocation" id="MapLocation" />
-                        </div>
-                    </div>
+                    <button type="submit" className="btn btn-primary">Save Profile</button>
                 </div>
-
-                <div className="mt-5  text-center">
-                    <button type="submit" className="btn btn-success btn-lg px-5">Submit</button>
-                    <button type="submit" className="btn btn-lg ms-4">Cancel</button>
-                </div>
-                <br />
             </form>
 
+            {loading && <p>Loading...</p>}
+            {error && <p className="text-danger">{error}</p>}
+            {responseMessage && <p className="text-success">{responseMessage}</p>}
         </main>
-    )
-}
+    );
+};
 
-export default MyProfile
+export default MyProfile;
