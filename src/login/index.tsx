@@ -48,6 +48,7 @@ const Login = () => {
             });
             console.log("API success");
     
+            navigate('dashboard');
             if (!response.ok) {
                 throw new Error('Login failed. Please check your credentials.');
             }

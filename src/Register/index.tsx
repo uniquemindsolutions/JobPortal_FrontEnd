@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './register.scss'
 import { env } from 'process'
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterData {
     username: string;
@@ -22,6 +23,7 @@ const RegisterAdmin = () => {
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -47,6 +49,7 @@ const RegisterAdmin = () => {
                 body: JSON.stringify(formData) // Send form data to API
             });
 
+            navigate('/');
             const result: RegisterResponse = await response.json();
             console.log("===== result", result)
 
