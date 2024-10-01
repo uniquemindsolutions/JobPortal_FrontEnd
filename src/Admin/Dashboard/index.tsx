@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './dashboard.scss'
-
 import { FaUser, FaBookmark, FaEye, FaPen } from 'react-icons/fa'; // Example icons
-
 import DashboardCards from './DashboardCards';
+import axios from 'axios';
 
 
 
@@ -17,12 +16,64 @@ const Dashboard = () => {
     //     isVisible: boolean;
     // }
 
-    const stats = [
-        { icon: <FaUser />, value: '1.7k+', description: 'Total Visitor' },
-        { icon: <FaBookmark />, value: '03', description: 'Shortlisted' },
-        { icon: <FaEye />, value: '2.1k', description: 'Views' },
-        { icon: <FaPen />, value: '07', description: 'Applied Job' },
+    const [stats, setStats] = useState({
+        visitorCount: '0',
+        views: '0',
+        appliedJobs: '0',
+        shortlisted: '0' // Adding shortlist count
+    });
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch total visitors
+                const visitorResponse = await axios.get('http://127.0.0.1:8000/totalvistors/');
+                // Fetch profile views
+                const viewsResponse = await axios.get('http://127.0.0.1:8000/profileview/');
+                // Fetch applied jobs
+                const appliedJobsResponse = await axios.get('http://127.0.0.1:8000/appliedjobs/');
+                // Fetch shortlisted candidates
+                const shortlistedResponse = await axios.get('http://127.0.0.1:8000/shortlistedcandidates/');
+
+                // Extract the data from the first item in each array
+                const visitorCount = visitorResponse.data[0]?.visitor_count || 'Error';
+                const views = viewsResponse.data[0]?.profile_view || 'Error';
+                const appliedJobs = appliedJobsResponse.data[0]?.appliedjobs_count || 'Error';
+                const shortlisted = shortlistedResponse.data[0]?.shortlisted_count || 'Error'; // Handling shortlisted candidates
+
+                // Update the state with all the fetched data
+                setStats({
+                    visitorCount,
+                    views,
+                    appliedJobs,
+                    shortlisted
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setStats({
+                    visitorCount: 'Error loading',
+                    views: 'Error loading',
+                    appliedJobs: 'Error loading',
+                    shortlisted: 'Error loading'
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+
+        fetchData();
+        // alert('Hi');
+    }, []);
+
+    const statItems = [
+        { icon: <FaUser />, value: stats.visitorCount, description: 'Total Visitor' },
+        { icon: <FaBookmark />, value: stats.shortlisted, description: 'Shortlisted' },
+        { icon: <FaEye />, value: stats.views, description: 'Views' },
+        { icon: <FaPen />, value: stats.appliedJobs, description: 'Applied Job' },
     ];
+
 
 
     return (
@@ -31,7 +82,7 @@ const Dashboard = () => {
             <div className="mt-4">
                 <h4>Dashboard</h4>
                 <div className="row">
-                    {stats.map((stat, index) => (
+                    {statItems.map((stat, index) => (
                         <DashboardCards key={index} {...stat} />
                     ))}
                 </div>
