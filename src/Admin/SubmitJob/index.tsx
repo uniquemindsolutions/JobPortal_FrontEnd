@@ -10,9 +10,14 @@ const SubmitJob = () => {
                 <h3 className='text-primary'>Job Details</h3>
 
                 <div className="row mb-3">
-                    <div className="col-md-12 mb-3">
+                    <div className="col-md-8 mb-3">
                         <label htmlFor="JobTitle" className="form-label">Job Title*</label>
                         <input type="text" className="form-control" name="JobTitle" id="JobTitle" placeholder="Ui Developer" />
+                    </div>
+
+                    <div className="col-md-4 mb-3">
+                        <label htmlFor="noOfPostions" className="form-label">Number of Positions</label>
+                        <input type="text" className="form-control" name="noOfPostions" id="noOfPostions" placeholder="10" />
                     </div>
 
                     <div className="col-md-12 mb-3">
@@ -20,7 +25,16 @@ const SubmitJob = () => {
                         <textarea className="form-control" name="JobDescription" id="JobDescription" rows={5} cols={20} />
                     </div>
 
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-4 mb-3">
+                        <label htmlFor="Industry" className="form-label">Industry* </label>
+                        <select className="form-select" name="Industry" id="Industry">
+                            <option value="">IT</option>
+                            <option value="">Marcketing</option>
+                            <option value="">Industrial</option>
+                        </select>
+                    </div>
+
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="JobCategory" className="form-label">Job Category</label>
                         <select className="form-select" name="JobCategory" id="JobCategory">
                             <option value="">Ui Developer</option>
@@ -29,7 +43,7 @@ const SubmitJob = () => {
                         </select>
                     </div>
 
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="JobType" className="form-label">Job Type</label>
                         <select className="form-select" name="JobType" id="JobType">
                             <option value="">Full Time</option>
@@ -39,18 +53,19 @@ const SubmitJob = () => {
                         </select>
                     </div>
 
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="Salary" className="form-label">Salary</label>
                         <select className="form-select" name="Salary" id="Salary">
                             <option value="">Monthly</option>
                             <option value="">Weekly</option>
                         </select>
                     </div>
-                    <div className="col-md-3 mb-3">
+
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="minSalary" className="form-label">Min</label>
                         <input type="text" className="form-control" name="minSalary" id="minSalary" placeholder="Min" />
                     </div>
-                    <div className="col-md-3 mb-3">
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="maxSalary" className="form-label">Max</label>
                         <input type="text" className="form-control" name="maxSalary" id="maxSalary" placeholder="Max" />
                     </div>
@@ -71,7 +86,7 @@ const SubmitJob = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="Experience" className="form-label">Experience*</label>
                         <select className="form-select" name="Experience" id="Experience">
                             <option value="">Expert</option>
@@ -80,7 +95,7 @@ const SubmitJob = () => {
                         </select>
                     </div>
 
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="Location" className="form-label">Location* </label>
                         <select className="form-select" name="Location" id="Location">
                             <option value="">Hyderabad TS</option>
@@ -88,17 +103,8 @@ const SubmitJob = () => {
                             <option value="">Dehli DL</option>
                         </select>
                     </div>
-
-                    <div className="col-md-6 mb-3">
-                        <label htmlFor="Industry" className="form-label">Industry* </label>
-                        <select className="form-select" name="Industry" id="Industry">
-                            <option value="">IT</option>
-                            <option value="">Marcketing</option>
-                            <option value="">Industrial</option>
-                        </select>
-                    </div>
-
-                    <div className="col-md-6 mb-3">
+                    
+                    <div className="col-md-4 mb-3">
                         <label htmlFor="Industry" className="form-label">English Fluency </label>
                         <select className="form-select" name="Industry" id="Industry">
                             <option value="">Basic</option>
@@ -151,7 +157,7 @@ const SubmitJob = () => {
                     </div>
                 </div>  
              </div>
-             <div className="mt-5  text-center">
+             <div className="mt-4 mb-4  text-center">
                 <button type="submit" className="btn btn-success btn-lg px-5">Submit</button>
                 <button type="submit" className="btn btn-lg ms-4">Cancel</button>
             </div>
