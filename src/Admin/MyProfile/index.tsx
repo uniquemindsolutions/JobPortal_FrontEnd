@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 interface MyProfile {
     id: number;
-    photo: string;
+    photo: File | null;
     employee_Name: string | null;
     website: string;
     email: string | null;
@@ -27,7 +27,7 @@ interface MyProfileResponse {
 const MyProfile = () => {
     const [profileFormData, setProfileFormData] = useState<MyProfile>({
         id: 0,
-        photo: '',
+        photo: null,
         employee_Name: '',
         website: '',
         email: '',
@@ -110,40 +110,68 @@ const MyProfile = () => {
             }));
         }
     };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null; // Get the first selected file or null if none
+        setProfileFormData((prevData) => ({
+            ...prevData,
+            photo: file, // Update the photo in the state
+        }));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
-        // Fetch request using .then() and .catch() for POST method
+        const formData = new FormData();
+        Object.entries(profileFormData).forEach(([key, value]) => {
+            if (value !== null) {
+                formData.append(key, value);
+            }
+        });
+
         fetch('http://127.0.0.1:8000/myprofile/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(profileFormData)
+            body: formData, // Send FormData instead of JSON
         })
-        .then((response) => {
-            if (!response.ok) {
-                return response.json().then((data) => {
-                    throw new Error(data.message || 'Profile registration failed.');
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((data) => {
+                        throw new Error(data.message || 'Profile registration failed.');
+                    });
+                }
+                return response.json();
+            })
+            .then((data: MyProfileResponse) => {
+                setResponseMessage(data.message);
+                setProfileFormData({
+                    id: 0,
+                    photo: null,
+                    employee_Name: '',
+                    website: '',
+                    email: '',
+                    company_size: 0,
+                    founded_date: '',
+                    category: '',
+                    phone_number: '',
+                    about_company: '',
+                    address: '',
+                    country: 0,
+                    state: 0,
+                    city: 0,
+                    zip_code: 0,
+                    map_location: ''
                 });
-            }
-            return response.json();
-        })
-        .then((data: MyProfileResponse) => {
-            setResponseMessage(data.message);
-            console.log("Response received:", data);
-        })
-        .catch((error) => {
-            setError(error.message);
-            console.error("Error occurred:", error);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+            })
+            .catch((error) => {
+                setError(error.message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
+
+
 
     return (
         <main>
@@ -152,9 +180,25 @@ const MyProfile = () => {
                 <div className="custom-card">
                     <div className="d-flex mb-3">
                         <div className="d-flex align-items-center">
-                            <img className='admin-pic' src={profileFormData.photo || window.location.origin + '/images/avtar-pic.avif'} style={{ width: '60px', height: '60px' }} alt="Profile" />
+                            <img
+                                className="admin-pic"
+                                src={
+                                    typeof profileFormData.photo === 'string'
+                                        ? profileFormData.photo
+                                        : profileFormData.photo
+                                            ? URL.createObjectURL(profileFormData.photo)
+                                            : window.location.origin + '/images/avtar-pic.avif'
+                                }
+                                style={{ width: '60px', height: '60px' }}
+                                alt="Profile"
+                            />
+
                             <div className="ms-3">
-                                <button className="file_button_container btn btn-success me-3">Upload new photo<input type="file" /></button>
+                                <button className="file_button_container btn btn-success me-3">
+                                    Upload new photo
+                                    <input type="file" onChange={handleFileChange} />
+                                </button>
+
                                 <button className="btn btn-outline-danger btn-sm">Delete</button>
                             </div>
                         </div>
