@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './submitJobs.scss';
+import { json } from 'stream/consumers';
 
 interface SubmitJob {
     job_title: string;
@@ -30,6 +31,7 @@ interface JobCategory {
 interface Industry {
     id: number;
     name: string;
+    industry:string;
 }
 
 interface Country {
@@ -43,7 +45,7 @@ interface State {
 }
 
 const SubmitJob = () => {
-    const [industries, setIndustries] = useState<Industry[]>([]);
+    const [industriesorg, setIndustries] = useState<any[]>([]);
     const [jobCategories, setJobCategories] = useState<JobCategory[]>([]);
     const [countries, setCountries] = useState<Country[]>([]);
     const [states, setStates] = useState<State[]>([]);
@@ -100,13 +102,7 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching countries:', error));
 
         // Fetch states
-        fetch("http://127.0.0.1:8000/states/")
-            .then(response => response.json())
-            .then(data => {
-                console.log("States:", data); // Log to check the data
-                setStates(data);
-            })
-            .catch(error => console.error('Error fetching states:', error));
+       
 
         // Fetch cities
         fetch("http://127.0.0.1:8000/cities/")
@@ -160,6 +156,25 @@ const SubmitJob = () => {
             console.error("Error submitting job:", error);
         }
     };
+    console.log("datachecking",industriesorg);
+
+
+    const handleonchnagecountry = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        event.preventDefault();
+        const country = event.target.value;
+        console.log();
+        // setSelectedCountry(country);
+  const countid=1;
+        fetch("http://127.0.0.1:8000/states/?countryid=2")
+        .then(response => response.json())
+        .then(data => {
+            console.log("States:", data); // Log to check the data
+            setStates(data);
+        })
+        .catch(error => console.error('Error fetching states:', error));
+
+        
+    };
 
     return (
         <main>
@@ -209,19 +224,32 @@ const SubmitJob = () => {
                         {/* Industry */}
                         <div className="col-md-5 mb-3">
                             <label htmlFor="industry" className="form-label">Industry*</label>
+
+                            {/* {industriesorg} */}
+                            
                             <select
                                 className="form-select"
                                 name="industry"
-                                value={formData.industry}
+                                // value={formData.industry}
                                 onChange={handleInputChange}
                                 required
                             >
-                                <option value="">Select Industry</option>
-                                {industries.map((industry) => (
+
+                                {/* <option value="">Select Industry</option>
+                                {industries.map((industry:any[]) => (
                                     <option key={industry.id} value={industry.id}>
                                         {industry.name}
                                     </option>
-                                ))}
+                                ))} */}
+                                {industriesorg && industriesorg.length > 0 ? (
+                                    industriesorg.map((industry: Industry) => (
+                                        <option key={industry.id} value={industry.id}>
+                                            {industry.industry}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option value="">No industries available</option>
+                                )}
                             </select>
                         </div>
                         {/* Job Category */}
@@ -345,7 +373,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="country" className="form-label">Country*</label>
-                            <select className="form-select" id="country" name="country" value={formData.country || 0} onChange={handleInputChange} required>
+                            <select className="form-select" id="country" name="country" value={formData.country || 0} onChange={handleonchnagecountry} required>
                                 <option value="">Select Country</option>
                                 {countries.map((country) => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
