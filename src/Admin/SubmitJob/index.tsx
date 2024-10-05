@@ -162,210 +162,215 @@ const SubmitJob = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="custom-card">
-                <h3 className='text-primary'>Job Details</h3>
+        <main>
+            <h4 className="mt-4">Submit a Job</h4>
+            <form onSubmit={handleSubmit}>
+                <div className="custom-card">
+                    <h3 className='text-primary'>Job Details</h3>
+                    <div className="row">
+                        {/* Job Title */}
+                        <div className="col-md-8 mb-3">
+                            <label htmlFor="job_title" className="form-label">Job Title*</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="job_title"
+                                value={formData.job_title}
+                                onChange={handleInputChange}
+                                placeholder="UI Developer"
+                                required
+                            />
+                        </div>
+                        {/* Number of Positions */}
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="number_of_positions" className="form-label">Number of Positions</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                name="number_of_positions"
+                                value={formData.number_of_positions}
+                                onChange={handleInputChange}
+                                placeholder="10"
+                                required
+                            />
+                        </div>
+                        {/* Job Description */}
+                        <div className="col-md-12 mb-3">
+                            <label htmlFor="job_description" className="form-label">Job Description*</label>
+                            <textarea
+                                className="form-control"
+                                name="job_description"
+                                value={formData.job_description}
+                                onChange={handleInputChange}
+                                rows={5}
+                                required
+                            />
+                        </div>
+                        {/* Industry */}
+                        <div className="col-md-5 mb-3">
+                            <label htmlFor="industry" className="form-label">Industry*</label>
+                            <select
+                                className="form-select"
+                                name="industry"
+                                value={formData.industry}
+                                onChange={handleInputChange}
+                                required
+                            >
+                                <option value="">Select Industry</option>
+                                {industries.map((industry) => (
+                                    <option key={industry.id} value={industry.id}>
+                                        {industry.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        {/* Job Category */}
+                        <div className="col-md-5 mb-3">
+                            <label htmlFor="job_category" className="form-label">Job Category*</label>
+                            <select
+                                className="form-select"
+                                name="job_category"
+                                value={formData.job_category}
+                                onChange={handleInputChange}
+                            >
+                                <option value="">Select Category</option>
+                                {jobCategories.map((category) => (
+                                    <option key={category.id} value={category.id}>{category.name}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                {/* Job Title */}
-                <div className="col-md-8 mb-3">
-                    <label htmlFor="job_title" className="form-label">Job Title*</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="job_title"
-                        value={formData.job_title}
-                        onChange={handleInputChange}
-                        placeholder="UI Developer"
-                        required
-                    />
-                </div>
-                {/* Number of Positions */}
-                <div className="col-md-4 mb-3">
-                    <label htmlFor="number_of_positions" className="form-label">Number of Positions</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        name="number_of_positions"
-                        value={formData.number_of_positions}
-                        onChange={handleInputChange}
-                        placeholder="10"
-                        required
-                    />
-                </div>
-                {/* Job Description */}
-                <div className="col-md-12 mb-3">
-                    <label htmlFor="job_description" className="form-label">Job Description*</label>
-                    <textarea
-                        className="form-control"
-                        name="job_description"
-                        value={formData.job_description}
-                        onChange={handleInputChange}
-                        rows={5}
-                        required
-                    />
-                </div>
-                {/* Job Category */}
-                <div className="col-md-4 mb-3">
-                    <label htmlFor="job_category" className="form-label">Job Category*</label>
-                    <select
-                        className="form-select"
-                        name="job_category"
-                        value={formData.job_category}
-                        onChange={handleInputChange}
-                    >
-                        <option value="">Select Category</option>
-                        {jobCategories.map((category) => (
-                            <option key={category.id} value={category.id}>{category.name}</option>
-                        ))}
-                    </select>
-                </div>
+                        <div className="col-md-2 mb-3">
+                            <label htmlFor="JobType" className="form-label">Job Type</label>
+                            <select className="form-select" name="JobType" id="JobType">
+                                <option value="">Full Time</option>
+                                <option value="">Part Time</option>
+                                <option value="">Hourly-Contract</option>
+                                <option value="">Fixed-Price</option>
+                            </select>
+                        </div>
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="Salary" className="form-label">Salary</label>
+                            <select className="form-select" name="Salary" id="Salary">
+                                <option value="">Monthly</option>
+                                <option value="">Weekly</option>
+                            </select>
+                        </div>
+                        {/* Min Salary */}
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="min_salary" className="form-label">Min Salary</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                name="min_salary"
+                                value={formData.min_salary}
+                                onChange={handleInputChange}
+                                placeholder="Min Salary"
+                            />
+                        </div>
 
-                <div className="col-md-6 mb-3">
-                    <label htmlFor="JobType" className="form-label">Job Type</label>
-                    <select className="form-select" name="JobType" id="JobType">
-                        <option value="">Full Time</option>
-                        <option value="">Part Time</option>
-                        <option value="">Hourly-Contract</option>
-                        <option value="">Fixed-Price</option>
-                    </select>
-                </div>
-                <div className="col-md-6 mb-3">
-                    <label htmlFor="Salary" className="form-label">Salary</label>
-                    <select className="form-select" name="Salary" id="Salary">
-                        <option value="">Monthly</option>
-                        <option value="">Weekly</option>
-                    </select>
-                </div>
-                {/* Min Salary */}
-                <div className="col-md-4 mb-3">
-                    <label htmlFor="min_salary" className="form-label">Min Salary</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        name="min_salary"
-                        value={formData.min_salary}
-                        onChange={handleInputChange}
-                        placeholder="Min Salary"
-                    />
-                </div>
+                        {/* Max Salary */}
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="max_salary" className="form-label">Max Salary</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                name="max_salary"
+                                value={formData.max_salary}
+                                onChange={handleInputChange}
+                                placeholder="Max Salary"
+                            />
+                        </div>
+                        {/* Skills */}
+                        <div className="col-md-12 mb-3">
+                            <label htmlFor="skills" className="form-label">Skills*</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="skills"
+                                value={formData.skills}
+                                onChange={handleInputChange}
+                                placeholder="Add Skills"
+                                required
+                            />
+                        </div>
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="Experience" className="form-label">Experience*</label>
+                            <select className="form-select" name="Experience" id="Experience">
+                                <option value="">Expert</option>
+                                <option value="">Intermediate</option>
+                                <option value="">No-Experience</option>
+                            </select>
+                        </div>
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="Location" className="form-label">Location* </label>
+                            <select className="form-select" name="Location" id="Location">
+                                <option value="">Hyderabad TS</option>
+                                <option value="">Mubai MH</option>
+                                <option value="">Dehli DL</option>
+                            </select>
+                        </div>
 
-                {/* Max Salary */}
-                <div className="col-md-4 mb-3">
-                    <label htmlFor="max_salary" className="form-label">Max Salary</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        name="max_salary"
-                        value={formData.max_salary}
-                        onChange={handleInputChange}
-                        placeholder="Max Salary"
-                    />
-                </div>
-                {/* Skills */}
-                <div className="col-md-12 mb-3">
-                    <label htmlFor="skills" className="form-label">Skills*</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="skills"
-                        value={formData.skills}
-                        onChange={handleInputChange}
-                        placeholder="Add Skills"
-                        required
-                    />
-                </div>
-                <div className="col-md-6 mb-3">
-                    <label htmlFor="Experience" className="form-label">Experience*</label>
-                    <select className="form-select" name="Experience" id="Experience">
-                        <option value="">Expert</option>
-                        <option value="">Intermediate</option>
-                        <option value="">No-Experience</option>
-                    </select>
-                </div>
-                <div className="col-md-6 mb-3">
-                    <label htmlFor="Location" className="form-label">Location* </label>
-                    <select className="form-select" name="Location" id="Location">
-                        <option value="">Hyderabad TS</option>
-                        <option value="">Mubai MH</option>
-                        <option value="">Dehli DL</option>
-                    </select>
-                </div>
-                {/* Industry */}
-                <div className="col-md-4 mb-3">
-                    <label htmlFor="industry" className="form-label">Industry*</label>
-                    <select
-                        className="form-select"
-                        name="industry"
-                        value={formData.industry}
-                        onChange={handleInputChange}
-                        required
-                    >
-                        <option value="">Select Industry</option>
-                        {industries.map((industry) => (
-                            <option key={industry.id} value={industry.id}>
-                                {industry.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="col-md-6 mb-3">
-                    <label htmlFor="Industry" className="form-label">English Fluency </label>
-                    <select className="form-select" name="Industry" id="Industry">
-                        <option value="">Basic</option>
-                        <option value="">Medium</option>
-                        <option value="">Excellent</option>
-                    </select>
-                </div>
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="Industry" className="form-label">English Fluency </label>
+                            <select className="form-select" name="Industry" id="Industry">
+                                <option value="">Basic</option>
+                                <option value="">Medium</option>
+                                <option value="">Excellent</option>
+                            </select>
+                        </div>
+                        {/* Upload File */}
+                        <div className="col-md-12 mb-3">
+                            <label htmlFor="upload_file" className="form-label">File Attachment</label>
+                            <input
+                                className="form-control"
+                                type="file"
+                                name="upload_file"
+                                onChange={handleFileChange}
+                            />
+                        </div>
 
-                {/* Upload File */}
-                <div className="col-md-12 mb-3">
-                    <label htmlFor="upload_file" className="form-label">File Attachment</label>
-                    <input
-                        className="form-control"
-                        type="file"
-                        name="upload_file"
-                        onChange={handleFileChange}
-                    />
-                </div>
+                        {/* Address */}
+                        <div className="col-md-12 mb-3">
+                            <label htmlFor="address" className="form-label">Address*</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="address"
+                                value={formData.address}
+                                onChange={handleInputChange}
+                                placeholder="Address"
+                                required
+                            />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="country" className="form-label">Country*</label>
+                            <select className="form-select" id="country" name="country" value={formData.country || 0} onChange={handleInputChange} required>
+                                <option value="">Select Country</option>
+                                {countries.map((country) => (
+                                    <option key={country.id} value={country.id}>{country.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="state" className="form-label">State*</label>
+                            <select className="form-select" id="state" name="state" value={formData.state || 0} onChange={handleInputChange} required>
+                                <option value="">Select State</option>
+                                {states.map((state) => (
+                                    <option key={state.id} value={state.id}>{state.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        {/* Submit Button */}
 
-                {/* Address */}
-                <div className="col-md-12 mb-3">
-                    <label htmlFor="address" className="form-label">Address*</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        placeholder="Address"
-                        required
-                    />
+                    </div>
                 </div>
-                <div className="col-md-4">
-                    <label htmlFor="country" className="form-label">Country*</label>
-                    <select className="form-select" id="country" name="country" value={formData.country || 0} onChange={handleInputChange} required>
-                        <option value="">Select Country</option>
-                        {countries.map((country) => (
-                            <option key={country.id} value={country.id}>{country.name}</option>
-                        ))}
-                    </select>
+                <div className="text-center my-4">
+                    <button type="submit" className="btn btn-success px-5 btn-lg">Submit Job</button>
+                    <button type="submit" className="btn ms-4">Cancel</button>
                 </div>
-                <div className="col-md-4">
-                    <label htmlFor="state" className="form-label">State*</label>
-                    <select className="form-select" id="state" name="state" value={formData.state || 0} onChange={handleInputChange} required>
-                        <option value="">Select State</option>
-                        {states.map((state) => (
-                            <option key={state.id} value={state.id}>{state.name}</option>
-                        ))}
-                    </select>
-                </div>
-                {/* Submit Button */}
-                <div className="text-center">
-                    <button type="submit" className="btn btn-success">Submit Job</button>
-                    <button type="submit" className="btn btn-lg ms-4">Cancel</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </main>
     );
 };
 

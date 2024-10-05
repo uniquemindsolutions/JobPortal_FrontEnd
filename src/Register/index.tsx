@@ -111,7 +111,7 @@ const RegisterAdmin = () => {
                                
 
                                 <div className="login-links mt-5">
-                                  If have an Account?  <a href="/register" className="me-3">Sign In</a>
+                                  If have an Account?  <a href="/" className="me-3">Sign In</a>
                                 </div>
                                 <div className="text-end mt-4">
                                     {responseMessage && <div>{responseMessage}</div>}
