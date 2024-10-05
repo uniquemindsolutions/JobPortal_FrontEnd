@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './register.scss'
 import { env } from 'process'
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterData {
-    name: string;
+    username: string;
     email: string;
     password: string;
 }
@@ -15,13 +16,14 @@ interface RegisterResponse {
 }
 const RegisterAdmin = () => {
     const [formData, setFormData] = useState<RegisterData>({
-        name: '',
+        username: '',
         email: '',
         password: ''
     });
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -47,6 +49,7 @@ const RegisterAdmin = () => {
                 body: JSON.stringify(formData) // Send form data to API
             });
 
+            navigate('/');
             const result: RegisterResponse = await response.json();
             console.log("===== result", result)
 
@@ -78,10 +81,10 @@ const RegisterAdmin = () => {
                             <div className="col-md-6 offset-lg-3">
                                 <h2 className="login-title">Register</h2>
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Name</label>
-                                    <input type="text" className="form-control" id="email" placeholder="Enter your Name"
-                                        name="name"
-                                        value={formData.name}
+                                    <label htmlFor="username" className="form-label">Username</label>
+                                    <input type="text" className="form-control" id="username" placeholder="Enter your Name"
+                                        name="username"
+                                        value={formData.username}
                                         onChange={handleInputChange}
                                         required />
                                 </div>
@@ -105,11 +108,11 @@ const RegisterAdmin = () => {
                                 <button className="btn btn-primary w-100" type="submit" disabled={loading}>
                                     {loading ? 'Registering...' : 'Register'}
                                 </button>
-                                <div className="login-links mt-3">
-                                    {/* <a href="/signup" className="me-3">Sign Up</a> */}
-                                    <a href="/forgot-password"><small>Forgot Password?</small></a>
-                                </div>
+                               
 
+                                <div className="login-links mt-5">
+                                  If have an Account?  <a href="/" className="me-3">Sign In</a>
+                                </div>
                                 <div className="text-end mt-4">
                                     {responseMessage && <div>{responseMessage}</div>}
                                     {error && <div style={{ color: 'red' }}>{error}</div>}
