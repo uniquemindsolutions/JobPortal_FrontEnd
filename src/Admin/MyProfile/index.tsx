@@ -171,8 +171,6 @@ const MyProfile = () => {
             });
     };
 
-
-
     return (
         <main>
             <h4 className="mt-4">My Profile</h4>
