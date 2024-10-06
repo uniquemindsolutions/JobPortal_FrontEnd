@@ -34,7 +34,7 @@ const Admin = () => {
 
                         {/* Notification Icon */}
                         <div className="position-relative">
-                            <span className="dropdown">
+                            <span className="dropdown notifi-dropdwn">
                                 <button type="button" className="btn position-relative " data-bs-toggle="dropdown"
                                     style={{ background: 'transparent', border: 'none' }}
                                 >
@@ -70,6 +70,27 @@ const Admin = () => {
                                 style={{ borderRadius: '30px', padding: '0.5rem 1.5rem' }} >
                                 Post a Job
                             </Link>
+                            <span className="dropdown dropdown-menu-end">
+                                <button type="button" className="btn position-relative " data-bs-toggle="dropdown"
+                                    style={{ background: 'transparent', border: 'none' }}
+                                >
+                                    <i className="bi bi-person-circle" style={{ fontSize: '1.5rem' }}></i>
+                                    
+                                </button>
+                                <ul className="dropdown-menu border-0 shadow">                                    
+                                    <li>
+                                        <a href="#" className="dropdown-item">
+                                            profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" className="dropdown-item">
+                                            Logout
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </span>
                         </div>
                      </header>
                     <div className="">
