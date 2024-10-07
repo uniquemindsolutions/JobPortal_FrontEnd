@@ -13,6 +13,7 @@ import SubmitJob from './Admin/SubmitJob';
 import AccountSetting from './Admin/AccountSetting';
 import RegisterAdmin from './Register';
 import Candidates from './Admin/Candidates';
+import PostedJob from './Admin/PostedJob';
 
 
 
@@ -53,6 +54,7 @@ function App() {
             <Route path="submit-job" element={<SubmitJob />} />
             <Route path="account-setting" element={<AccountSetting />} />
             <Route path="candidates" element={<Candidates />} />
+            <Route path="posted-job" element={<PostedJob />} />
           </Route>
         </Routes>
       </Router>
