@@ -69,28 +69,20 @@ const PostedJob = () => {
 
                     {/* Action Icons */}
                     <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i>
-                        </button>
                         <div className="dropdown">
-                            <button
-                                className="btn btn-link text-muted"
-                                type="button"
-                                // id={`dropdownMenuButton${index}`}
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                &#8942;
+                            <button className="btn btn-link text-muted"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul className="dropdown-menu" >
                                 <li>
-                                    <a className="dropdown-item" href="#">View Job</a>
+                                    <a className="dropdown-item text-primary" href="#"><i className="bi bi-eye"></i> View Job</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item" href="#">Archive</a>
+                                    <a className="dropdown-item text-warning" href="#"><i className="bi bi-pencil-square"></i> Edit</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item text-danger" href="#">Delete</a>
+                                    <a className="dropdown-item text-danger" href="#"><i className="bi bi-trash3"></i> Delete</a>
                                 </li>
                             </ul>
                         </div>
@@ -139,28 +131,20 @@ const PostedJob = () => {
 
                     {/* Action Icons */}
                     <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i>
-                        </button>
                         <div className="dropdown">
-                            <button
-                                className="btn btn-link text-muted fw-bold"
-                                type="button"
-                                // id={`dropdownMenuButton${index}`}
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                &#8942;
+                            <button className="btn btn-link text-muted"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul className="dropdown-menu" >
                                 <li>
-                                    <a className="dropdown-item" href="#">View Job</a>
+                                    <a className="dropdown-item text-primary" href="#"><i className="bi bi-eye"></i> View Job</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item" href="#">Archive</a>
+                                    <a className="dropdown-item text-warning" href="#"><i className="bi bi-pencil-square"></i> Edit</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item text-danger" href="#">Delete</a>
+                                    <a className="dropdown-item text-danger" href="#"><i className="bi bi-trash3"></i> Delete</a>
                                 </li>
                             </ul>
                         </div>
@@ -209,28 +193,20 @@ const PostedJob = () => {
 
                     {/* Action Icons */}
                     <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i>
-                        </button>
                         <div className="dropdown">
-                            <button
-                                className="btn btn-link text-muted fw-bold"
-                                type="button"
-                                // id={`dropdownMenuButton${index}`}
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                &#8942;
+                            <button className="btn btn-link text-muted"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul className="dropdown-menu" >
                                 <li>
-                                    <a className="dropdown-item" href="#">View Job</a>
+                                    <a className="dropdown-item text-primary" href="#"><i className="bi bi-eye"></i> View Job</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item" href="#">Archive</a>
+                                    <a className="dropdown-item text-warning" href="#"><i className="bi bi-pencil-square"></i> Edit</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item text-danger" href="#">Delete</a>
+                                    <a className="dropdown-item text-danger" href="#"><i className="bi bi-trash3"></i> Delete</a>
                                 </li>
                             </ul>
                         </div>
@@ -279,28 +255,20 @@ const PostedJob = () => {
 
                     {/* Action Icons */}
                     <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i>
-                        </button>
                         <div className="dropdown">
-                            <button
-                                className="btn btn-link text-muted fw-bold"
-                                type="button"
-                                // id={`dropdownMenuButton${index}`}
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                &#8942;
+                            <button className="btn btn-link text-muted"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul className="dropdown-menu" >
                                 <li>
-                                    <a className="dropdown-item" href="#">View Job</a>
+                                    <a className="dropdown-item text-primary" href="#"><i className="bi bi-eye"></i> View Job</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item" href="#">Archive</a>
+                                    <a className="dropdown-item text-warning" href="#"><i className="bi bi-pencil-square"></i> Edit</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item text-danger" href="#">Delete</a>
+                                    <a className="dropdown-item text-danger" href="#"><i className="bi bi-trash3"></i> Delete</a>
                                 </li>
                             </ul>
                         </div>
@@ -349,28 +317,20 @@ const PostedJob = () => {
 
                     {/* Action Icons */}
                     <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i>
-                        </button>
                         <div className="dropdown">
-                            <button
-                                className="btn btn-link text-muted fw-bold"
-                                type="button"
-                                // id={`dropdownMenuButton${index}`}
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                &#8942;
+                            <button className="btn btn-link text-muted"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul className="dropdown-menu" >
                                 <li>
-                                    <a className="dropdown-item" href="#">View Job</a>
+                                    <a className="dropdown-item text-primary" href="#"><i className="bi bi-eye"></i> View Job</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item" href="#">Archive</a>
+                                    <a className="dropdown-item text-warning" href="#"><i className="bi bi-pencil-square"></i> Edit</a>
                                 </li>
                                 <li>
-                                    <a className="dropdown-item text-danger" href="#">Delete</a>
+                                    <a className="dropdown-item text-danger" href="#"><i className="bi bi-trash3"></i> Delete</a>
                                 </li>
                             </ul>
                         </div>

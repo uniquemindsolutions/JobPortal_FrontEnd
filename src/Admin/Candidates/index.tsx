@@ -1,31 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Select from 'react-select';
+import './candidates.scss'
 
 const Candidates = () => {
+
+    const [query, setQuery] = useState('');
+    const [location, setLocation] = useState('');
+    const [selectedExperience, setSelectedExperience] = useState<any>(null);
+
+    const experienceOptions = [
+        { value: '0-1', label: '0-1 years' },
+        { value: '1+', label: '1+ years' },
+        { value: '2+', label: '2+ years' },
+        { value: '3+', label: '3+ years' },
+        { value: '4+', label: '4+ years' },
+        { value: '5+', label: '5+ years' },
+        { value: '6+', label: '6+ years' },
+        { value: '7+', label: '7+ years' },
+        { value: '8+', label: '8+ years' },
+        { value: '9+', label: '9+ years' },
+        { value: '10+', label: '10+ years' },
+    ];
+
+    const handleSearch = () => {
+        // Handle search logic here
+        console.log('Search Query:', query);
+        console.log('Experience:', selectedExperience);
+        console.log('Location:', location);
+    };
     return (
         <main>
             <div className="d-flex justify-content-between mt-4">
-                <div><h4>Candidate List</h4></div>
-                <div className='text-end'>
-                    <div className="d-flex">
-                        <div className="dropdown ms-3">
-                            <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-toggle="dropdown">
-                                Short by
-                            </button>
-                            <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
-                                <li>
-                                    <a className="dropdown-item" href="#">  Active</a>
-                                </li>
-                                <li>
-                                    <a className="dropdown-item" href="#"> Pedding</a>
-                                </li>
-                                <li>
-                                    <a className="dropdown-item" href="#"> Expaired</a>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
+                <div><h4 className='pt-3'>Candidate List</h4></div>
+                <div className="search-bar-container d-flex align-items-center">
+                    <input
+                        type="text"
+                        className="form-control search-input"
+                        placeholder="Ui Developer,"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <div className="divider" />
+                    <Select
+                        className="select-experience"
+                        options={experienceOptions}
+                        placeholder="Select experience"
+                        value={selectedExperience}
+                        onChange={setSelectedExperience}
+                    />
+                    <div className="divider" />
+                    <input
+                        type="text"
+                        className="form-control search-input"
+                        placeholder="Hyderabad, TS"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                    />
+                    <button className="btn btn-primary search-button" onClick={handleSearch}>
+                        <i className="bi bi-search me-2"></i> Search
+                    </button>
                 </div>
+                
             </div>
 
             <div className="profile-card">
