@@ -459,33 +459,33 @@ const SubmitJob = () => {
                         <h4 className='text-primary mt-4'>Education</h4>
                         <div className="col-md-3">
                             <label htmlFor="Schooling" className="form-label">Schooling</label>
-                            <select className="form-select" id="Schooling" name="Schooling">
+                            <select className="form-select" id="Schooling" name="Schooling"  onChange={handleInputChange}>
                                 <option value="">Select Class</option>
-                                <option value="">SSC</option>
+                                <option value="SSC">SSC</option> 
                             </select>
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="inter" className="form-label">Intermediate</label>
-                            <select className="form-select" id="inter" name="inter">
+                            <select className="form-select" id="inter" name="inter"  onChange={handleInputChange}>
                                 <option value="">Select inter</option>
-                                <option value="">Any Inter</option>
-                                <option value="">MPC</option>
-                                <option value="">CEC</option>
+                                <option value="Any-Inter">Any Inter</option>
+                                <option value="MPC">MPC</option>
+                                <option value="CEC">CEC</option>
                             </select>
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="ug" className="form-label">UG</label>
-                            <select className="form-select" id="ug" name="ug">
+                            <select className="form-select" id="ug" name="ug" onChange={handleInputChange}>
                                 <option value="">Select UG</option>
-                                <option value="">Any Graduate</option>
-                                <option value="">B sc</option>
+                                <option value="Any-Graduate">Any Graduate</option>
+                                <option value="">B Sc</option>
                                 <option value="">B Com</option>
                                 <option value="">BA</option>
                             </select>
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="inter" className="form-label">PG</label>
-                            <select className="form-select" id="inter" name="inter">
+                            <select className="form-select" id="inter" name="inter" onChange={handleInputChange}>
                                 <option value="">Select PG</option>
                                 <option value="">Any Postgraduate</option>
                                 <option value="">MBA</option>
