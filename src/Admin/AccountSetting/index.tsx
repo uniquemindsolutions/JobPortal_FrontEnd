@@ -25,42 +25,13 @@ const AccountSetting = () => {
             confirm_password: '',
         }
     );
+    const [successMsg, setSuccessMsg] = useState('')
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         const { name, value } = e.target;
         setAcountData({ ...acountData, [name]: value })
     }
-
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     try {
-    //         const response = await fetch('http://127.0.0.1:8000/accountsettings/', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-type': 'application/json',
-    //             },
-    //             body: JSON.stringify(acountData),
-    //         });
-
-    //         if (response.ok) {
-    //             const data = await response.json();
-    //             console.log("Form submitted successfully:", data)
-    //         } else {
-    //             console.error('Error submitting form fail')
-    //         }
-    //     } catch (error) {
-    //         console.error('Network error:', error);
-    //     }
-
-    //     axios.post('http://127.0.0.1:8000/change-password/', acountData)
-    //     .then((res)=>{
-    //         console.log(res, 'pass testing ====');
-    //     }).catch((error)=>{
-    //         return error
-    //     })
-
-    // };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -74,8 +45,12 @@ const AccountSetting = () => {
             const proPass = await axios.put('http://127.0.0.1:8000/change-password/', acountData);
             console.log('password api ====:', proPass.data);
 
-        
-            // alert('Form submitted successfully to all three APIs!');
+            
+            setSuccessMsg('Account setting successfully changed')
+            setTimeout(()=>(
+                setSuccessMsg('')
+            ),4000)
+            
         } catch (error) {
             console.error('Error submitting form:', error);
             // alert('Error submitting form to one or more APIs');
@@ -144,10 +119,12 @@ const AccountSetting = () => {
                         </div>
 
                     </div>
-                    <div className="mt-4  text-center">
-                        <button type="submit" className="btn btn-success btn-lg px-5">Save & Update</button>
-                        <button type="button" className="btn btn-lg ms-4">Cancel</button>
-                    </div>
+
+                </div>
+                <div className="mt-4 mb-5 text-center">
+                    <div className='text-success mb-3'>{successMsg}</div>
+                    <button type="submit" className="btn btn-success btn-lg px-5">Save & Update</button>
+                    <button type="button" className="btn btn-lg ms-4">Cancel</button>
                 </div>
             </form>
         </main>
