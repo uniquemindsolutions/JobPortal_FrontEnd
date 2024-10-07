@@ -61,6 +61,10 @@ const SideMenu = () => {
                         onClick={() => handleLinkClick('submit-job')}><i className="bi bi-send-check"></i> Submit Job </Link>
                     </li>
                     <li className="mb-3">
+                        <Link to="posted-job" className={`nav-link ${activeLink === 'posted-job' ? 'active' : ''}`}
+                        onClick={() => handleLinkClick('posted-job')}><i className="bi bi-send-check"></i> Posted Jobs </Link>
+                    </li>
+                    <li className="mb-3">
                         <Link to="candidates" className={`nav-link ${activeLink === 'candidates' ? 'active' : ''}`}
                         onClick={() => handleLinkClick('candidates')}><i className="bi bi-floppy"></i> Candidates </Link>
                     </li>
