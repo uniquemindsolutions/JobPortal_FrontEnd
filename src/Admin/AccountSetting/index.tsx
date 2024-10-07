@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 
 
@@ -31,32 +32,55 @@ const AccountSetting = () => {
         setAcountData({ ...acountData, [name]: value })
     }
 
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await fetch('http://127.0.0.1:8000/accountsettings/', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-type': 'application/json',
+    //             },
+    //             body: JSON.stringify(acountData),
+    //         });
+
+    //         if (response.ok) {
+    //             const data = await response.json();
+    //             console.log("Form submitted successfully:", data)
+    //         } else {
+    //             console.error('Error submitting form fail')
+    //         }
+    //     } catch (error) {
+    //         console.error('Network error:', error);
+    //     }
+
+    //     axios.post('http://127.0.0.1:8000/change-password/', acountData)
+    //     .then((res)=>{
+    //         console.log(res, 'pass testing ====');
+    //     }).catch((error)=>{
+    //         return error
+    //     })
+
+    // };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         try {
-            const response = await fetch('http://127.0.0.1:8000/accountsettings/', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: JSON.stringify(acountData),
-            });
+            // accountsettings API call
+            const proData = await axios.post('http://127.0.0.1:8000/accountsettings/', acountData);
+            console.log('account api ====:', proData.data);
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Form submitted successfully:", data)
-            } else {
-                console.error('Error submitting form fail')
-            }
+            // change-password API call
+            const proPass = await axios.put('http://127.0.0.1:8000/change-password/', acountData);
+            console.log('password api ====:', proPass.data);
+
+        
+            // alert('Form submitted successfully to all three APIs!');
         } catch (error) {
-            console.error('Network error:', error);
+            console.error('Error submitting form:', error);
+            // alert('Error submitting form to one or more APIs');
         }
-
     };
-
-    // const handleCancel = (fieldName: keyof typeof acountData)=>{
-    //     setAcountData({...acountData, [fieldName]:''})
-    // }
 
 
 

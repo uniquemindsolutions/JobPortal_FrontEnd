@@ -12,6 +12,7 @@ import Messages from './Admin/Messages';
 import SubmitJob from './Admin/SubmitJob';
 import AccountSetting from './Admin/AccountSetting';
 import RegisterAdmin from './Register';
+import Candidates from './Admin/Candidates';
 
 
 
@@ -51,6 +52,7 @@ function App() {
             <Route path="messages" element={<Messages />} />
             <Route path="submit-job" element={<SubmitJob />} />
             <Route path="account-setting" element={<AccountSetting />} />
+            <Route path="candidates" element={<Candidates />} />
           </Route>
         </Routes>
       </Router>

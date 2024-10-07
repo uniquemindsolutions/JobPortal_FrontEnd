@@ -319,7 +319,17 @@ const SubmitJob = () => {
                                 <option value="Fixed-Price">Fixed-Price</option>
                             </select>
                         </div>
-                        <div className="col-md-4 mb-3">
+                        <div className="col-md-4 col-lg-3 mb-3">
+                            <label htmlFor="Salary" className="form-label">Work Mode</label>
+                            <select className="form-select" name="salary_type" id="Salary" onChange={handleInputChange}>
+                                <option value="Work-from-Office">Select work mode</option>
+                                <option value="Work-from-Office">Work from Office</option>
+                                <option value="Work-from-Home">Work from Home</option>
+                                <option value="Remote">Remote</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div className="col-md-4 col-lg-3 col-lg-3 mb-3">
                             <label htmlFor="Salary" className="form-label">Salary Type</label>
                             <select className="form-select" name="salary_type" id="Salary" onChange={handleInputChange}>
                                 <option value="">Salary type</option>
@@ -328,7 +338,7 @@ const SubmitJob = () => {
                             </select>
                         </div>
                         {/* Min Salary */}
-                        <div className="col-md-4 mb-3">
+                        <div className="col-md-4 col-lg-3 mb-3">
                             <label htmlFor="min_salary" className="form-label">Min Salary</label>
                             <input
                                 type="number"
@@ -340,7 +350,7 @@ const SubmitJob = () => {
                         </div>
 
                         {/* Max Salary */}
-                        <div className="col-md-4 mb-3">
+                        <div className="col-md-4 col-lg-3 mb-3">
                             <label htmlFor="max_salary" className="form-label">Max Salary</label>
                             <input
                                 type="number"
@@ -447,6 +457,13 @@ const SubmitJob = () => {
                         </div>
                         
                         <h4 className='text-primary mt-4'>Education</h4>
+                        <div className="col-md-3">
+                            <label htmlFor="Schooling" className="form-label">Schooling</label>
+                            <select className="form-select" id="Schooling" name="Schooling">
+                                <option value="">Select Class</option>
+                                <option value="">SSC</option>
+                            </select>
+                        </div>
                         <div className="col-md-3">
                             <label htmlFor="inter" className="form-label">Intermediate</label>
                             <select className="form-select" id="inter" name="inter">
