@@ -129,10 +129,28 @@ const MyProfile = () => {
                 formData.append(key, value);
             }
         });
+        const payload = {
+            "country": 1,
+            "state": 1,
+            "city": 1,
+            "employee_name": "Vamshi",
+            "website": "https://www.google.com",
+            "email": "vamshi@gmail.com",
+            "company_size": 10,
+            "category": "IT",
+            "phone_number": "949977003",
+            "about_company":"It is a startup",
+            "address": "Hyderabad",
+            "zip_code": 502110
+        }
 
         fetch('http://127.0.0.1:8000/myprofile/', {
             method: 'POST',
-            body: formData, // Send FormData instead of JSON
+            // body: formData, // Send FormData instead of JSON
+            body:JSON.stringify(payload),
+            headers:{
+            'Content-Type': 'application/json',
+            }
         })
             .then((response) => {
                 if (!response.ok) {
