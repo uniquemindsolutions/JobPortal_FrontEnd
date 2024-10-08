@@ -160,17 +160,42 @@ const SubmitJob = () => {
         Object.keys(formData).forEach(key => {
             submissionData.append(key, (formData as any)[key]);
         });
-
+        const payload = {
+            "job_title": "Software Developer",
+            "number_of_positions": "100",
+            "job_description": "It is a software job",
+            "address": "1-10-71/14/23 Venkat rao nager colony Medak",
+            "city": 1,
+            "country": 1,
+            "english_fluency": "Basic",
+            "experience": "Expert",
+            "industry": {
+                "industry": "IT"
+            },
+            "job_category": {
+                "job_category": "Mobile Developer"
+            },
+            "job_type": "Part Time",
+            "map_location": "Imphal",
+            "max_salary": "20000",
+            "min_salary": "10000",
+            "salary": "Monthly",
+            "skills": "Java, python,c programming ",
+            "state": 2,
+            "upload_file": null,
+            "about_company": "It is a starupcompany",
+            "work_mode": "Hybrid"
+        }
         // submissionData.append('upload_file', formData.upload_file )
 
         try {
             const response = await fetch("http://127.0.0.1:8000/submitnewjob/", {
                 method: "POST",
-
-                body: JSON.stringify(formData),
+                // body:payload
+                body: JSON.stringify(payload),
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    // 'Content-Type': 'application/json; charset=UTF-8',
+                    // 'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
                 },
             });
 
@@ -198,10 +223,10 @@ const SubmitJob = () => {
         const countryId = e.target.options.selectedIndex;
         const stateId = e.target.options.selectedIndex;
         // const {id, value} = e.target;
-        console.log(stateId, "state values====");
+        // console.log(stateId, "state values====");
         // setSelectedCountry(country);
 
-        fetch("http://127.0.0.1:8000/states/?countryid=" + { countryId })
+        fetch(`http://127.0.0.1:8000/states/?countryid=${countryId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("States:", data); // Log to check the data
@@ -209,13 +234,13 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching states:', error));
 
-        // fetch("http://127.0.0.1:8000/cities/?stateid="+{stateId})
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log("cities:", data); // Log to check the data
-        //     setStates(data);
-        // })
-        // .catch(error => console.error('Error fetching states:', error));    
+        fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("cities:", data); // Log to check the data
+            setStates(data);
+        })
+        .catch(error => console.error('Error fetching states:', error));    
     };
 
     return (
