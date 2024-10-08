@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import './submitJobs.scss';
 import { json } from 'stream/consumers';
+import axios from 'axios';
+import { error } from 'console';
 
 interface SubmitJob {
     job_title: string;
     number_of_positions: number;
     job_description: string;
-    industry: string;
-    job_category: string;
-    job_type: string;
-    salary_type: string;
-    min_salary: number;
-    max_salary: number;
-    skills: string;
-    experience: string;
-    english_fluency: string;
-    upload_file: File | null;
     address: string;
-    map_location: string | null;
-    country: string;
-    state: string;
-    city: string;
+    city: number;
+    country: number;
+    english_fluency: string;
+    experience: string;
+    industry: {
+        industry: string;
+    };
+    job_category: {
+        job_category: string;
+    };
+    job_type: string;
+    map_location: string;
+    max_salary: string;
+    min_salary: string;
+    salary: string;
+    skills: string;
+    state: number;
+    upload_file: File | null;
+    about_company: string;
+    work_mode: string;
 }
 
 interface JobCategory {
@@ -47,6 +55,20 @@ interface city {
     id: number;
     name: string;
 }
+interface inter {
+    id: number;
+    inter: string;
+}
+interface graduate {
+    id: number;
+    ug_name: string;
+}
+interface postGraduate {
+    id: number;
+    pg_name: string;
+}
+
+
 
 const SubmitJob = () => {
     const [industriesorg, setIndustries] = useState<any[]>([]);
@@ -54,27 +76,38 @@ const SubmitJob = () => {
     const [countries, setCountries] = useState<Country[]>([]);
     const [states, setStates] = useState<State[]>([]);
     const [cities, setCities] = useState<city[]>([]);
+    const [inter, setInter] = useState<inter[]>([])
+    const [graduate, setGraduate] = useState<graduate[]>([])
+    const [postGraduate, setPostGraduate] = useState<postGraduate[]>([])
+    const [error, setError] = useState('')
 
     const [formData, setFormData] = useState<SubmitJob>({
         job_title: '',
         number_of_positions: 1,
         job_description: '',
-        industry: '',
-        job_category: '',
-        job_type: '',
-        salary_type: '',
-        min_salary: 0,
-        max_salary: 0,
-        skills: '',
-        experience: '',
-        english_fluency: '',
-        upload_file: null,
         address: '',
+        city: 0,
+        country: 0,
+        english_fluency: '',
+        experience: '',
+        industry: {
+            industry: '',
+        },
+        job_category: {
+            job_category: '',
+        },
+        job_type: '',
         map_location: '',
-        country: '',
-        state: '',
-        city: '',
+        max_salary: '',
+        min_salary: '',
+        salary: '',
+        skills: '',
+        state: 0,
+        upload_file: null,
+        about_company: '',
+        work_mode: ''
     });
+
 
     // Fetch industries, job categories, countries, states, and cities
     useEffect(() => {
@@ -116,6 +149,42 @@ const SubmitJob = () => {
                 setCities(data);
             })
             .catch(error => console.error('Error fetching cities:', error));
+
+
+        // fetch("http://127.0.0.1:8000/education/intermediate/")
+        // .then(response => response.json())
+        // .then(data => {
+        //     console.log("intermediate:", data); // Log to check the data
+        //     setInter(response.data)
+        // })
+        // .catch(error => console.error('Error fetching cities:', error));
+
+        axios.get('http://127.0.0.1:8000/education/intermediate/')
+            .then(res => {
+                setInter(res.data)
+            })
+            .catch(error => {
+                setError(error)
+            })
+
+        // ug api
+        const ugapi = axios.get('http://127.0.0.1:8000/education/UG/')
+            .then(ugapi => {
+                setGraduate(ugapi.data)
+            })
+            .catch(error => {
+                setError(error)
+            })
+
+        // ug api
+        const pgapi = axios.get('http://127.0.0.1:8000/education/PG/')
+            .then(pgapi => {
+                setGraduate(pgapi.data)
+            })
+            .catch(error => {
+                setError(error)
+            })
+
     }, []);
 
     // Handle input changes
@@ -160,39 +229,39 @@ const SubmitJob = () => {
         Object.keys(formData).forEach(key => {
             submissionData.append(key, (formData as any)[key]);
         });
-        const payload = {
-            "job_title": "Software Developer",
-            "number_of_positions": "100",
-            "job_description": "It is a software job",
-            "address": "1-10-71/14/23 Venkat rao nager colony Medak",
-            "city": 1,
-            "country": 1,
-            "english_fluency": "Basic",
-            "experience": "Expert",
-            "industry": {
-                "industry": "IT"
-            },
-            "job_category": {
-                "job_category": "Mobile Developer"
-            },
-            "job_type": "Part Time",
-            "map_location": "Imphal",
-            "max_salary": "20000",
-            "min_salary": "10000",
-            "salary": "Monthly",
-            "skills": "Java, python,c programming ",
-            "state": 2,
-            "upload_file": null,
-            "about_company": "It is a starupcompany",
-            "work_mode": "Hybrid"
-        }
+        // const payload = {
+        //     "job_title": "",
+        //     "number_of_positions": "",
+        //     "job_description": "",
+        //     "address": "",
+        //     "city": 0,
+        //     "country": 0,
+        //     "english_fluency": "",
+        //     "experience": "",
+        //     "industry": {
+        //         "industry": ""
+        //     },
+        //     "job_category": {
+        //         "job_category": ""
+        //     },
+        //     "job_type": "",
+        //     "map_location": "",
+        //     "max_salary": "",
+        //     "min_salary": "",
+        //     "salary": "",
+        //     "skills": "",
+        //     "state": 0,
+        //     "upload_file": null,
+        //     "about_company": "",
+        //     "work_mode": ""
+        // }
         // submissionData.append('upload_file', formData.upload_file )
 
         try {
             const response = await fetch("http://127.0.0.1:8000/submitnewjob/", {
                 method: "POST",
                 // body:payload
-                body: JSON.stringify(payload),
+                body: JSON.stringify(formData),
                 headers: {
                     // 'Content-Type': 'multipart/form-data',
                     'Content-Type': 'application/json',
@@ -235,12 +304,12 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching states:', error));
 
         fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("cities:", data); // Log to check the data
-            setStates(data);
-        })
-        .catch(error => console.error('Error fetching states:', error));    
+            .then(response => response.json())
+            .then(data => {
+                console.log("cities:", data); // Log to check the data
+                setStates(data);
+            })
+            .catch(error => console.error('Error fetching states:', error));
     };
 
     return (
@@ -345,9 +414,9 @@ const SubmitJob = () => {
                             </select>
                         </div>
                         <div className="col-md-4 col-lg-3 mb-3">
-                            <label htmlFor="Salary" className="form-label">Work Mode</label>
-                            <select className="form-select" name="salary_type" id="Salary" onChange={handleInputChange}>
-                                <option value="Work-from-Office">Select work mode</option>
+                            <label htmlFor="work_mode" className="form-label">Work Mode</label>
+                            <select className="form-select" name="work_mode" id="work_mode" onChange={handleInputChange}>
+                                <option value="">Select work mode</option>
                                 <option value="Work-from-Office">Work from Office</option>
                                 <option value="Work-from-Home">Work from Home</option>
                                 <option value="Remote">Remote</option>
@@ -356,8 +425,8 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4 col-lg-3 col-lg-3 mb-3">
                             <label htmlFor="Salary" className="form-label">Salary Type</label>
-                            <select className="form-select" name="salary_type" id="Salary" onChange={handleInputChange}>
-                                <option value="">Salary type</option>
+                            <select className="form-select" name="salary" id="Salary" onChange={handleInputChange}>
+                                <option value="">Select Type</option>
                                 <option value="Monthly">Monthly</option>
                                 <option value="Weekly">Weekly</option>
                             </select>
@@ -368,6 +437,7 @@ const SubmitJob = () => {
                             <input
                                 type="number"
                                 className="form-control"
+                                id="min_salary"
                                 name="min_salary"
                                 onChange={handleInputChange}
                                 placeholder="Min Salary"
@@ -380,6 +450,7 @@ const SubmitJob = () => {
                             <input
                                 type="number"
                                 className="form-control"
+                                id="max_salary"
                                 name="max_salary"
                                 onChange={handleInputChange}
                                 placeholder="Max Salary"
@@ -387,18 +458,18 @@ const SubmitJob = () => {
                         </div>
                         {/* Skills */}
                         <div className="col-md-12 mb-3">
-                            <label htmlFor="skills" className="form-label">Skills*</label>
+                            <label htmlFor="skills" className="form-label">Skills</label>
                             <input
                                 type="text"
                                 className="form-control"
+                                id="skills"
                                 name="skills"
                                 onChange={handleInputChange}
                                 placeholder="Add Skills"
-                                required
                             />
                         </div>
                         <div className="col-md-4 mb-3">
-                            <label htmlFor="Experience" className="form-label">Experience*</label>
+                            <label htmlFor="Experience" className="form-label">Experience</label>
                             <select className="form-select" name="experience" id="Experience" onChange={handleInputChange}>
                                 <option value="">Select Experience</option>
                                 <option value="Expert">Expert</option>
@@ -407,8 +478,8 @@ const SubmitJob = () => {
                             </select>
                         </div>
                         <div className="col-md-4 mb-3">
-                            <label htmlFor="Location" className="form-label">Location* </label>
-                            <select className="form-select" name="map_location" id="Location" onChange={handleInputChange}>
+                            <label htmlFor="Location" className="form-label">Location</label>
+                            <select className="form-select" name="city" id="Location" onChange={handleInputChange}>
                                 <option value="">Select Location</option>
                                 {cities.map((cty) => (
                                     <option key={cty.id} value={cty.id}>{cty.name}</option>
@@ -439,18 +510,17 @@ const SubmitJob = () => {
                         <h4 className='text-primary mt-4'>Company Info</h4>
                         <div className="col-md-12 mb-3">
                             <label htmlFor="address" className="form-label">About Company</label>
-                            <textarea className='form-control' name="about_company" id="about_company"></textarea>
+                            <textarea className='form-control' name="about_company" id="about_company" onChange={handleInputChange}></textarea>
                         </div>
                         {/* Address */}
                         <div className="col-md-12 mb-3">
-                            <label htmlFor="address" className="form-label">Address*</label>
+                            <label htmlFor="address" className="form-label">Address</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 name="address"
                                 onChange={handleInputChange}
                                 placeholder="Address"
-                                required
                             />
                         </div>
                         <div className="col-md-4">
@@ -480,41 +550,42 @@ const SubmitJob = () => {
                                 ))}
                             </select>
                         </div>
-                        
+
                         <h4 className='text-primary mt-4'>Education</h4>
                         <div className="col-md-3">
                             <label htmlFor="Schooling" className="form-label">Schooling</label>
-                            <select className="form-select" id="Schooling" name="Schooling"  onChange={handleInputChange}>
+                            <select className="form-select" id="Schooling" name="Schooling" onChange={handleInputChange}>
                                 <option value="">Select Class</option>
-                                <option value="SSC">SSC</option> 
+                                <option value="SSC">SSC</option>
                             </select>
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="inter" className="form-label">Intermediate</label>
-                            <select className="form-select" id="inter" name="inter"  onChange={handleInputChange}>
-                                <option value="">Select inter</option>
-                                <option value="Any-Inter">Any Inter</option>
-                                <option value="MPC">MPC</option>
-                                <option value="CEC">CEC</option>
-                            </select>
-                        </div>
-                        <div className="col-md-3">
-                            <label htmlFor="ug" className="form-label">UG</label>
-                            <select className="form-select" id="ug" name="ug" onChange={handleInputChange}>
-                                <option value="">Select UG</option>
-                                <option value="Any-Graduate">Any Graduate</option>
-                                <option value="">B Sc</option>
-                                <option value="">B Com</option>
-                                <option value="">BA</option>
-                            </select>
-                        </div>
-                        <div className="col-md-3">
-                            <label htmlFor="inter" className="form-label">PG</label>
                             <select className="form-select" id="inter" name="inter" onChange={handleInputChange}>
+                                <option value="">Select intermediate</option>
+                                {inter.map((item, index) => (
+                                    <option key={index} value={item.id}>{item.inter}</option>
+                                ))}
+                            </select>
+
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="ug_name" className="form-label">UG</label>
+                            <select className="form-select" id="ug_name" name="ug_name" onChange={handleInputChange}>
+                                <option value="">Select UG</option>
+                                {graduate.map((item, index) => {
+                                    return <option key={index} value={item.id}>{item.ug_name}</option>
+                                })}
+                            </select>
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="pg_name" className="form-label">PG</label>
+                            <select className="form-select" id="pg_name" name="pg_name" onChange={handleInputChange}>
                                 <option value="">Select PG</option>
-                                <option value="">Any Postgraduate</option>
-                                <option value="">MBA</option>
-                                <option value="">MCA</option>
+                                {postGraduate.map((item, index) => {
+                                    return <option key={index} value={item.id}>{item.pg_name}</option>
+                                })}
+
                             </select>
                         </div>
                     </div>
