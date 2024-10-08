@@ -14,6 +14,7 @@ import AccountSetting from './Admin/AccountSetting';
 import RegisterAdmin from './Register';
 import Candidates from './Admin/Candidates';
 import PostedJob from './Admin/PostedJob';
+import SeekerDashboard from './JobSeeker/SeekerDashboard';
 
 
 
@@ -56,8 +57,12 @@ function App() {
             <Route path="candidates" element={<Candidates />} />
             <Route path="posted-job" element={<PostedJob />} />
           </Route>
+
+          <Route>
+            <Route path='/seeker-dashboard' element={<SeekerDashboard/>}/>
+          </Route>
         </Routes>
-      </Router>
+      </Router>      
     </>
   );
 }

@@ -139,7 +139,7 @@ const MyProfile = () => {
             "company_size": 10,
             "category": "IT",
             "phone_number": "949977003",
-            "about_company":"It is a startup",
+            "about_company": "It is a startup",
             "address": "Hyderabad",
             "zip_code": 502110
         }
@@ -147,9 +147,9 @@ const MyProfile = () => {
         fetch('http://127.0.0.1:8000/myprofile/', {
             method: 'POST',
             // body: formData, // Send FormData instead of JSON
-            body:JSON.stringify(payload),
-            headers:{
-            'Content-Type': 'application/json',
+            body: JSON.stringify(payload),
+            headers: {
+                'Content-Type': 'application/json',
             }
         })
             .then((response) => {
@@ -237,7 +237,11 @@ const MyProfile = () => {
                             <label htmlFor="email" className="form-label">Email*</label>
                             <input type="email" className="form-control" id="email" name="email" value={profileFormData.email || ''} onChange={handleInputChange} required />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-3">
+                            <label htmlFor="phoneNumber" className="form-label">Phone Number*</label>
+                            <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange} required />
+                        </div>
+                        <div className="col-md-3">
                             <label htmlFor="companySize" className="form-label">Company Size*</label>
                             <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} required />
                         </div>
@@ -249,30 +253,27 @@ const MyProfile = () => {
                             <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="category" className="form-label">Category*</label>
+                            <label htmlFor="category" className="form-label">Comany Category*</label>
                             <input type="text" className="form-control" id="category" name="category" value={profileFormData.category || ''} onChange={handleInputChange} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
-                        <div className="col-md-6">
-                            <label htmlFor="phoneNumber" className="form-label">Phone Number*</label>
-                            <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange} required />
-                        </div>
-                        <div className="col-md-6">
+
+                        <div className="col-md-12">
                             <label htmlFor="aboutCompany" className="form-label">About Company*</label>
                             <textarea className="form-control" id="aboutCompany" name="about_company" value={profileFormData.about_company || ''} onChange={handleInputChange} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
-                        <div className="col-md-4">
+                        <div className="col-md-12 mb-3">
                             <label htmlFor="address" className="form-label">Address*</label>
                             <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="country" className="form-label">Country*</label>
-                            <select className="form-select" id="country" name="country" value={profileFormData.country || 0} onChange={handleInputChange} required>
+                            <label htmlFor="country" className="form-label">Country</label>
+                            <select className="form-select" id="country" name="country" value={profileFormData.country || 0} onChange={handleInputChange}>
                                 <option value="">Select Country</option>
                                 {countries.map((country) => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
@@ -280,11 +281,20 @@ const MyProfile = () => {
                             </select>
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="state" className="form-label">State*</label>
-                            <select className="form-select" id="state" name="state" value={profileFormData.state || 0} onChange={handleInputChange} required>
+                            <label htmlFor="state" className="form-label">State</label>
+                            <select className="form-select" id="state" name="state" value={profileFormData.state || 0} onChange={handleInputChange}>
                                 <option value="">Select State</option>
                                 {states.map((state) => (
                                     <option key={state.id} value={state.id}>{state.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="city" className="form-label">City</label>
+                            <select className="form-select" id="city" name="city" value={profileFormData.city || 0} onChange={handleInputChange}>
+                                <option value="">Select City</option>
+                                {cities.map((city) => (
+                                    <option key={city.id} value={city.id}>{city.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -292,19 +302,10 @@ const MyProfile = () => {
 
                     <div className="row mb-3">
                         <div className="col-md-4">
-                            <label htmlFor="city" className="form-label">City*</label>
-                            <select className="form-select" id="city" name="city" value={profileFormData.city || 0} onChange={handleInputChange} required>
-                                <option value="">Select City</option>
-                                {cities.map((city) => (
-                                    <option key={city.id} value={city.id}>{city.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col-md-4">
                             <label htmlFor="zipCode" className="form-label">Zip Code*</label>
                             <input type="number" className="form-control" id="zipCode" name="zip_code" value={profileFormData.zip_code || 0} onChange={handleInputChange} required />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-8">
                             <label htmlFor="mapLocation" className="form-label">Map Location*</label>
                             <input type="text" className="form-control" id="mapLocation" name="map_location" value={profileFormData.map_location || ''} onChange={handleInputChange} required />
                         </div>
