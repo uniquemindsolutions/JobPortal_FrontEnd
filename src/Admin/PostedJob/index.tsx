@@ -191,7 +191,7 @@ const PostedJob = () => {
                     {/* Tags and Actions */}
 
 
-                    {/* Action Icons */}
+                   {/* Action Icons */}
                     <div className="d-flex align-items-center">
                         <div className="dropdown">
                             <button className="btn btn-link text-muted"
@@ -253,7 +253,7 @@ const PostedJob = () => {
                     {/* Tags and Actions */}
 
 
-                    {/* Action Icons */}
+                   {/* Action Icons */}
                     <div className="d-flex align-items-center">
                         <div className="dropdown">
                             <button className="btn btn-link text-muted"
@@ -351,4 +351,4 @@ const PostedJob = () => {
     )
 }
 
-export default PostedJob
+export default PostedJob;
