@@ -269,4 +269,4 @@ const Candidates = () => {
     )
 }
 
-export default Candidates
+export default Candidates;

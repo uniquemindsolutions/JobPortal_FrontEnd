@@ -351,4 +351,4 @@ const PostedJob = () => {
     )
 }
 
-export default PostedJob
+export default PostedJob;
