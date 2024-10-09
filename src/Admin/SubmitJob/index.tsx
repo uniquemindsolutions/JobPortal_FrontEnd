@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './submitJobs.scss';
-import { json } from 'stream/consumers';
 import axios from 'axios';
-import { error } from 'console';
 
 interface SubmitJob {
     job_title: string;
@@ -13,12 +11,8 @@ interface SubmitJob {
     country: number;
     english_fluency: string;
     experience: string;
-    industry: {
-        industry: string;
-    };
-    job_category: {
-        job_category: string;
-    };
+    industry: string;
+    job_category: string;
     job_type: string;
     map_location: string;
     max_salary: string;
@@ -29,6 +23,10 @@ interface SubmitJob {
     upload_file: File | null;
     about_company: string;
     work_mode: string;
+    ssc: string;
+    inter: string;
+    ug_name: string;
+    pg_name: string;
 }
 
 interface JobCategory {
@@ -50,10 +48,13 @@ interface Country {
 interface State {
     id: number;
     name: string;
+    country: string;
 }
+
 interface city {
     id: number;
     name: string;
+    state: string;
 }
 interface inter {
     id: number;
@@ -69,17 +70,16 @@ interface postGraduate {
 }
 
 
-
 const SubmitJob = () => {
     const [industriesorg, setIndustries] = useState<any[]>([]);
     const [jobcategoriesorg, setJobCategories] = useState<any[]>([]);
     const [countries, setCountries] = useState<Country[]>([]);
     const [states, setStates] = useState<State[]>([]);
     const [cities, setCities] = useState<city[]>([]);
-    const [inter, setInter] = useState<inter[]>([])
-    const [graduate, setGraduate] = useState<graduate[]>([])
-    const [postGraduate, setPostGraduate] = useState<postGraduate[]>([])
-    const [error, setError] = useState('')
+    const [inter, setInter] = useState<inter[]>([]);
+    const [graduate, setGraduate] = useState<graduate[]>([]);
+    const [postGraduate, setPostGraduate] = useState<postGraduate[]>([]);
+    const [error, setError] = useState('');
 
     const [formData, setFormData] = useState<SubmitJob>({
         job_title: '',
@@ -90,12 +90,8 @@ const SubmitJob = () => {
         country: 0,
         english_fluency: '',
         experience: '',
-        industry: {
-            industry: '',
-        },
-        job_category: {
-            job_category: '',
-        },
+        industry: '',
+        job_category: '',
         job_type: '',
         map_location: '',
         max_salary: '',
@@ -105,7 +101,11 @@ const SubmitJob = () => {
         state: 0,
         upload_file: null,
         about_company: '',
-        work_mode: ''
+        work_mode: '',
+        ssc: '',
+        inter: '',
+        ug_name: '',
+        pg_name: '',
     });
 
 
@@ -139,7 +139,13 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching countries:', error));
 
         // Fetch states
-
+        fetch("http://127.0.0.1:8000/states/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("States:", data); // Log to check the data
+                setStates(data);
+            })
+            .catch(error => console.error('Error fetching countries:', error));
 
         // Fetch cities
         fetch("http://127.0.0.1:8000/cities/")
@@ -159,31 +165,53 @@ const SubmitJob = () => {
         // })
         // .catch(error => console.error('Error fetching cities:', error));
 
-        axios.get('http://127.0.0.1:8000/education/intermediate/')
-            .then(res => {
-                setInter(res.data)
+        // axios.get('http://127.0.0.1:8000/education/intermediate/')
+        //     .then(res => {
+        //         setInter(res.data)
+        //     })
+        //     .catch(error => {
+        //         setError(error)
+        //     })
+        fetch("http://127.0.0.1:8000/education/intermediate/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("inter:", data); // Log to check the data
+                setInter(data);
             })
-            .catch(error => {
-                setError(error)
-            })
+            .catch(error => console.error('Error fetching inter:', error));
 
         // ug api
-        const ugapi = axios.get('http://127.0.0.1:8000/education/UG/')
-            .then(ugapi => {
-                setGraduate(ugapi.data)
+        // const ugapi = axios.get('http://127.0.0.1:8000/education/UG/')
+        //     .then(ugapi => {
+        //         setGraduate(ugapi.data)
+        //     })
+        //     .catch(error => {
+        //         setError(error)
+        //     })
+        fetch("http://127.0.0.1:8000/education/UG/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Education UG:", data); // Log to check the data
+                setGraduate(data);
             })
-            .catch(error => {
-                setError(error)
-            })
+            .catch(error => console.error('Error fetching Education UG:', error));
 
         // ug api
-        const pgapi = axios.get('http://127.0.0.1:8000/education/PG/')
-            .then(pgapi => {
-                setGraduate(pgapi.data)
+        // const pgapi = axios.get('http://127.0.0.1:8000/education/PG/')
+        //     .then(pgapi => {
+        //         setPostGraduate(pgapi.data)
+        //     })
+        //     .catch(error => {
+        //         setError(error)
+        //     })
+
+        fetch('http://127.0.0.1:8000/education/PG/')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Education PG:", data); // Log to check the data
+                setPostGraduate(data);
             })
-            .catch(error => {
-                setError(error)
-            })
+            .catch(error => console.error('Error fetching Education PG:', error));
 
     }, []);
 
@@ -229,39 +257,43 @@ const SubmitJob = () => {
         Object.keys(formData).forEach(key => {
             submissionData.append(key, (formData as any)[key]);
         });
-        // const payload = {
-        //     "job_title": "",
-        //     "number_of_positions": "",
-        //     "job_description": "",
-        //     "address": "",
-        //     "city": 0,
-        //     "country": 0,
-        //     "english_fluency": "",
-        //     "experience": "",
-        //     "industry": {
-        //         "industry": ""
-        //     },
-        //     "job_category": {
-        //         "job_category": ""
-        //     },
-        //     "job_type": "",
-        //     "map_location": "",
-        //     "max_salary": "",
-        //     "min_salary": "",
-        //     "salary": "",
-        //     "skills": "",
-        //     "state": 0,
-        //     "upload_file": null,
-        //     "about_company": "",
-        //     "work_mode": ""
-        // }
+        const payload = {
+            "job_title": formData.job_title,
+            "number_of_positions": formData.number_of_positions,
+            "job_description": formData.job_description,
+            "address": formData.address,
+            "city": formData.city,
+            "country": formData.country,
+            "english_fluency": formData.english_fluency,
+            "experience": formData.experience,
+            "industry": {
+                "industry": formData.industry
+            },
+            "job_category": {
+                "job_category": formData.job_category
+            },
+            "job_type": formData.job_type,
+            "map_location": formData.map_location,
+            "max_salary": formData.max_salary,
+            "min_salary": formData.min_salary,
+            "salary": formData.salary,
+            "skills": formData.skills,
+            "state": formData.state,
+            "upload_file": null,
+            "about_company": formData.about_company,
+            "work_mode": formData.work_mode,
+            "ssc": formData.ssc,
+            "inter": formData.inter,
+            "ug_name": formData.ug_name,
+            "pg_name": formData.pg_name
+        }
         // submissionData.append('upload_file', formData.upload_file )
 
         try {
             const response = await fetch("http://127.0.0.1:8000/submitnewjob/", {
                 method: "POST",
                 // body:payload
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payload),
                 headers: {
                     // 'Content-Type': 'multipart/form-data',
                     'Content-Type': 'application/json',
@@ -281,7 +313,7 @@ const SubmitJob = () => {
     console.log("datachecking", industriesorg);
 
 
-    const handleonchnagecountry = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleonchangecountry = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
 
         const { name, value } = e.target;
@@ -307,7 +339,7 @@ const SubmitJob = () => {
             .then(response => response.json())
             .then(data => {
                 console.log("cities:", data); // Log to check the data
-                setStates(data);
+                setCities(data);
             })
             .catch(error => console.error('Error fetching states:', error));
     };
@@ -407,8 +439,8 @@ const SubmitJob = () => {
                             <select className="form-select" name="job_type" id="JobType"
                                 onChange={handleInputChange}>
                                 <option value="">Select Job Type</option>
-                                <option value="Full-Time">Full Time</option>
-                                <option value="Part-Time">Part Time</option>
+                                <option value="Full Time">Full Time</option>
+                                <option value="Part Time">Part Time</option>
                                 <option value="Hourly-Contract">Hourly-Contract</option>
                                 <option value="Fixed-Price">Fixed-Price</option>
                             </select>
@@ -417,8 +449,8 @@ const SubmitJob = () => {
                             <label htmlFor="work_mode" className="form-label">Work Mode</label>
                             <select className="form-select" name="work_mode" id="work_mode" onChange={handleInputChange}>
                                 <option value="">Select work mode</option>
-                                <option value="Work-from-Office">Work from Office</option>
-                                <option value="Work-from-Home">Work from Home</option>
+                                <option value="Work from office">Work from Office</option>
+                                <option value="Work from Home">Work from Home</option>
                                 <option value="Remote">Remote</option>
                                 <option value="Hybrid">Hybrid</option>
                             </select>
@@ -525,28 +557,31 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="country" className="form-label">Country</label>
-                            <select className="form-select" id="country" name="country" onChange={handleonchnagecountry}>
+                            <select className="form-select" id="country" name="country" onChange={handleonchangecountry}>
                                 <option value="">Select Country</option>
                                 {countries.map((country) => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
+                                    // <option key={country.id} value={country.id}>{country.id}</option>
                                 ))}
                             </select>
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="state" className="form-label">State</label>
-                            <select className="form-select" id="state" name="state" onChange={handleInputChange}>
+                            <select className="form-select" id="state" name="state" onChange={handleonchangecountry}>
                                 <option value="">Select State</option>
                                 {states?.map((state) => (
-                                    <option key={state?.id} value={state?.id}>{state?.name}</option>
+                                    // <option key={state?.id} value={state?.id}>{state?.name}</option>
+                                    <option key={state.id} value={state.id}>{state.name}</option>
                                 ))}
                             </select>
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="city" className="form-label">City</label>
-                            <select className="form-select" id="city" name="city" onChange={handleInputChange}>
+                            <select className="form-select" id="city" name="city" onChange={handleonchangecountry}>
                                 <option value="">Select city</option>
                                 {cities?.map((city) => (
-                                    <option key={city?.id} value={city?.id}>{city?.name}</option>
+                                    // <option key={city?.id} value={city?.id}>{city?.name}</option>
+                                    <option key={city.id} value={city.id}>{city.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -563,8 +598,8 @@ const SubmitJob = () => {
                             <label htmlFor="inter" className="form-label">Intermediate</label>
                             <select className="form-select" id="inter" name="inter" onChange={handleInputChange}>
                                 <option value="">Select intermediate</option>
-                                {inter.map((item, index) => (
-                                    <option key={index} value={item.id}>{item.inter}</option>
+                                {inter.map((intermediate) => (
+                                    <option key={intermediate.id} value={intermediate.id}>{intermediate.inter}</option>
                                 ))}
                             </select>
 
@@ -573,8 +608,8 @@ const SubmitJob = () => {
                             <label htmlFor="ug_name" className="form-label">UG</label>
                             <select className="form-select" id="ug_name" name="ug_name" onChange={handleInputChange}>
                                 <option value="">Select UG</option>
-                                {graduate.map((item, index) => {
-                                    return <option key={index} value={item.id}>{item.ug_name}</option>
+                                {graduate.map((graduate) => {
+                                    return <option key={graduate.id} value={graduate.id}>{graduate.ug_name}</option>
                                 })}
                             </select>
                         </div>
@@ -582,8 +617,8 @@ const SubmitJob = () => {
                             <label htmlFor="pg_name" className="form-label">PG</label>
                             <select className="form-select" id="pg_name" name="pg_name" onChange={handleInputChange}>
                                 <option value="">Select PG</option>
-                                {postGraduate.map((item, index) => {
-                                    return <option key={index} value={item.id}>{item.pg_name}</option>
+                                {postGraduate.map((postGraduate) => {
+                                    return <option key={postGraduate.id} value={postGraduate.id}>{postGraduate.pg_name}</option>
                                 })}
 
                             </select>

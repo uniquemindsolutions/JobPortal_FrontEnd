@@ -1,134 +1,212 @@
 import axios from 'axios';
-import React, { useState } from 'react'
-
+import React, { useState } from 'react';
 
 interface accountSettingModel {
-    firstname: string,
-    lastname: string,
-    email: any,
-    phone_number: number,
-    old_password: any,
-    new_password: any,
-    confirm_password: any,
+    firstname: string;
+    lastname: string;
+    email: string;
+    phone_number: string;
+}
+interface changepasswordModel {
+    old_password: string;
+    new_password: string;
+    confirm_password: string;
 }
 
 const AccountSetting = () => {
+    const [acountData, setAcountData] = useState<accountSettingModel>({
+        firstname: '',
+        lastname: '',
+        email: '',
+        phone_number: ''
+    });
 
-    const [acountData, setAcountData] = useState<accountSettingModel>(
-        {
-            firstname: '',
-            lastname: '',
-            email: '',
-            phone_number: 0,
-            old_password: '',
-            new_password: '',
-            confirm_password: '',
-        }
-    );
-    const [successMsg, setSuccessMsg] = useState('')
+    const [changepasswordData, setChangepasswordData] = useState<changepasswordModel>({
+        old_password: '',
+        new_password: '',
+        confirm_password: ''
+    });
 
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+
+    // Handle input changes for both account data and password change data
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
         const { name, value } = e.target;
-        setAcountData({ ...acountData, [name]: value })
-    }
+        if (['firstname', 'lastname', 'email', 'phone_number'].includes(name)) {
+            setAcountData({ ...acountData, [name]: value });
+        } else {
+            setChangepasswordData({ ...changepasswordData, [name]: value });
+        }
+    };
 
+    // Form validation
+    const validateForm = () => {
+        if (!acountData.firstname || !acountData.lastname) {
+            setErrorMsg("First name and last name are required.");
+            return false;
+        }
+
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(acountData.email)) {
+            setErrorMsg("Please enter a valid email address.");
+            return false;
+        }
+
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(acountData.phone_number)) {
+            setErrorMsg("Please enter a valid 10-digit phone number.");
+            return false;
+        }
+
+        if (!changepasswordData.old_password || !changepasswordData.new_password || !changepasswordData.confirm_password) {
+            setErrorMsg("All password fields are required.");
+            return false;
+        }
+
+        if (changepasswordData.new_password.length < 6) {
+            setErrorMsg("New password must be at least 6 characters long.");
+            return false;
+        }
+
+        if (changepasswordData.new_password !== changepasswordData.confirm_password) {
+            setErrorMsg("New password and confirm password do not match.");
+            return false;
+        }
+
+        setErrorMsg('');
+        return true;
+    };
+
+    // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
 
         try {
             // accountsettings API call
             const proData = await axios.post('http://127.0.0.1:8000/accountsettings/', acountData);
-            console.log('account api ====:', proData.data);
+            console.log('Account API response:', proData.data);
 
             // change-password API call
-            const proPass = await axios.put('http://127.0.0.1:8000/change-password/', acountData);
-            console.log('password api ====:', proPass.data);
+            const proPass = await axios.put('http://127.0.0.1:8000/change-password/', changepasswordData);
+            console.log('Password API response:', proPass.data);
 
-            
-            setSuccessMsg('Account setting successfully changed')
-            setTimeout(()=>(
-                setSuccessMsg('')
-            ),4000)
-            
+            setSuccessMsg('Account setting successfully changed');
+            setTimeout(() => setSuccessMsg(''), 4000);
         } catch (error) {
             console.error('Error submitting form:', error);
-            // alert('Error submitting form to one or more APIs');
+            setErrorMsg('Error submitting form. Please try again.');
         }
     };
 
-
-
     return (
         <main>
-            <h4 className='mt-4'>Account Settings </h4>
+            <h4 className="mt-4">Account Settings</h4>
 
-            <form action="" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <div className="custom-card">
-                    <h3 className='text-primary'>Edit & Update</h3>
+                    <h3 className="text-primary">Edit & Update</h3>
                     <div className="row mb-3">
                         <div className="col-md-6 col-lg-6 mb-3">
                             <label htmlFor="firstname" className="form-label">First Name</label>
-                            <input type='text' className="form-control" name="firstname" id="firstname" autoComplete='off'
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="firstname"
+                                id="firstname"
                                 value={acountData.firstname}
-                                onChange={handleInputChange} />
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="col-md-6 col-lg-6 mb-3">
                             <label htmlFor="lastname" className="form-label">Last Name</label>
-                            <input type='text' className="form-control" name="lastname" id="lastname" autoComplete='off'
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="lastname"
+                                id="lastname"
                                 value={acountData.lastname}
-                                onChange={handleInputChange} />
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="col-md-6 col-lg-6 mb-3">
                             <label htmlFor="email" className="form-label">Email</label>
-                            <input type='email' className="form-control" name="email" id="email" autoComplete='off'
+                            <input
+                                type="email"
+                                className="form-control"
+                                name="email"
+                                id="email"
                                 value={acountData.email}
-                                onChange={handleInputChange} />
-
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="col-md-6 col-lg-6 mb-3">
-                            <label htmlFor="phone_number" className="form-label">Phone </label>
-                            <input type='number' className="form-control" name="phone_number" id="phone_number"
-                                autoComplete='off'
+                            <label htmlFor="phone_number" className="form-label">Phone</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="phone_number"
+                                id="phone_number"
                                 value={acountData.phone_number}
-                                onChange={handleInputChange} />
+                                onChange={handleInputChange}
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="custom-card my-4">
-                    <h3 className='text-primary'>Change Password</h3>
+                    <h3 className="text-primary">Change Password</h3>
                     <div className="row mb-3">
                         <div className="col-md-6 col-lg-4 mb-3">
                             <label htmlFor="old_password" className="form-label">Old Password</label>
-                            <input type='password' className="form-control" name="old_password" id="old_password" autoComplete='off'
-                                value={acountData.old_password}
-                                onChange={handleInputChange} />
+                            <input
+                                type="password"
+                                className="form-control"
+                                name="old_password"
+                                id="old_password"
+                                value={changepasswordData.old_password}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="col-md-6 col-lg-4 mb-3">
                             <label htmlFor="new_password" className="form-label">New Password</label>
-                            <input type='password' className="form-control" name="new_password" id="new_password"
-                                value={acountData.new_password}
-                                onChange={handleInputChange} />
+                            <input
+                                type="password"
+                                className="form-control"
+                                name="new_password"
+                                id="new_password"
+                                value={changepasswordData.new_password}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="col-md-6 col-lg-4 mb-3">
                             <label htmlFor="confirm_password" className="form-label">Confirm Password</label>
-                            <input type='password' className="form-control" name="confirm_password" id="confirm_password"
-                                value={acountData.confirm_password}
-                                onChange={handleInputChange} />
+                            <input
+                                type="password"
+                                className="form-control"
+                                name="confirm_password"
+                                id="confirm_password"
+                                value={changepasswordData.confirm_password}
+                                onChange={handleInputChange}
+                            />
                         </div>
-
                     </div>
-
                 </div>
+
                 <div className="mt-4 mb-5 text-center">
-                    <div className='text-success mb-3'>{successMsg}</div>
+                    {errorMsg && <div className="text-danger mb-3">{errorMsg}</div>}
+                    {successMsg && <div className="text-success mb-3">{successMsg}</div>}
                     <button type="submit" className="btn btn-success btn-lg px-5">Save & Update</button>
                     <button type="button" className="btn btn-lg ms-4">Cancel</button>
                 </div>
             </form>
         </main>
-    )
-}
+    );
+};
 
-export default AccountSetting
+export default AccountSetting;
