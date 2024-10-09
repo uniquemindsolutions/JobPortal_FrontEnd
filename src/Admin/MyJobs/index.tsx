@@ -1,6 +1,24 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+export interface myJobs {
+    job_title: string;
+    job_type: string;
+    job_category: string;
+    location: string;
+    Applicants: number;
+    Status: string;
+}
 
 const MyJobs = () => {
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/submitnewjob/')
+            .then()
+            .catch()
+    })
+
     return (
         <main className='mt-4'>
 
@@ -12,7 +30,7 @@ const MyJobs = () => {
                         <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill px-3 ms-3">New </button>
                         <div className="dropdown ms-3">
                             <button type="button" className="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-toggle="dropdown">
-                            Short by
+                                Short by
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
                                 <li>
@@ -57,8 +75,12 @@ const MyJobs = () => {
                                             <i className="bi bi-three-dots-vertical"></i>
                                         </button>
                                         <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
+                                            <li>
+                                                <Link to="/my-jobs/view-jobs" className="dropdown-item">
+                                                <i className="bi bi-eye"></i> View Job</Link>
+                                            </li>
                                             <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-eye"></i> View</a>
+                                                <i className="bi bi-share"></i> Schedule the Interview</a>
                                             </li>
                                             <li><a className="dropdown-item" href="#">
                                                 <i className="bi bi-share"></i> Share</a>
@@ -136,16 +158,16 @@ const MyJobs = () => {
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-                <div className="pagination justify-content-center">
-                    <ul className="pagination">
-                        <li className="page-item disabled"><a className="page-link" href="#"><i className="bi bi-caret-left"></i></a></li>
-                        <li className="page-item"><a className="page-link" href="#">1</a></li>
-                        <li className="page-item"><a className="page-link" href="#">2</a></li>
-                        <li className="page-item"><a className="page-link" href="#">3</a></li>
-                        <li className="page-item"><a className="page-link" href="#"><i className="bi bi-caret-right"></i></a></li>
-                    </ul>
-                </div>
+            <div className="pagination justify-content-center mt-4 mb-5">
+                <ul className="pagination">
+                    <li className="page-item disabled"><a className="page-link" href="#"><i className="bi bi-caret-left"></i></a></li>
+                    <li className="page-item"><a className="page-link" href="#">1</a></li>
+                    <li className="page-item"><a className="page-link" href="#">2</a></li>
+                    <li className="page-item"><a className="page-link" href="#">3</a></li>
+                    <li className="page-item"><a className="page-link" href="#"><i className="bi bi-caret-right"></i></a></li>
+                </ul>
             </div>
         </main>
     )

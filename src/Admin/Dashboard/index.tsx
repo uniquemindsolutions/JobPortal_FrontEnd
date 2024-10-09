@@ -10,7 +10,8 @@ export interface PostedJob {
     job_title: string;
     job_type: string;
     location: string;
-  }
+    map_location: string;
+}
 const Dashboard = () => {
     // const [isMenuOpen, setIsMenuOpen] = useState(true);
 
@@ -28,7 +29,7 @@ const Dashboard = () => {
         shortlisted: '0' // Adding shortlist count
     });
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError]=useState('')
+    const [error, setError] = useState('')
     const [postedJobData, setPostedJobData] = useState<PostedJob[]>([])
 
     useEffect(() => {
@@ -68,20 +69,17 @@ const Dashboard = () => {
                 setLoading(false);
             }
         };
-
-
         fetchData();
-        // alert('Hi');
-
+        
 
         // posted get api
         axios.get<PostedJob[]>('http://127.0.0.1:8000/submitnewjob/')
-        .then(response =>{
-            setPostedJobData(response.data)
-        })
-        .catch(error =>(
-            setError(error = 'data fetching fail')
-        ))
+            .then(response => {
+                setPostedJobData(response.data)
+            })
+            .catch(error => (
+                setError(error = 'data fetching fail')
+            ))
     }, []);
 
 
@@ -141,60 +139,18 @@ const Dashboard = () => {
                     <div className="card shadow-sm p-4">
                         <h5 className="mb-3">Posted Job</h5>
                         <ul className="list-unstyled border-top">
-                            {postedJobData.map((item, index)=>(
+                            {postedJobData.map((item, index) => (
                                 <li key={index} className="d-flex justify-content-between align-items-center my-3">
-                                <div>
-                                    <h6 className="mb-0 text-primary">{item.job_title}</h6>
-                                    <small className="text-muted"><span>{item.job_type}</span>, <span>{item.location}</span></small>
-                                </div>
-                                <div className="dropdown">
-                                    <button className="btn btn-link text-muted"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i className="bi bi-three-dots-vertical"></i>
-                                     </button>
-                                    <ul className="dropdown-menu">
-                                        <li>
-                                            <a className="dropdown-item" href="#">View Job</a>
-                                        </li>
-                                        <li>
-                                            <a className="dropdown-item" href="#">Archive</a>
-                                        </li>
-                                        <li>
-                                            <a className="dropdown-item text-danger" href="#">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            ))
-                            
-                            }
-
-
-
-                            {['Fixed-Price', 'Fulltime', 'Part time', 'Freelance', 'Part time', 'Fulltime'].map((job, index) => (
-                                <li key={index} className="d-flex justify-content-between align-items-center mb-3">
-                                    <div className="d-flex align-items-center">
-                                        <img
-                                            src={`https://via.placeholder.com/40`} // Placeholder image
-                                            alt="job-icon"
-                                            className="rounded-circle me-3"
-                                        />
-                                        <div>
-                                            <h6 className="mb-0">{job}111</h6>
-                                            <small className="text-muted">Fulltime · USA, City Name</small>
-                                        </div>
+                                    <div>
+                                        <h6 className="mb-0 text-primary">{item.job_title}</h6>
+                                        <small className="text-muted"><span>{item.job_type}</span>, <span>{item.map_location}</span></small>
                                     </div>
                                     <div className="dropdown">
-                                        <button
-                                            className="btn btn-link text-muted"
-                                            type="button"
-                                            id={`dropdownMenuButton${index}`}
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            &#8942;
+                                        <button className="btn btn-link text-muted"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i className="bi bi-three-dots-vertical"></i>
                                         </button>
-                                        <ul className="dropdown-menu" aria-labelledby={`dropdownMenuButton${index}`}>
+                                        <ul className="dropdown-menu">
                                             <li>
                                                 <a className="dropdown-item" href="#">View Job</a>
                                             </li>
@@ -207,7 +163,9 @@ const Dashboard = () => {
                                         </ul>
                                     </div>
                                 </li>
-                            ))}
+                            ))
+
+                            }
                         </ul>
                     </div>
                 </div>
