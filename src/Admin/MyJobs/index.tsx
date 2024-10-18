@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export interface myJobs {
@@ -12,12 +12,33 @@ export interface myJobs {
 }
 
 const MyJobs = () => {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [myJobs, setMyJobs] = useState({
+
+    })
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/submitnewjob/')
-            .then()
-            .catch()
-    })
+        myJobsDetails();
+    }, [])
+
+    const myJobsDetails = async () => {
+        try {
+            const res = await axios.get<myJobs>('http://127.0.0.1:8000/submitnewjob/')
+            setMyJobs(res.data)
+            console.log('api testiing ====', res);
+        }
+        catch (error) {
+            setError("Error fetching data")
+        }
+        finally {
+            setLoading(false)
+        }
+    };
+
+
+
+
 
     return (
         <main className='mt-4'>
@@ -61,100 +82,43 @@ const MyJobs = () => {
                             </tr>
                         </thead>
                         <tbody className="border-0">
-                            <tr>
-                                <td>
-                                    <div className="fw-bold">Brand &amp; Producr Designer</div>
-                                    <div className="info1">Fulltime . Spain</div>
-                                </td>
-                                <td>05 Jun, 2023</td>
-                                <td>130 Applications</td>
-                                <td><span className='status-active'></span> active</td>
-                                <td className='text-end'>
-                                    <div className="dropdown">
-                                        <button type="button" className="btn border-0" data-bs-toggle="dropdown">
-                                            <i className="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
-                                            <li>
-                                                <Link to="/my-jobs/view-jobs" className="dropdown-item">
-                                                <i className="bi bi-eye"></i> View Job</Link>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-share"></i> Schedule the Interview</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-share"></i> Share</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-pencil-square"></i> Edit</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-trash"></i> Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div className="fw-bold">Brand &amp; Producr Designer</div>
-                                    <div className="info1">Fulltime . Spain</div>
-                                </td>
-                                <td>05 Jun, 2023</td>
-                                <td>130 Applications</td>
-                                <td><span className='status-pedding'></span> Pendding</td>
-                                <td className='text-end'>
-                                    <div className="dropdown">
-                                        <button type="button" className="btn border-0" data-bs-toggle="dropdown">
-                                            <i className="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-eye"></i> View</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-share"></i> Share</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-pencil-square"></i> Edit</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-trash"></i> Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div className="fw-bold">Brand &amp; Producr Designer</div>
-                                    <div className="info1">Fulltime . Spain</div>
-                                </td>
-                                <td>05 Jun, 2023</td>
-                                <td>130 Applications</td>
-                                <td><span className='status-expired'></span> Expired</td>
-                                <td className='text-end'>
-                                    <div className="dropdown">
-                                        <button type="button" className="btn border-0" data-bs-toggle="dropdown">
-                                            <i className="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-eye"></i> View</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-share"></i> Share</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-pencil-square"></i> Edit</a>
-                                            </li>
-                                            <li><a className="dropdown-item" href="#">
-                                                <i className="bi bi-trash"></i> Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
+                            {Array.isArray(myJobs) && myJobs.length > 0 ? (
+                                myJobs.map((items, index) =>
+                                    <tr key={index}>
+                                        <td>
+                                            <div className="fw-bold">{items.job_title}</div>
+                                            <div className="info1">{items.job_type} . {items.location}</div>
+                                        </td>
+                                        <td>05 Jun, 2023</td>
+                                        <td>130 Applications</td>
+                                        <td><span className='status-active'></span> active</td>
+                                        <td className='text-end'>
+                                            <div className="dropdown">
+                                                <button type="button" className="btn border-0" data-bs-toggle="dropdown">
+                                                    <i className="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
+                                                    <li>
+                                                        <Link to="/my-jobs/view-jobs" className="dropdown-item">
+                                                            <i className="bi bi-eye"></i> View Job</Link>
+                                                    </li>
+                                                    <li><a className="dropdown-item" href="#">
+                                                        <i className="bi bi-share"></i> Share</a>
+                                                    </li>
+                                                    <li><a className="dropdown-item" href="#">
+                                                        <i className="bi bi-pencil-square"></i> Edit</a>
+                                                    </li>
+                                                    <li><a className="dropdown-item" href="#">
+                                                        <i className="bi bi-trash"></i> Delete</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            ) : (
+                                <p>No Data Available</p>
+                            )}
                         </tbody>
                     </table>
                 </div>
