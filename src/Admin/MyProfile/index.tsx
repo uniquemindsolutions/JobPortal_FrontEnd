@@ -8,6 +8,7 @@ interface MyProfile {
     email: string | null;
     company_size: number;
     founded_date: string;
+    industry: string,
     category: string | null;
     phone_number: string; // Changed to string to accommodate phone formats
     about_company: string | null;
@@ -33,6 +34,7 @@ const MyProfile = () => {
         email: '',
         company_size: 0,
         founded_date: '',
+        industry: '',
         category: '',
         phone_number: '',
         about_company: '',
@@ -50,6 +52,7 @@ const MyProfile = () => {
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [industriesorg, setIndustries] = useState<any[]>([]);
 
     // Fetch countries, states, cities and profile data on component mount
     useEffect(() => {
@@ -68,6 +71,14 @@ const MyProfile = () => {
                 fetchCities(data.state);
             })
             .catch((error) => console.error("Error fetching profile data:", error));
+
+        fetch("http://127.0.0.1:8000/industry/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Industries:", data); // Log to check the data
+                setIndustries(data);
+            })
+            .catch(error => console.error('Error fetching industries:', error));
     }, []);
 
     const fetchStates = (countryId: number) => {
@@ -170,6 +181,7 @@ const MyProfile = () => {
                     email: '',
                     company_size: 0,
                     founded_date: '',
+                    industry:'',
                     category: '',
                     phone_number: '',
                     about_company: '',
@@ -227,8 +239,8 @@ const MyProfile = () => {
                             <input type="text" className="form-control" id="employee_Name" name="employee_Name" value={profileFormData.employee_Name || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="website" className="form-label">Website*</label>
-                            <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange} required />
+                            <label htmlFor="website" className="form-label">Website</label>
+                            <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange} />
                         </div>
                     </div>
 
@@ -242,34 +254,46 @@ const MyProfile = () => {
                             <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange} required />
                         </div>
                         <div className="col-md-3">
-                            <label htmlFor="companySize" className="form-label">Company Size*</label>
-                            <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} required />
+                            <label htmlFor="companySize" className="form-label">Company Size</label>
+                            <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-6">
-                            <label htmlFor="foundedDate" className="form-label">Founded Date*</label>
-                            <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} required />
+                            <label htmlFor="foundedDate" className="form-label">Founded Date</label>
+                            <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="category" className="form-label">Comany Category*</label>
-                            <input type="text" className="form-control" id="category" name="category" value={profileFormData.category || ''} onChange={handleInputChange} required />
+                            <label htmlFor="category" className="form-label">Industry</label>
+                            {/* <input type="text" className="form-control" id="category" name="category" value={profileFormData.category || ''} onChange={handleInputChange} /> */}
+                            <select className='form-select' name="industry" id="">
+                                <option value="">Select Industry</option>
+                                {industriesorg && industriesorg.length > 0 ? (
+                                    industriesorg.map((industry) => (
+                                        <option key={industry.id} value={industry.id}>
+                                            {industry.industry}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option value="">No industries available</option>
+                                )}
+                            </select>
                         </div>
                     </div>
 
                     <div className="row mb-3">
 
                         <div className="col-md-12">
-                            <label htmlFor="aboutCompany" className="form-label">About Company*</label>
-                            <textarea className="form-control" id="aboutCompany" name="about_company" value={profileFormData.about_company || ''} onChange={handleInputChange} required />
+                            <label htmlFor="aboutCompany" className="form-label">About Company</label>
+                            <textarea className="form-control" id="aboutCompany" name="about_company" value={profileFormData.about_company || ''} onChange={handleInputChange} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-12 mb-3">
-                            <label htmlFor="address" className="form-label">Address*</label>
-                            <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange} required />
+                            <label htmlFor="address" className="form-label">Address</label>
+                            <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="country" className="form-label">Country</label>
@@ -302,16 +326,19 @@ const MyProfile = () => {
 
                     <div className="row mb-3">
                         <div className="col-md-4">
-                            <label htmlFor="zipCode" className="form-label">Zip Code*</label>
-                            <input type="number" className="form-control" id="zipCode" name="zip_code" value={profileFormData.zip_code || 0} onChange={handleInputChange} required />
+                            <label htmlFor="zipCode" className="form-label">Zip Code</label>
+                            <input type="number" className="form-control" id="zipCode" name="zip_code" value={profileFormData.zip_code || 0} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-8">
-                            <label htmlFor="mapLocation" className="form-label">Map Location*</label>
-                            <input type="text" className="form-control" id="mapLocation" name="map_location" value={profileFormData.map_location || ''} onChange={handleInputChange} required />
+                            <label htmlFor="mapLocation" className="form-label">Map Location</label>
+                            <input type="text" className="form-control" id="mapLocation" name="map_location" value={profileFormData.map_location || ''} onChange={handleInputChange} />
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary">Save Profile</button>
+                </div>
+                <div className="text-center my-4">
+                    <button type="submit" className="btn btn-success px-5 btn-lg">Save Profile</button>
+                    <button type="submit" className="btn ms-4">Cancel</button>
                 </div>
             </form>
 

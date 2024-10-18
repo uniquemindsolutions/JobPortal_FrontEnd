@@ -95,3 +95,16 @@
   margin-right: 10px;
   font-size: 14px;
 }
+
+.ql-toolbar.ql-snow {
+  border: 1px solid #e5e5e5!important;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  padding: 8px;
+  border-radius: 7px 7px 0 0;
+}
+.ql-container.ql-snow {
+  border: 1px solid #e5e5e5!important;
+  min-height: 150px;
+  border-radius: 0 0 7px 7px;
+}

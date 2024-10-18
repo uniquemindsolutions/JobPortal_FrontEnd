@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './submitJobs.scss';
 import axios from 'axios';
 
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
+
 interface SubmitJob {
     job_title: string;
     number_of_positions: number;
+    created_date: string;
     job_description: string;
     address: string;
     city: number;
@@ -69,7 +74,22 @@ interface postGraduate {
     pg_name: string;
 }
 
-
+const modules = {
+    toolbar: [
+      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+      [{ 'size': [] }],
+      [{ 'color': [] }, { 'background': [] }],    // Text color and background color
+      [{ 'align': [] }],
+      ['bold', 'italic', 'underline', 'strike'],  // Text formatting
+      [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript / superscript
+      ['blockquote', 'code-block'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],                   // Text direction
+      ['link', 'image', 'video'],                 // Links, images, and videos
+      ['clean']                                   // Remove formatting
+    ]
+  };
 const SubmitJob = () => {
     const [industriesorg, setIndustries] = useState<any[]>([]);
     const [jobcategoriesorg, setJobCategories] = useState<any[]>([]);
@@ -84,6 +104,7 @@ const SubmitJob = () => {
     const [formData, setFormData] = useState<SubmitJob>({
         job_title: '',
         number_of_positions: 1,
+        created_date: '',
         job_description: '',
         address: '',
         city: 0,
@@ -107,7 +128,6 @@ const SubmitJob = () => {
         ug_name: '',
         pg_name: '',
     });
-
 
     // Fetch industries, job categories, countries, states, and cities
     useEffect(() => {
@@ -180,14 +200,7 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching inter:', error));
 
-        // ug api
-        // const ugapi = axios.get('http://127.0.0.1:8000/education/UG/')
-        //     .then(ugapi => {
-        //         setGraduate(ugapi.data)
-        //     })
-        //     .catch(error => {
-        //         setError(error)
-        //     })
+            
         fetch("http://127.0.0.1:8000/education/UG/")
             .then(response => response.json())
             .then(data => {
@@ -195,15 +208,6 @@ const SubmitJob = () => {
                 setGraduate(data);
             })
             .catch(error => console.error('Error fetching Education UG:', error));
-
-        // ug api
-        // const pgapi = axios.get('http://127.0.0.1:8000/education/PG/')
-        //     .then(pgapi => {
-        //         setPostGraduate(pgapi.data)
-        //     })
-        //     .catch(error => {
-        //         setError(error)
-        //     })
 
         fetch('http://127.0.0.1:8000/education/PG/')
             .then(response => response.json())
@@ -225,6 +229,19 @@ const SubmitJob = () => {
         });
         console.log(e.target, "evet test ======", formData)
     };
+
+    // const handleEditorChange = (value:any)=>{
+    //     setFormData({...formData, job_description:value})
+    // }
+    const handleEditorChange = (value: any) => {
+        setFormData({
+            ...formData,
+            job_description: value,
+        });
+    };
+    const aboutCompanyHandleEditorChange = (value:any)=>{
+        setFormData({...formData, about_company: value})
+    }
 
     // Handle file input change
     // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -352,7 +369,7 @@ const SubmitJob = () => {
                     <h4 className='text-primary'>Job Details</h4>
                     <div className="row">
                         {/* Job Title */}
-                        <div className="col-md-8 mb-3">
+                        <div className="col-md-6 mb-3">
                             <label htmlFor="job_title" className="form-label">Job Title*</label>
                             <input
                                 type="text"
@@ -365,27 +382,40 @@ const SubmitJob = () => {
                             />
                         </div>
                         {/* Number of Positions */}
-                        <div className="col-md-4 mb-3">
+                        <div className="col-md-3 mb-3">
                             <label htmlFor="number_of_positions" className="form-label">Number of Positions*</label>
                             <input
                                 type="number"
                                 className="form-control"
                                 name="number_of_positions"
                                 onChange={handleInputChange}
-                                placeholder="10"
+                                required
+                            />
+                        </div>
+                        <div className="col-md-3 mb-3">
+                            <label htmlFor="created_date" className="form-label">Date</label>
+                            <input
+                                type="date"
+                                id='created_date'
+                                className="form-control"
+                                name="created_date"
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
                         {/* Job Description */}
                         <div className="col-md-12 mb-3">
                             <label htmlFor="job_description" className="form-label">Job Description</label>
-                            <textarea
-                                className="form-control"
-                                name="job_description"
-                                onChange={handleInputChange}
-                                rows={5}
-                            />
+                            <ReactQuill 
+                                theme="snow" 
+                                value={formData.job_description} 
+                                // name="job_description"
+                                onChange={handleEditorChange} 
+                                modules={modules} 
+                                placeholder="Enter Job description"
+                                />
                         </div>
+
                         {/* Industry */}
                         <div className="col-md-5 mb-3">
                             <label htmlFor="industry" className="form-label">Industry*</label>
@@ -542,7 +572,16 @@ const SubmitJob = () => {
                         <h4 className='text-primary mt-4'>Company Info</h4>
                         <div className="col-md-12 mb-3">
                             <label htmlFor="address" className="form-label">About Company</label>
-                            <textarea className='form-control' name="about_company" id="about_company" onChange={handleInputChange}></textarea>
+                            {/* <textarea className='form-control' name="about_company" id="about_company" onChange={handleInputChange}></textarea> */}
+
+                            <ReactQuill 
+                                theme="snow" 
+                                value={formData.about_company} 
+                                // name="job_description"
+                                onChange={aboutCompanyHandleEditorChange} 
+                                modules={modules} 
+                                placeholder="Enter about company"
+                                />
                         </div>
                         {/* Address */}
                         <div className="col-md-12 mb-3">
