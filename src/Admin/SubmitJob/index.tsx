@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './submitJobs.scss';
 import axios from 'axios';
-
+import { useParams, useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 
 interface SubmitJob {
     job_title: string;
-    number_of_positions: number;
+    number_of_positions: string;
     created_date: string;
     job_description: string;
     address: string;
@@ -19,10 +19,10 @@ interface SubmitJob {
     industry: string;
     job_category: string;
     job_type: string;
-    map_location: string;
+    // map_location: string;
     max_salary: string;
     min_salary: string;
-    salary: string;
+    salary_type: string;
     skills: string;
     state: number;
     upload_file: File | null;
@@ -76,21 +76,25 @@ interface postGraduate {
 
 const modules = {
     toolbar: [
-      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-      [{ 'size': [] }],
-      [{ 'color': [] }, { 'background': [] }],    // Text color and background color
-      [{ 'align': [] }],
-      ['bold', 'italic', 'underline', 'strike'],  // Text formatting
-      [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript / superscript
-      ['blockquote', 'code-block'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      [{ 'direction': 'rtl' }],                   // Text direction
-      ['link', 'image', 'video'],                 // Links, images, and videos
-      ['clean']                                   // Remove formatting
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ 'size': [] }],
+        [{ 'color': [] }, { 'background': [] }],    // Text color and background color
+        [{ 'align': [] }],
+        ['bold', 'italic', 'underline', 'strike'],  // Text formatting
+        [{ 'script': 'sub' }, { 'script': 'super' }], // Subscript / superscript
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],                   // Text direction
+        ['link', 'image', 'video'],                 // Links, images, and videos
+        ['clean']                                   // Remove formatting
     ]
-  };
+};
+
 const SubmitJob = () => {
+    const { id } = useParams<{ id: string }>();
+    const [getsubmitjob, setGetSubmit] = useState<any[]>([]);
+    const [isEditing, setIsEditing] = useState(false);
     const [industriesorg, setIndustries] = useState<any[]>([]);
     const [jobcategoriesorg, setJobCategories] = useState<any[]>([]);
     const [countries, setCountries] = useState<Country[]>([]);
@@ -99,11 +103,17 @@ const SubmitJob = () => {
     const [inter, setInter] = useState<inter[]>([]);
     const [graduate, setGraduate] = useState<graduate[]>([]);
     const [postGraduate, setPostGraduate] = useState<postGraduate[]>([]);
-    const [error, setError] = useState('');
+    // const [error, setError] = useState('');
+
+    const [errors, setErrors] = useState({
+        job_title: '',
+        number_of_positions: '',
+        industry: ''
+    });
 
     const [formData, setFormData] = useState<SubmitJob>({
         job_title: '',
-        number_of_positions: 1,
+        number_of_positions: '',
         created_date: '',
         job_description: '',
         address: '',
@@ -114,10 +124,10 @@ const SubmitJob = () => {
         industry: '',
         job_category: '',
         job_type: '',
-        map_location: '',
+        // map_location: '',
         max_salary: '',
         min_salary: '',
-        salary: '',
+        salary_type: '',
         skills: '',
         state: 0,
         upload_file: null,
@@ -128,9 +138,102 @@ const SubmitJob = () => {
         ug_name: '',
         pg_name: '',
     });
+    const validateForm = () => {
+        const newErrors: any = {};
+        if (!formData.job_title) newErrors.job_title = "Job Title is required";
+        if (!formData.number_of_positions) newErrors.job_title = "No of postions is required";
+        // if (!formData.job_description) newErrors.job_description = "Job Description is required";
+        if (!formData.industry) newErrors.industry = "Industry is required";
+        // if (!formData.job_category) newErrors.job_category = "Job Category is required";
+        // if (!formData.address) newErrors.address = "Address is required";
+        // if (!formData.country) newErrors.country = "Country is required";
+        // if (!formData.state) newErrors.state = "State is required";
+        // if (!formData.city) newErrors.city = "City is required";
 
+        setErrors(newErrors);
+
+        // If no errors, return true
+        return Object.keys(newErrors).length === 0;
+    };
     // Fetch industries, job categories, countries, states, and cities
     useEffect(() => {
+        if (id) {
+            fetch(`http://127.0.0.1:8000/submitnewjob/${id}/`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Submit job details:", data);
+                    setGetSubmit(data);
+                    if (Object.keys(data).length > 0) {
+                        alert("Hi");
+                        const copyobject = {
+                            job_title: data.job_title,
+                            number_of_positions: data.number_of_positions,
+                            created_date: data.created_date,
+                            job_description: data.job_description,
+                            address: data.address,                            
+                            city: data.city,
+                            // country: 0,
+                            // english_fluency: '',
+                            // experience: '',
+                            industry: data.industry.industry,
+                            // job_category: '',
+                            // job_type: '',
+                            // // map_location: '',
+                            max_salary: data.max_salary,
+                            min_salary: data.min_salary,
+                            // salary_type: '',
+                            skills:data.skills,
+                            // state: 0,
+                            // upload_file: null,
+                            // about_company: data.about_company,
+                            // work_mode: '',
+                            // ssc: '',
+                            // inter: '',
+                            // ug_name: '',
+                            // pg_name: '',
+                            
+                        }
+                        Object.entries(copyobject).forEach(([key, value]) => {
+                            console.log("Key and Value:",key,value);
+                            setFormData((formData) => ({
+                                ...formData,
+                                [key]: value, // Dynamically update the key based on input name
+                              }));
+                        });
+                        console.log("Latest form data =", formData);
+
+
+                    }
+                })
+                .catch(error => console.error("Error fetching job details:", error));
+        }
+        const handleEditClick = () => {
+            setIsEditing(true);
+        };
+        const handleSaveClick = () => {
+            // Implement save functionality here
+            // Example: POST request to update job details
+            fetch(`http://127.0.0.1:8000/submitnewjob/${id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(getsubmitjob), // Assuming jobDetails is in the correct format
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Updated job details:", data);
+                    setGetSubmit(data);
+                    setIsEditing(false);
+                })
+                .catch(error => console.error("Error updating job details:", error));
+        };
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setGetSubmit({
+                ...getsubmitjob,
+                [e.target.name]: e.target.value,
+            });
+        };
         // Fetch industries
         fetch("http://127.0.0.1:8000/industry/")
             .then(response => response.json())
@@ -159,22 +262,22 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching countries:', error));
 
         // Fetch states
-        fetch("http://127.0.0.1:8000/states/")
-            .then(response => response.json())
-            .then(data => {
-                console.log("States:", data); // Log to check the data
-                setStates(data);
-            })
-            .catch(error => console.error('Error fetching countries:', error));
+        // fetch("http://127.0.0.1:8000/states/")
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log("States:", data); // Log to check the data
+        //         setStates(data);
+        //     })
+        //     .catch(error => console.error('Error fetching countries:', error));
 
-        // Fetch cities
-        fetch("http://127.0.0.1:8000/cities/")
-            .then(response => response.json())
-            .then(data => {
-                console.log("Cities:", data); // Log to check the data
-                setCities(data);
-            })
-            .catch(error => console.error('Error fetching cities:', error));
+        // // Fetch cities
+        // fetch("http://127.0.0.1:8000/cities/")
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log("Cities:", data); // Log to check the data
+        //         setCities(data);
+        //     })
+        //     .catch(error => console.error('Error fetching cities:', error));
 
 
         // fetch("http://127.0.0.1:8000/education/intermediate/")
@@ -200,7 +303,7 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching inter:', error));
 
-            
+
         fetch("http://127.0.0.1:8000/education/UG/")
             .then(response => response.json())
             .then(data => {
@@ -217,7 +320,7 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching Education PG:', error));
 
-    }, []);
+    }, [id]);
 
     // Handle input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -239,8 +342,8 @@ const SubmitJob = () => {
             job_description: value,
         });
     };
-    const aboutCompanyHandleEditorChange = (value:any)=>{
-        setFormData({...formData, about_company: value})
+    const aboutCompanyHandleEditorChange = (value: any) => {
+        setFormData({ ...formData, about_company: value })
     }
 
     // Handle file input change
@@ -290,10 +393,10 @@ const SubmitJob = () => {
                 "job_category": formData.job_category
             },
             "job_type": formData.job_type,
-            "map_location": formData.map_location,
+            // "map_location": formData.map_location,
             "max_salary": formData.max_salary,
             "min_salary": formData.min_salary,
-            "salary": formData.salary,
+            "salary_type": formData.salary_type,
             "skills": formData.skills,
             "state": formData.state,
             "upload_file": null,
@@ -332,14 +435,17 @@ const SubmitJob = () => {
 
     const handleonchangecountry = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
-
+        // if (!validateForm()) {
+        //     console.log('Form has errors:', errors);
+        //     return; // Prevent submission if there are errors
+        // }
+        console.log('Submitting form:', formData);
         const { name, value } = e.target;
         setFormData({
             ...formData, [name]: value
         });
 
         const countryId = e.target.options.selectedIndex;
-        const stateId = e.target.options.selectedIndex;
         // const {id, value} = e.target;
         // console.log(stateId, "state values====");
         // setSelectedCountry(country);
@@ -351,7 +457,15 @@ const SubmitJob = () => {
                 setStates(data);
             })
             .catch(error => console.error('Error fetching states:', error));
-
+    };
+    const handleonchangestate = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setFormData({
+            ...formData, [name]: value
+        });
+        const stateId = e.target.options.selectedIndex;
+        console.log(stateId);
         fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
             .then(response => response.json())
             .then(data => {
@@ -360,7 +474,6 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching states:', error));
     };
-
     return (
         <main>
             <h4 className="mt-4">Submit a Job</h4>
@@ -380,17 +493,20 @@ const SubmitJob = () => {
                                 placeholder="UI Developer"
                                 required
                             />
+                            {errors.job_title && <span className="text-danger">{errors.job_title}</span>}
                         </div>
                         {/* Number of Positions */}
                         <div className="col-md-3 mb-3">
                             <label htmlFor="number_of_positions" className="form-label">Number of Positions*</label>
                             <input
-                                type="number"
+                                type="text"
                                 className="form-control"
                                 name="number_of_positions"
+                                value={formData.number_of_positions}
                                 onChange={handleInputChange}
                                 required
                             />
+                            {errors.number_of_positions && <span className="text-danger">{errors.number_of_positions}</span>}
                         </div>
                         <div className="col-md-3 mb-3">
                             <label htmlFor="created_date" className="form-label">Date</label>
@@ -399,6 +515,7 @@ const SubmitJob = () => {
                                 id='created_date'
                                 className="form-control"
                                 name="created_date"
+                                value = {formData.created_date}
                                 onChange={handleInputChange}
                                 required
                             />
@@ -406,14 +523,14 @@ const SubmitJob = () => {
                         {/* Job Description */}
                         <div className="col-md-12 mb-3">
                             <label htmlFor="job_description" className="form-label">Job Description</label>
-                            <ReactQuill 
-                                theme="snow" 
-                                value={formData.job_description} 
+                            <ReactQuill
+                                theme="snow"
+                                value={formData.job_description}
                                 // name="job_description"
-                                onChange={handleEditorChange} 
-                                modules={modules} 
+                                onChange={handleEditorChange}
+                                modules={modules}
                                 placeholder="Enter Job description"
-                                />
+                            />
                         </div>
 
                         {/* Industry */}
@@ -421,6 +538,7 @@ const SubmitJob = () => {
                             <label htmlFor="industry" className="form-label">Industry*</label>
                             <select
                                 className="form-select"
+                                value={formData.industry}
                                 name="industry"
                                 onChange={handleInputChange}
                                 required
@@ -442,6 +560,7 @@ const SubmitJob = () => {
                                     <option value="">No industries available</option>
                                 )}
                             </select>
+                            {errors.industry && <span className="text-danger">{errors.industry}</span>}
                         </div>
                         {/* Job Category */}
                         <div className="col-md-5 mb-3">
@@ -486,8 +605,8 @@ const SubmitJob = () => {
                             </select>
                         </div>
                         <div className="col-md-4 col-lg-3 col-lg-3 mb-3">
-                            <label htmlFor="Salary" className="form-label">Salary Type</label>
-                            <select className="form-select" name="salary" id="Salary" onChange={handleInputChange}>
+                            <label htmlFor="salary_type" className="form-label">Salary Type</label>
+                            <select className="form-select" name="salary_type" id="salary_type" onChange={handleInputChange}>
                                 <option value="">Select Type</option>
                                 <option value="Monthly">Monthly</option>
                                 <option value="Weekly">Weekly</option>
@@ -498,6 +617,7 @@ const SubmitJob = () => {
                             <label htmlFor="min_salary" className="form-label">Min Salary</label>
                             <input
                                 type="number"
+                                value={formData.min_salary}
                                 className="form-control"
                                 id="min_salary"
                                 name="min_salary"
@@ -512,6 +632,7 @@ const SubmitJob = () => {
                             <input
                                 type="number"
                                 className="form-control"
+                                value={formData.max_salary}
                                 id="max_salary"
                                 name="max_salary"
                                 onChange={handleInputChange}
@@ -525,6 +646,7 @@ const SubmitJob = () => {
                                 type="text"
                                 className="form-control"
                                 id="skills"
+                                value={formData.skills}
                                 name="skills"
                                 onChange={handleInputChange}
                                 placeholder="Add Skills"
@@ -539,7 +661,7 @@ const SubmitJob = () => {
                                 <option value="Fresher">Fresher</option>
                             </select>
                         </div>
-                        <div className="col-md-4 mb-3">
+                        {/* <div className="col-md-4 mb-3">
                             <label htmlFor="Location" className="form-label">Location</label>
                             <select className="form-select" name="city" id="Location" onChange={handleInputChange}>
                                 <option value="">Select Location</option>
@@ -547,7 +669,7 @@ const SubmitJob = () => {
                                     <option key={cty.id} value={cty.id}>{cty.name}</option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
 
                         <div className="col-md-4 mb-3">
                             <label htmlFor="EnglishFluency" className="form-label">English Fluency </label>
@@ -574,20 +696,21 @@ const SubmitJob = () => {
                             <label htmlFor="address" className="form-label">About Company</label>
                             {/* <textarea className='form-control' name="about_company" id="about_company" onChange={handleInputChange}></textarea> */}
 
-                            <ReactQuill 
-                                theme="snow" 
-                                value={formData.about_company} 
+                            <ReactQuill
+                                theme="snow"
+                                value={formData.about_company}
                                 // name="job_description"
-                                onChange={aboutCompanyHandleEditorChange} 
-                                modules={modules} 
+                                onChange={aboutCompanyHandleEditorChange}
+                                modules={modules}
                                 placeholder="Enter about company"
-                                />
+                            />
                         </div>
                         {/* Address */}
                         <div className="col-md-12 mb-3">
                             <label htmlFor="address" className="form-label">Address</label>
                             <input
                                 type="text"
+                                value={formData.address}
                                 className="form-control"
                                 name="address"
                                 onChange={handleInputChange}
@@ -606,7 +729,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="state" className="form-label">State</label>
-                            <select className="form-select" id="state" name="state" onChange={handleonchangecountry}>
+                            <select className="form-select" id="state" name="state" onChange={handleonchangestate} >
                                 <option value="">Select State</option>
                                 {states?.map((state) => (
                                     // <option key={state?.id} value={state?.id}>{state?.name}</option>
@@ -616,7 +739,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="city" className="form-label">City</label>
-                            <select className="form-select" id="city" name="city" onChange={handleonchangecountry}>
+                            <select className="form-select" id="city" name="city">
                                 <option value="">Select city</option>
                                 {cities?.map((city) => (
                                     // <option key={city?.id} value={city?.id}>{city?.name}</option>

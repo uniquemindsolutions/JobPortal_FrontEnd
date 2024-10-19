@@ -53,10 +53,10 @@ function App() {
             <Route path="saved-candidate" element={<SavedCandidate />} />
             <Route path="my-jobs" element={<MyJobs />} />
             <Route path="messages" element={<Messages />} />
-            <Route path="submit-job" element={<SubmitJob />} />
+            <Route path="submit-job/:id/" element={<SubmitJob />} />
             <Route path="account-setting" element={<AccountSetting />} />
             <Route path="candidates" element={<Candidates />} />
-            <Route path="my-jobs/view-jobs" element={<ViewJobs />} />
+            <Route path="my-jobs/view-jobs/:id" element={<ViewJobs />} />
           </Route>
 
           <Route>
