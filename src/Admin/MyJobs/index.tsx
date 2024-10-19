@@ -1,17 +1,22 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import { useParams } from 'react-router-dom';
+interface City {
+    id: number;
+    name: string;
+}
 export interface myJobs {
     job_title: string;
     job_type: string;
     job_category: string;
-    location: string;
+    city: City;
     Applicants: number;
     Status: string;
 }
 
 const MyJobs = () => {
+    const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [myJobs, setMyJobs] = useState({
@@ -35,11 +40,6 @@ const MyJobs = () => {
             setLoading(false)
         }
     };
-
-
-
-
-
     return (
         <main className='mt-4'>
 
@@ -87,7 +87,7 @@ const MyJobs = () => {
                                     <tr key={index}>
                                         <td>
                                             <div className="fw-bold">{items.job_title}</div>
-                                            <div className="info1">{items.job_type} . {items.location}</div>
+                                            <div className="info1">{items.job_type} . {items.city}</div>
                                         </td>
                                         <td>05 Jun, 2023</td>
                                         <td>130 Applications</td>
@@ -99,15 +99,16 @@ const MyJobs = () => {
                                                 </button>
                                                 <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
                                                     <li>
-                                                        <Link to="/my-jobs/view-jobs" className="dropdown-item">
+                                                        <Link to={`/submit-job/${items.id}/`} className="dropdown-item">
                                                             <i className="bi bi-eye"></i> View Job</Link>
                                                     </li>
                                                     <li><a className="dropdown-item" href="#">
                                                         <i className="bi bi-share"></i> Share</a>
                                                     </li>
-                                                    <li><a className="dropdown-item" href="#">
-                                                        <i className="bi bi-pencil-square"></i> Edit</a>
-                                                    </li>
+                                                    <Link to={`/submit-job/${items.id}/`} className="dropdown-item">
+                                                        <i className="bi bi-pencil-square"></i> Edit
+                                                    </Link>
+
                                                     <li><a className="dropdown-item" href="#">
                                                         <i className="bi bi-trash"></i> Delete</a>
                                                     </li>

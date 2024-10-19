@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-
+import { useParams } from 'react-router-dom';
 interface viewJobDetails {
     job_title: string;
     number_of_positions: number;
@@ -28,13 +28,13 @@ interface viewJobDetails {
     pg_name: string;
 }
 const ViewJobs = () => {
-
+    const { id } = useParams(); 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [viewJob, setViewJob] = useState<viewJobDetails>(
         {
             job_title: '',
-            number_of_positions: 1,
+            number_of_positions: 0,
             job_description: '',
             address: '',
             city: 0,
@@ -42,7 +42,7 @@ const ViewJobs = () => {
             english_fluency: '',
             experience: '',
             industry: '',
-            job_category: '',
+            job_category: '',   
             job_type: '',
             map_location: '',
             max_salary: '',
@@ -59,12 +59,14 @@ const ViewJobs = () => {
             pg_name: '',
         }
     )
+    console.log(viewJob);
 
 
     useEffect(() => {
         const viewJobDetails = async () => {
             try {
-                const res = await axios.get<viewJobDetails>('http://127.0.0.1:8000/submitnewjob/')
+                const res = await axios.get<viewJobDetails>(`http://127.0.0.1:8000/submitnewjob/${id}`)
+                console.log("API response:", res.data); 
                 setViewJob(res.data)
             }
             catch (error) {
@@ -75,8 +77,12 @@ const ViewJobs = () => {
             }
         };
 
-        viewJobDetails();
-    }, [])
+        if (id) {
+            viewJobDetails(); // Call function if id is available
+        }
+    }, [id]);
+    if (loading) return <p>Loading...</p>; // Loading state
+    if (error) return <p>{error}</p>; // Error handling
 
     return (
         <main>
@@ -104,7 +110,6 @@ const ViewJobs = () => {
                     </div>
                 </div>
             </div>
-
             <div className="profile-card">
                 <div className="row">
                     <div className="col-lg-6 offset-lg-3 py-4">
