@@ -15,6 +15,9 @@ import RegisterAdmin from './Register';
 import Candidates from './Admin/Candidates';
 import SeekerDashboard from './JobSeeker/SeekerDashboard';
 import ViewJobs from './Admin/ViewJobs';
+import JobSeekerAdmin from './JobSeeker';
+import ViewJobDetails from './JobSeeker/SeekerDashboard/ViewJobDetails';
+
 
 
 
@@ -60,7 +63,10 @@ function App() {
           </Route>
 
           <Route>
-            <Route path='/seeker-dashboard' element={<SeekerDashboard/>}/>
+            <Route path='' element={<JobSeekerAdmin/>}>
+              <Route path='seeker-dashboard' element={<SeekerDashboard/>}/>
+              <Route path='/view-job-details' element={<ViewJobDetails/>}/>
+            </Route>
           </Route>
         </Routes>
       </Router>      
