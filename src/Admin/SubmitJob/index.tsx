@@ -19,7 +19,7 @@ interface SubmitJob {
     industry: string;
     job_category: string;
     job_type: string;
-    // map_location: string;
+    city_location: string;
     max_salary: string;
     min_salary: string;
     salary_type: string;
@@ -29,9 +29,9 @@ interface SubmitJob {
     about_company: string;
     work_mode: string;
     ssc: string;
-    inter: string;
-    ug_name: string;
-    pg_name: string;
+    inter: number;
+    ug_name: number;
+    pg_name: number;
 }
 
 interface JobCategory {
@@ -61,6 +61,12 @@ interface city {
     name: string;
     state: string;
 }
+interface city_location {
+    id: number;
+    name: string;
+    cities: string;
+}
+
 interface inter {
     id: number;
     inter: string;
@@ -100,6 +106,7 @@ const SubmitJob = () => {
     const [countries, setCountries] = useState<Country[]>([]);
     const [states, setStates] = useState<State[]>([]);
     const [cities, setCities] = useState<city[]>([]);
+    const [citys, setCitys] = useState<city_location[]>([]);
     const [inter, setInter] = useState<inter[]>([]);
     const [graduate, setGraduate] = useState<graduate[]>([]);
     const [postGraduate, setPostGraduate] = useState<postGraduate[]>([]);
@@ -124,7 +131,7 @@ const SubmitJob = () => {
         industry: '',
         job_category: '',
         job_type: '',
-        // map_location: '',
+        city_location: '',
         max_salary: '',
         min_salary: '',
         salary_type: '',
@@ -134,9 +141,9 @@ const SubmitJob = () => {
         about_company: '',
         work_mode: '',
         ssc: '',
-        inter: '',
-        ug_name: '',
-        pg_name: '',
+        inter: 0,
+        ug_name: 0,
+        pg_name: 0,
     });
     const validateForm = () => {
         const newErrors: any = {};
@@ -164,41 +171,41 @@ const SubmitJob = () => {
                     console.log("Submit job details:", data);
                     setGetSubmit(data);
                     if (Object.keys(data).length > 0) {
-                        alert("Hi");
                         const copyobject = {
                             job_title: data.job_title,
                             number_of_positions: data.number_of_positions,
                             created_date: data.created_date,
-                            job_description: data.job_description,
-                            address: data.address,                            
+                            // job_description: data.job_description,
+                            address: data.address,
                             city: data.city,
-                            // country: 0,
-                            // english_fluency: '',
-                            // experience: '',
-                            industry: data.industry.industry,
-                            // job_category: '',
-                            // job_type: '',
-                            // // map_location: '',
+                            country: data.country,
+                            english_fluency: data.english_fluency,
+                            experience: data.experience,
+                            industry: data.industry?.industry || "",
+                            job_category: data.job_category,
+                            job_type: data.job_type,
+                            city_location: data.city_location,
                             max_salary: data.max_salary,
                             min_salary: data.min_salary,
-                            // salary_type: '',
-                            skills:data.skills,
-                            // state: 0,
-                            // upload_file: null,
-                            // about_company: data.about_company,
-                            // work_mode: '',
-                            // ssc: '',
-                            // inter: '',
-                            // ug_name: '',
-                            // pg_name: '',
-                            
+                            salary_type: data.salary_type,
+                            skills: data.skills,
+                            state: data.state,
+                            upload_file: data.upload_file || null,
+                            about_company: data.about_company,
+                            work_mode: data.work_mode,
+                            ssc: data.ssc,
+                            inter: data.inter,
+                            ug_name: data.ug_name,
+                            pg_name: data.pg_name,
+
                         }
+                        console.log(data.copyobject, "copyobject ======")
                         Object.entries(copyobject).forEach(([key, value]) => {
-                            console.log("Key and Value:",key,value);
+                            console.log("Key and Value:", key, value);
                             setFormData((formData) => ({
                                 ...formData,
                                 [key]: value, // Dynamically update the key based on input name
-                              }));
+                            }));
                         });
                         console.log("Latest form data =", formData);
 
@@ -271,13 +278,13 @@ const SubmitJob = () => {
         //     .catch(error => console.error('Error fetching countries:', error));
 
         // // Fetch cities
-        // fetch("http://127.0.0.1:8000/cities/")
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         console.log("Cities:", data); // Log to check the data
-        //         setCities(data);
-        //     })
-        //     .catch(error => console.error('Error fetching cities:', error));
+        fetch("http://127.0.0.1:8000/cities/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Cities:", data); // Log to check the data
+                setCities(data);
+            })
+            .catch(error => console.error('Error fetching cities:', error));
 
 
         // fetch("http://127.0.0.1:8000/education/intermediate/")
@@ -393,7 +400,7 @@ const SubmitJob = () => {
                 "job_category": formData.job_category
             },
             "job_type": formData.job_type,
-            // "map_location": formData.map_location,
+            "city_location": formData.city_location,
             "max_salary": formData.max_salary,
             "min_salary": formData.min_salary,
             "salary_type": formData.salary_type,
@@ -515,7 +522,7 @@ const SubmitJob = () => {
                                 id='created_date'
                                 className="form-control"
                                 name="created_date"
-                                value = {formData.created_date}
+                                value={formData.created_date}
                                 onChange={handleInputChange}
                                 required
                             />
@@ -544,12 +551,7 @@ const SubmitJob = () => {
                                 required
                             >
                                 <option value="">Select industry</option>
-                                {/* {industriesorg.map((industry: Industry) => (
-                                        <option key={industry.id} value={industry.id}>
-                                            {industry.industry}
-                                        </option>
-                                    )
-                                )} */}
+
                                 {industriesorg && industriesorg.length > 0 ? (
                                     industriesorg.map((industry: Industry) => (
                                         <option key={industry.id} value={industry.id}>
@@ -567,13 +569,14 @@ const SubmitJob = () => {
                             <label htmlFor="job_category" className="form-label">Job Category</label>
                             <select
                                 className="form-select"
+                                value={formData.job_category}
                                 name="job_category"
                                 onChange={handleInputChange}
                             >
                                 <option value="">Select Job Category</option>
                                 {jobcategoriesorg && jobcategoriesorg.length > 0 ? (
                                     jobcategoriesorg.map((job_category: JobCategory) => (
-                                        <option key={job_category.id} value={job_category.id}>
+                                        <option key={job_category.id} value={formData.job_category}>
                                             {job_category.job_category}
                                         </option>
                                     ))
@@ -585,7 +588,7 @@ const SubmitJob = () => {
 
                         <div className="col-md-2 mb-3">
                             <label htmlFor="JobType" className="form-label">Job Type</label>
-                            <select className="form-select" name="job_type" id="JobType"
+                            <select className="form-select" value={formData.job_type} name="job_type" id="JobType"
                                 onChange={handleInputChange}>
                                 <option value="">Select Job Type</option>
                                 <option value="Full Time">Full Time</option>
@@ -596,7 +599,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4 col-lg-3 mb-3">
                             <label htmlFor="work_mode" className="form-label">Work Mode</label>
-                            <select className="form-select" name="work_mode" id="work_mode" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.work_mode} name="work_mode" id="work_mode" onChange={handleInputChange}>
                                 <option value="">Select work mode</option>
                                 <option value="Work from office">Work from Office</option>
                                 <option value="Work from Home">Work from Home</option>
@@ -606,7 +609,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4 col-lg-3 col-lg-3 mb-3">
                             <label htmlFor="salary_type" className="form-label">Salary Type</label>
-                            <select className="form-select" name="salary_type" id="salary_type" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.salary_type} name="salary_type" id="salary_type" onChange={handleInputChange}>
                                 <option value="">Select Type</option>
                                 <option value="Monthly">Monthly</option>
                                 <option value="Weekly">Weekly</option>
@@ -654,26 +657,26 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4 mb-3">
                             <label htmlFor="Experience" className="form-label">Experience</label>
-                            <select className="form-select" name="experience" id="Experience" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.experience} name="experience" id="Experience" onChange={handleInputChange}>
                                 <option value="">Select Experience</option>
                                 <option value="Expert">Expert</option>
                                 <option value="Medium">Medium</option>
                                 <option value="Fresher">Fresher</option>
                             </select>
                         </div>
-                        {/* <div className="col-md-4 mb-3">
-                            <label htmlFor="Location" className="form-label">Location</label>
-                            <select className="form-select" name="city" id="Location" onChange={handleInputChange}>
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="city_location" className="form-label">Job Location</label>
+                            <select className="form-select" name="city_location" id="city_location" onChange={handleInputChange}>
                                 <option value="">Select Location</option>
-                                {cities.map((cty) => (
-                                    <option key={cty.id} value={cty.id}>{cty.name}</option>
+                                {citys.map((ctys) => (
+                                    <option key={ctys.id} value={ctys.id}>{ctys.name}</option>
                                 ))}
                             </select>
-                        </div> */}
+                        </div>
 
                         <div className="col-md-4 mb-3">
                             <label htmlFor="EnglishFluency" className="form-label">English Fluency </label>
-                            <select className="form-select" name="english_fluency" id="EnglishFluency" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.english_fluency} name="english_fluency" id="EnglishFluency" onChange={handleInputChange}>
                                 <option value="">Select English Fluency</option>
                                 <option value="Basic">Basic</option>
                                 <option value="Medium">Medium</option>
@@ -719,7 +722,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="country" className="form-label">Country</label>
-                            <select className="form-select" id="country" name="country" onChange={handleonchangecountry}>
+                            <select className="form-select" value={formData.country} id="country" name="country" onChange={handleonchangecountry}>
                                 <option value="">Select Country</option>
                                 {countries.map((country) => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
@@ -729,7 +732,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="state" className="form-label">State</label>
-                            <select className="form-select" id="state" name="state" onChange={handleonchangestate} >
+                            <select className="form-select" value={formData.state} id="state" name="state" onChange={handleonchangestate} >
                                 <option value="">Select State</option>
                                 {states?.map((state) => (
                                     // <option key={state?.id} value={state?.id}>{state?.name}</option>
@@ -739,7 +742,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="city" className="form-label">City</label>
-                            <select className="form-select" id="city" name="city">
+                            <select className="form-select" value={formData.city} id="city" name="city">
                                 <option value="">Select city</option>
                                 {cities?.map((city) => (
                                     // <option key={city?.id} value={city?.id}>{city?.name}</option>
@@ -751,14 +754,14 @@ const SubmitJob = () => {
                         <h4 className='text-primary mt-4'>Education</h4>
                         <div className="col-md-3">
                             <label htmlFor="Schooling" className="form-label">Schooling</label>
-                            <select className="form-select" id="Schooling" name="Schooling" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.ssc} id="Schooling" name="Schooling" onChange={handleInputChange}>
                                 <option value="">Select Class</option>
                                 <option value="SSC">SSC</option>
                             </select>
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="inter" className="form-label">Intermediate</label>
-                            <select className="form-select" id="inter" name="inter" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.inter} id="inter" name="inter" onChange={handleInputChange}>
                                 <option value="">Select intermediate</option>
                                 {inter.map((intermediate) => (
                                     <option key={intermediate.id} value={intermediate.id}>{intermediate.inter}</option>
@@ -768,7 +771,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="ug_name" className="form-label">UG</label>
-                            <select className="form-select" id="ug_name" name="ug_name" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.ug_name} id="ug_name" name="ug_name" onChange={handleInputChange}>
                                 <option value="">Select UG</option>
                                 {graduate.map((graduate) => {
                                     return <option key={graduate.id} value={graduate.id}>{graduate.ug_name}</option>
@@ -777,7 +780,7 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="pg_name" className="form-label">PG</label>
-                            <select className="form-select" id="pg_name" name="pg_name" onChange={handleInputChange}>
+                            <select className="form-select" value={formData.pg_name} id="pg_name" name="pg_name" onChange={handleInputChange}>
                                 <option value="">Select PG</option>
                                 {postGraduate.map((postGraduate) => {
                                     return <option key={postGraduate.id} value={postGraduate.id}>{postGraduate.pg_name}</option>
