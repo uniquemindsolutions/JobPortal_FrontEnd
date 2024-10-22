@@ -17,6 +17,7 @@ import SeekerDashboard from './JobSeeker/SeekerDashboard';
 import ViewJobs from './Admin/ViewJobs';
 import JobSeekerAdmin from './JobSeeker';
 import ViewJobDetails from './JobSeeker/SeekerDashboard/ViewJobDetails';
+import Profiles from './JobSeeker/Profile';
 
 
 
@@ -66,6 +67,7 @@ function App() {
             <Route path='' element={<JobSeekerAdmin/>}>
               <Route path='seeker-dashboard' element={<SeekerDashboard/>}/>
               <Route path='/view-job-details' element={<ViewJobDetails/>}/>
+              <Route path='profile' element={<Profiles/>}/>
             </Route>
           </Route>
         </Routes>

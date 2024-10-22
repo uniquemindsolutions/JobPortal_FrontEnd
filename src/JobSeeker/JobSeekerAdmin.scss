@@ -7,13 +7,13 @@
   #sidebar {
     width: 250px;
     min-height: 100vh;
-    background: #247b7b;
+    background: #28a745;
     transition: all 0.3s;
   }
   
   #sidebar .sidebar-header {
-    padding: 10px;
-    background: #23272b;
+    // padding: 10px;
+    // background: #23272b;
   }
   
   #sidebar ul.components {
@@ -21,19 +21,21 @@
   }
   
   #sidebar ul li {
-    padding: 10px;
-  }
+    padding-bottom: 5px;
+}
   
   #sidebar ul li a {
     padding: 10px;
     font-size: 1.1rem;
     display: block;
     color: #ffffff;
+    text-decoration: none;
   }
   
   #sidebar ul li a:hover {
-    background: #495057;
+    background: #ffffff;
     text-decoration: none;
+    color: #28a745!important;
   }
   
   /* Sidebar toggle */
@@ -86,3 +88,75 @@
     text-decoration: none;
     color: #23272b;
   }
+// profile start
+
+.dashb-profile-card {
+  border-radius: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  .card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 1rem 0.5rem 0;
+
+    .profile-image {
+      img {
+        width: 80px;
+        height: 80px;
+        border: 2px solid #fff;
+      }
+    }
+
+    .profile-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .profile-title {
+      font-size: 0.9rem;
+      color: #e5e5e5;
+    }
+
+    .profile-location {
+      font-size: 0.9rem;
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .card-body {
+    font-size: 0.9rem;
+    color: #666;
+
+    p {
+      display: flex;
+      align-items: center;
+      i {
+        margin-right: 10px;
+        color: #6f42c1;
+      }
+    }
+
+    .profile-completion {
+      h6 {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .progress {
+        height: 8px;
+        background-color: #f0f0f0;
+        .progress-bar {
+          background-color: #28a745;
+        }
+      }
+    }
+
+    .profile-updated {
+      small {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
