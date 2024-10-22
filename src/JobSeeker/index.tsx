@@ -15,11 +15,58 @@ const JobSeekerAdmin = () => {
                 {/* Sidebar */}
                 <nav id="sidebar" className={`sidebar ${isSidebarOpen ? 'active' : ''}`}>
                     <div className="sidebar-header">
-                        <h4 className="text-white p-3">Admin Panel</h4>
                         <div className="close-icon d-md-none" onClick={toggleSidebar}>
                             <i className="fas fa-times"></i>
                         </div>
+
+                        {/* profile detais start */}
+                        <div className="card dashb-profile-card">
+                            <div className="card-header text-center">
+                                <div className="profile-image">
+                                    <img
+                                        src="https://via.placeholder.com/80" // Profile picture placeholder
+                                        alt="Profile"
+                                        className="rounded-circle"
+                                    />
+                                </div>
+                                <h5 className="profile-name mt-2">Shekhar Vadla</h5>
+                                <p className="profile-title mb-2">UI Developer</p>
+                                <p className="profile-location">
+                                    <i className="bi bi-geo-alt"></i> Hyderabad / Secunderabad, Telangana
+                                </p>
+                            </div>
+                            <div className="card-body">
+                                <div className='mb-2'><i className="bi bi-building"></i> versatile commerce</div>
+                                <div className='mb-2'><i className="bi bi-calendar"></i> Exp: 8 Years 2 Month</div>
+                                <div className='mb-2'><i className="bi bi-telephone"></i> +919989953568 <i className="bi bi-pencil ms-2"></i></div>
+                                <div className='mb-2'><i className="bi bi-envelope"></i> shekharvadla@gmail.com <i className="bi bi-check2-all ms-2"></i></div>
+
+                                {/* <div className="profile-completion mt-4">
+                                    <h6>100% Profile Complete</h6>
+                                    <p className="text-muted">Well done! Make sure to keep your information updated.</p>
+                                    <div className="progress">
+                                        <div
+                                            className="progress-bar"
+                                            role="progressbar"
+                                            style={{ width: "100%" }}
+                                            aria-valuenow={100}
+                                            aria-valuemin={0}
+                                            aria-valuemax={100}
+                                        >
+                                            100%
+                                        </div>
+                                    </div>
+                                </div> */}
+
+                                {/* <div className="profile-updated mt-3 text-center">
+                                    <small className="text-muted">Updated on: 7 October 2024</small>
+                                </div> */}
+                            </div>
+                        </div>
+                        {/* profile detais end */}
                     </div>
+
+
                     <ul className="list-unstyled components">
                         <li>
                             <Link to="seeker-dashboard" className="text-white">
@@ -32,12 +79,12 @@ const JobSeekerAdmin = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/saved-jobs" className="text-white">
+                            <Link to="/applied-jobs" className="text-white">
                                 <i className="fas fa-cog me-2"></i> Applied Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="/settings" className="text-white">
+                            <Link to="/change-password" className="text-white">
                                 <i className="fas fa-cog me-2"></i> Change Password
                             </Link>
                         </li>
@@ -104,7 +151,7 @@ const JobSeekerAdmin = () => {
                                         My Account
                                     </button>
                                     <ul className="dropdown-menu border-0 shadow dropdown-menu-end">
-                                         <li>
+                                        <li>
                                             <a href="#" className="dropdown-item">
                                                 Profile
                                             </a>

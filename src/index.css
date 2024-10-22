@@ -16,3 +16,21 @@ body {
   background-color: #f0f5f3;
 }
 
+:root {
+  --orange-c: #fb8500;
+  --lt-orange-c: #ffb703;
+  --blue-c: #023047;
+  --lt-blue-c: #219ebc;
+  --llt-blue-c: #8ecae6;
+}
+.orange-c {color:#fb8500;}
+.lt-orange-c {color:#ffb703;}
+.blue-c {color:#023047;}
+.lt-blue-c {color:#0386a7;}
+.llt-blue-c {color:#8ecae6;}
+
+.orange-bg {background-color:#fb8500;}
+.lt-orange-bg {background-color:#ffb703;}
+.blue-bg {background-color:#023047;}
+.lt-blue-bg {background-color:#0386a7;}
+.llt-blue-bg {background-color:#8ecae6;}
