@@ -7,7 +7,7 @@
   #sidebar {
     width: 250px;
     min-height: 100vh;
-    background: #28a745;
+    background: var(--llt-blue-c);
     transition: all 0.3s;
   }
   
@@ -35,7 +35,7 @@
   #sidebar ul li a:hover {
     background: #ffffff;
     text-decoration: none;
-    color: #28a745!important;
+    color: var(--blue-c)!important;
   }
   
   /* Sidebar toggle */
@@ -95,7 +95,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   .card-header {
-    background-color: #007bff;
+    background-color: var(--blue-c);
     color: #fff;
     padding: 1rem 0.5rem 0;
 
@@ -127,8 +127,8 @@
 
   .card-body {
     font-size: 0.9rem;
-    color: #666;
-
+    color: #ffffff;
+    background-color: var(--lt-blue-c);
     p {
       display: flex;
       align-items: center;
