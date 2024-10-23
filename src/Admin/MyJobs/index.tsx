@@ -2,13 +2,16 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+
 interface City {
     id: number;
     name: string;
 }
 export interface myJobs {
+    id: number;
     job_title: string;
     job_type: string;
+    created_date:string;
     job_category: string;
     city: City;
     Applicants: number;
@@ -22,11 +25,22 @@ const MyJobs = () => {
     const [myJobs, setMyJobs] = useState({
 
     })
+    const [citys, setCitys] = useState<City[]>([]);
 
     useEffect(() => {
+        fetch("http://127.0.0.1:8000/cities/")
+        .then(response => response.json())
+        .then(data => {
+            console.log("Cities:", data); // Log to check the data
+            setCitys(data); // Store the cities in state
+        })
+        .catch(error => console.error('Error fetching cities:', error));
         myJobsDetails();
     }, [])
-
+    const getCityNameById = (id: number): string => {
+        const city = citys.find((city: City) => city.id === id); // Ensure the type is specified
+        return city ? city.name : "Unknown City"; // Return the city name or a default value
+    };
     const myJobsDetails = async () => {
         try {
             const res = await axios.get<myJobs>('http://127.0.0.1:8000/submitnewjob/')
@@ -87,9 +101,10 @@ const MyJobs = () => {
                                     <tr key={index}>
                                         <td>
                                             <div className="fw-bold">{items.job_title}</div>
-                                            <div className="info1">{items.job_type} . {items.city}</div>
+                                            <div className="info1">{items.job_type}.{getCityNameById(items.city)} {/* Get city name using the utility function */}</div>
                                         </td>
-                                        <td>05 Jun, 2023</td>
+                                        <td>{items.created_date.split('T')[0]}
+                                        </td>
                                         <td>130 Applications</td>
                                         <td><span className='status-active'></span> active</td>
                                         <td className='text-end'>
@@ -99,13 +114,13 @@ const MyJobs = () => {
                                                 </button>
                                                 <ul className="dropdown-menu dropdown-menu-end tbl-dropdown">
                                                     <li>
-                                                        <Link to={`/submit-job/${items.id}/`} className="dropdown-item">
+                                                        <Link to={`/submit-job/${items.id}/1`} className="dropdown-item">
                                                             <i className="bi bi-eye"></i> View Job</Link>
                                                     </li>
                                                     <li><a className="dropdown-item" href="#">
                                                         <i className="bi bi-share"></i> Share</a>
                                                     </li>
-                                                    <Link to={`/submit-job/${items.id}/`} className="dropdown-item">
+                                                    <Link to={`/submit-job/${items.id}/2`} className="dropdown-item">
                                                         <i className="bi bi-pencil-square"></i> Edit
                                                     </Link>
 
