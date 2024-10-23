@@ -6,9 +6,14 @@
   /* Sidebar styles */
   #sidebar {
     width: 250px;
-    min-height: 100vh;
-    background: var(--llt-blue-c);
+    height: 100vh;
+    background: var(--lt-blue-c);
     transition: all 0.3s;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
   }
   
   #sidebar .sidebar-header {
@@ -54,16 +59,17 @@
   #page-content-wrapper {
     flex: 1;
     width: 100%;
-    // padding-left: 250px;
+    margin-left: 250px;
     transition: all 0.3s;
   }
   
   /* On mobile, collapse sidebar */
   @media (max-width: 768px) {
     #sidebar {
-      margin-left: -250px;
+      margin-left: -74%;
       position: absolute;
       z-index: 9999;
+      width: 72%;
     }
   
     #sidebar.active {
@@ -94,6 +100,7 @@
   border-radius: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  border: 0;
   .card-header {
     background-color: var(--blue-c);
     color: #fff;
@@ -128,7 +135,7 @@
   .card-body {
     font-size: 0.9rem;
     color: #ffffff;
-    background-color: var(--lt-blue-c);
+    background-color: var(--blue-c);
     p {
       display: flex;
       align-items: center;

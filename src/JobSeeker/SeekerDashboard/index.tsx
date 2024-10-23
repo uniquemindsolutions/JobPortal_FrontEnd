@@ -75,7 +75,7 @@ const SeekerDashboard = () => {
       </div>
 
       <div className="row mt-4">
-        <div className="col-lg-8 col-sm-9">
+        <div className="col-lg-8">
           <h5>Reacent Jobs</h5>
 
           <div className="card job-card p-3">
@@ -115,7 +115,7 @@ const SeekerDashboard = () => {
               <div className="col-md-5">
                 <div className="text-end">
                   <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to='/view-job-details' className="btn btn-primary btn-apply">View Details</Link>
+                  <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
                 </div>
               </div>
             </div>
@@ -159,7 +159,7 @@ const SeekerDashboard = () => {
               <div className="col-md-5">
                 <div className="text-end">
                   <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to={'seeker-dashboard/view-job-details'} className="btn btn-primary btn-apply">View Details</Link>
+                  <Link to={'seeker-dashboard/view-job-details'} className="btn btn-primary btn-apply">Apply Now</Link>
                 </div>
               </div>
             </div>
@@ -203,7 +203,7 @@ const SeekerDashboard = () => {
               <div className="col-md-5">
                 <div className="text-end">
                   <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to={'seeker-dashboard/view-job-details'} className="btn btn-primary btn-apply">View Details</Link>
+                  <Link to={'seeker-dashboard/view-job-details'} className="btn btn-primary btn-apply">Apply Now</Link>
                 </div>
               </div>
             </div>
@@ -211,7 +211,7 @@ const SeekerDashboard = () => {
           </div>
         </div>
 
-        <div className="col-lg-4 col-sm-3">
+        <div className="col-lg-4">
           <h5>Filters</h5>
           <div className="filer-card">
             <h6 className='mt-4'>Work mode</h6>
