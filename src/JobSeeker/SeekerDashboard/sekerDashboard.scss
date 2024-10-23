@@ -169,11 +169,24 @@
   }
   
   .btn-save {
-    padding: 7px 20px;
+    padding: 5px 15px;
+    background-color: #fff;
+    border: solid 1px var(--lt-blue-c);
+    border-radius: 6px;
+  }
+  .btn-save:hover {
+    background-color: var(--lt-blue-c);
   }
   
   .btn-apply {
-    padding: 7px 20px;
+    padding: 5px 15px;
+    background-color: var(--lt-blue-c);
+    border: solid 1px var(--lt-blue-c);
+    border-radius: 6px;
+    color: white;
+  }
+  .btn-apply:hover {
+    background-color: var(--llt-blue-c);
   }
   
   /* Responsive adjustments */
