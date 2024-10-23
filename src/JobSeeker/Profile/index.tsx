@@ -72,6 +72,9 @@ const Profiles = () => {
                     <div className="row">
                         <div className="col-sm-3 col-lg-3 text-center mb-3">
                             <img className='profile-pic' src={window.location.origin + '/images/avtar-pic.avif'} />
+                            <label className="btn btn-outline-primary btn-sm">
+                                <i className="fa fa-image"></i>Upload image<input type="file" style={{ display: 'none' }} name="image" />
+                            </label>
                         </div>
                         <div className="col-sm-9 col-lg-8 offset-lg-1">
                             <div className="row">
@@ -83,7 +86,7 @@ const Profiles = () => {
                                         name="first_name"
                                         // value={formData.address}
                                         // onChange={handleInputChange}
-                                        placeholder="Enter fist name"
+                                        placeholder="Enter first name"
                                     />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
@@ -126,11 +129,38 @@ const Profiles = () => {
                                         id="phone_number"
                                         name="phone_number"
                                     />
+                                    <button className='btn btn-sm'><i className="bi bi-download"></i> Download</button>
+                                    <button className='btn btn-sm'><i className="bi bi-trash3"></i> Delete</button>
+                                    <span className='float-end text-secondary'><small>(Accepted format includes PDF, DOC & DOCX)</small></span>
                                 </div>
                             </div>
                         </div>
+                        <div className="col-sm-4 col-lg-4 mb-3">
+                            <label htmlFor="last_name" className="form-label">Country</label>
+                            <select className='form-select'>
+                                <option value="">Select Country</option>
+                                <option value="">India</option>
+                            </select>
+                        </div>
+                        <div className="col-sm-4 col-lg-4 mb-3">
+                            <label htmlFor="last_name" className="form-label">State</label>
+                            <select className='form-select'>
+                                <option value="">Select State</option>
+                                <option value="">Telangana</option>
+                            </select>
+                        </div>
+                        <div className="col-sm-4 col-lg-4 mb-3">
+                            <label htmlFor="last_name" className="form-label">City</label>
+                            <select className='form-select'>
+                                <option value="">Select City</option>
+                                <option value="">Hyderabad</option>
+                            </select>
+                        </div>
                     </div>
+                </div>
 
+
+                <div className="custom-card mt-4">
                     <div className="emp-details mt-4">
                         <div className="card mb-3">
                             <div className="card-header fw-bold">
@@ -253,8 +283,8 @@ const Profiles = () => {
                                     </div>
 
                                     {/* Add Button */}
-                                    <div className="add-btn">
-                                        <button className="btn">
+                                    <div className="text-end">
+                                        <button className="btn btn-outline-success btn-sm ">
                                             <i className="bi bi-plus-circle"></i> Add Skill
                                         </button>
                                     </div>
@@ -296,7 +326,7 @@ const Profiles = () => {
                             </div>
                         </div>
 
-                        <div className="card mb-3"> 
+                        <div className="card mb-3">
                             <div className="card-header fw-bold">
                                 <span><i className="bi bi-megaphone text-secondary me-2"></i> Languages </span>
                                 <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addLanguage"> +Add</button>
@@ -938,7 +968,7 @@ const Profiles = () => {
                                     </div>
 
                                     <div className="col-md-12 mt-4">
-                                    <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                        <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                                             <input type="checkbox" className="btn-check" id="btncheck22pop" />
                                             <label className="btn btn-outline-primary" htmlFor="btncheck22pop">Read</label>
 

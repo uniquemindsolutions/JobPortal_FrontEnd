@@ -22,6 +22,7 @@ const JobSeekerAdmin = () => {
                         {/* profile detais start */}
                         <div className="card dashb-profile-card">
                             <div className="card-header text-center">
+                           <Link to={'profile'}> <i className="bi bi-pencil text-white" style={{position:'absolute', right:'10px'}}></i></Link>
                                 <div className="profile-image">
                                     <img
                                         src="https://via.placeholder.com/80" // Profile picture placeholder
@@ -38,7 +39,7 @@ const JobSeekerAdmin = () => {
                             <div className="card-body">
                                 <div className='mb-2'><i className="bi bi-building"></i> versatile commerce</div>
                                 <div className='mb-2'><i className="bi bi-calendar"></i> Exp: 8 Years 2 Month</div>
-                                <div className='mb-2'><i className="bi bi-telephone"></i> +919989953568 <i className="bi bi-pencil ms-2"></i></div>
+                                <div className='mb-2'><i className="bi bi-telephone"></i> +919989953568 </div>
                                 <div className='mb-2'><i className="bi bi-envelope"></i> shekharvadla@gmail.com <i className="bi bi-check2-all ms-2"></i></div>
 
                                 {/* <div className="profile-completion mt-4">
