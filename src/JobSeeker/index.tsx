@@ -22,7 +22,7 @@ const JobSeekerAdmin = () => {
                         {/* profile detais start */}
                         <div className="card dashb-profile-card">
                             <div className="card-header text-center">
-                           <Link to={'profile'}> <i className="bi bi-pencil text-white" style={{position:'absolute', right:'10px'}}></i></Link>
+                                <Link to={'profile'}> <i className="bi bi-pencil text-white" style={{ position: 'absolute', right: '10px' }}></i></Link>
                                 <div className="profile-image">
                                     <img
                                         src="https://via.placeholder.com/80" // Profile picture placeholder
@@ -40,7 +40,7 @@ const JobSeekerAdmin = () => {
                                 <div className='mb-2'><i className="bi bi-building"></i> versatile commerce</div>
                                 <div className='mb-2'><i className="bi bi-calendar"></i> Exp: 8 Years 2 Month</div>
                                 <div className='mb-2'><i className="bi bi-telephone"></i> +919989953568 </div>
-                                <div className='mb-2'><i className="bi bi-envelope"></i> shekharvadla@gmail.com <i className="bi bi-check2-all ms-2"></i></div>
+                                <div className='mb-2'><i className="bi bi-envelope"></i> shekharvadla@gmail.com</div>
 
                                 {/* <div className="profile-completion mt-4">
                                     <h6>100% Profile Complete</h6>
@@ -75,25 +75,26 @@ const JobSeekerAdmin = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/profile" className="text-white">
-                                <i className="fas fa-user me-2"></i> Profile
-                            </Link>
-                        </li>
-                        <li>
                             <Link to="/applied-jobs" className="text-white">
                                 <i className="fas fa-cog me-2"></i> Applied Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="/change-password" className="text-white">
-                                <i className="fas fa-cog me-2"></i> Change Password
+                            <Link to="saved-jobs" className="text-white">
+                                <i className="fas fa-cog me-2"></i> Saved Jobs
                             </Link>
                         </li>
+                        <li>
+                            <Link to="#" className="text-white">
+                                <i className="fas fa-cog me-2"></i> My Interviews
+                            </Link>
+                        </li>
+
                     </ul>
                 </nav>
 
                 {/* Main content */}
-                <div id="page-content-wrapper" className="w-100">
+                <div id="page-content-wrapper">
                     <div className="bg-light sticky-top container-fluid">
                         <div className="row">
                             <div className="col-lg-5 col-sm-12">
@@ -111,12 +112,14 @@ const JobSeekerAdmin = () => {
                                     </div>
                                 </nav>
                             </div>
+
                             <div className="col-lg-3 col-sm-6">
                                 <div className="from-grou">
                                     <input type="text" className='form-control mt-2' placeholder='Search' />
                                 </div>
                             </div>
-                            <div className="col-lg-4 col-sm-6 text-end">
+
+                            <div className="col-lg-4 col-sm-6 text-center">
                                 <span className="dropdown">
                                     <button type="button" className="btn " data-bs-toggle="dropdown"
                                         style={{ background: 'transparent', border: 'none' }}>
@@ -146,30 +149,26 @@ const JobSeekerAdmin = () => {
                                         </li>
                                     </ul>
                                 </span>
+
                                 <span className="dropdown">
-                                    <button type="button" className="btn" data-bs-toggle="dropdown"
-                                        style={{ background: 'transparent', border: 'none', width: '120px' }}>
+                                    <button type="button" className="ms-4 btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
                                         My Account
                                     </button>
-                                    <ul className="dropdown-menu border-0 shadow dropdown-menu-end">
-                                        <li>
-                                            <a href="#" className="dropdown-item">
-                                                Profile
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="dropdown-item">
-                                                Logout
-                                            </a>
-                                        </li>
+                                    <ul className="dropdown-menu">
+                                        <li><Link to='profile' className="dropdown-item">Profile</Link></li>
+                                        <li><a className="dropdown-item" href="#">Recruiter View</a></li>
+                                        <li><Link to='settings' className="dropdown-item">Settings</Link></li>
+                                        <li><Link to='change-password' className="dropdown-item">Change Password</Link></li>
+                                        <li><a className="dropdown-item" href="#">Logout</a></li>
                                     </ul>
                                 </span>
+
                             </div>
                         </div>
                     </div>
 
                     {/* Main Dashboard Content */}
-                    <div className="container-fluid px-4">
+                    <div className="container-fluid px-4 xs-px-1">
                         <Outlet />
                     </div>
                 </div>

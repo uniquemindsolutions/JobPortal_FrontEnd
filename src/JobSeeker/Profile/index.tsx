@@ -67,8 +67,10 @@ const Profiles = () => {
 
     return (
         <main>
-            <div className="container mt-4">
+            <div className=" mt-4">
+                <h5>Profile</h5>
                 <div className="custom-card">
+                    <button className="bi bi-pencil-square btn float-end position-absolute end-0" data-bs-toggle="modal" data-bs-target="#addProfile" style={{ marginRight: '4%', marginTop: '-2%' }} title='Edit'></button>
                     <div className="row">
                         <div className="col-sm-3 col-lg-3 text-center mb-3">
                             <img className='profile-pic' src={window.location.origin + '/images/avtar-pic.avif'} />
@@ -77,86 +79,58 @@ const Profiles = () => {
                             </label>
                         </div>
                         <div className="col-sm-9 col-lg-8 offset-lg-1">
+
                             <div className="row">
                                 <div className="col-sm-6 col-lg-6 mb-3">
                                     <label htmlFor="first_name" className="form-label">First Name</label>
-                                    <input type="text"
-                                        id='first_name'
-                                        className="form-control"
-                                        name="first_name"
-                                        // value={formData.address}
-                                        // onChange={handleInputChange}
-                                        placeholder="Enter first name"
-                                    />
+                                    <input type="text" placeholder='Shekhar' className="form-control" readOnly />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
                                     <label htmlFor="last_name" className="form-label">Last Name</label>
-                                    <input type="text"
-                                        className="form-control"
-                                        id="last_name"
-                                        name="last_name"
-                                        // value={formData.address}
-                                        // onChange={handleInputChange}
-                                        placeholder="Enter last name"
-                                    />
+                                    <input type="text" placeholder='Vadla' className="form-control" readOnly />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
                                     <label htmlFor="email_id" className="form-label">Email ID</label>
-                                    <input type="text"
-                                        className="form-control"
-                                        id="email_id"
-                                        name="email_id"
-                                        // value={formData.address}
-                                        // onChange={handleInputChange}
-                                        placeholder="Enter email id"
-                                    />
+                                    <input type="text" placeholder='test@gmail.com' className="form-control" readOnly />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
                                     <label htmlFor="phone_number" className="form-label">Phone Number</label>
-                                    <input type="text"
-                                        className="form-control"
-                                        id="phone_number"
-                                        name="phone_number"
-                                        // value={formData.address}
-                                        // onChange={handleInputChange}
-                                        placeholder="Enter phone number"
-                                    />
+                                    <input type="text" placeholder='+91-9876543210' className="form-control" readOnly />
                                 </div>
-                                <div className="col-sm-12 col-lg-12 mb-3">
-                                    <label htmlFor="phone_number" className="form-label">Upload Resume</label>
-                                    <input type="file"
-                                        className="form-control"
-                                        id="phone_number"
-                                        name="phone_number"
+                                <div className="col-sm-6 col-lg-6 mb-3">
+                                    <label htmlFor="resume" className="form-label">Resume</label>
+                                    <input type="text" placeholder='shekhar-vadla-resume.pdf' className="form-control" readOnly />
+                                    <button className='btn-sm btn'>Download</button>
+                                </div>
+                                <div className="col-sm-6 col-lg-6 mb-3">
+                                    <label htmlFor="industry" className="form-label">Industry</label>
+                                    <input type="text" placeholder='IT'
+                                        className="form-control" readOnly
                                     />
-                                    <button className='btn btn-sm'><i className="bi bi-download"></i> Download</button>
-                                    <button className='btn btn-sm'><i className="bi bi-trash3"></i> Delete</button>
-                                    <span className='float-end text-secondary'><small>(Accepted format includes PDF, DOC & DOCX)</small></span>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-4 col-lg-4 mb-3">
-                            <label htmlFor="last_name" className="form-label">Country</label>
-                            <select className='form-select'>
-                                <option value="">Select Country</option>
-                                <option value="">India</option>
-                            </select>
-                        </div>
-                        <div className="col-sm-4 col-lg-4 mb-3">
-                            <label htmlFor="last_name" className="form-label">State</label>
-                            <select className='form-select'>
-                                <option value="">Select State</option>
-                                <option value="">Telangana</option>
-                            </select>
-                        </div>
-                        <div className="col-sm-4 col-lg-4 mb-3">
-                            <label htmlFor="last_name" className="form-label">City</label>
-                            <select className='form-select'>
-                                <option value="">Select City</option>
-                                <option value="">Hyderabad</option>
-                            </select>
+                    </div>
+
+                    <div className="card">
+                        <div className="card-body bg-light">
+                            <div className="row">
+                                <div className="col-sm-4 col-lg-4 mb-3">
+                                    <label htmlFor="last_name" className="form-label">Current Location</label>
+                                    <input type="text" placeholder='India' className="form-control" readOnly />
+                                </div>
+                                <div className="col-sm-4 col-lg-4 mb-3">
+                                    <label htmlFor="last_name" className="form-label">Preferred Locations</label>
+                                    <input type="text" placeholder='Pan india location' className="form-control" readOnly />
+                                </div>
+                                <div className="col-sm-4 col-lg-4 mb-3">
+                                    <label htmlFor="last_name" className="form-label">Notice Period</label>
+                                    <input type="text" placeholder='Immediately Available' className="form-control" readOnly />
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
 
@@ -246,7 +220,7 @@ const Profiles = () => {
                                     </div>
                                     <hr />
                                     {/* IT Skills Table */}
-                                    <div className="it-skills-table">
+                                    <div className="it-skills-table table-responsive">
                                         <table className="table table-striped">
                                             <thead>
                                                 <tr>
@@ -374,6 +348,129 @@ const Profiles = () => {
             </button> */}
 
 
+            <div className="modal fade" id="addProfile" aria-labelledby="addProfileLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header bg-light">
+                            <h5 className="modal-title" id="addProfileLabel">Personal Details</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body py-0">
+                            {/* education details start */}
+                            <form className="education-form">
+
+                                <div className="row">
+                                    <div className="col-sm-12 col-lg-12 mb-3">
+                                        <label htmlFor="upload_ profile_image" className="form-label">Upload Profile Image</label>
+                                        <input type="file" className="form-control" id="upload_ profile_image"
+                                            name="upload_ profile_image" />
+                                        <span className='float-end text-secondary'><small>(Upload a picture less than 100kb)</small></span>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="first_name" className="form-label">First Name *</label>
+                                            <input type="input" className="form-control" id="first_name" placeholder="Enter your First Name" />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="last_name" className="form-label">Last Name</label>
+                                            <input type="number" className="form-control" id="last_name" placeholder="Enter your Last Name" />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="email" className="form-label">Email Id *</label>
+                                            <input type="email" className="form-control" id="email" placeholder="Enter your Email id" />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="phone_no" className="form-label">Phone Number *</label>
+                                            <input type="number" className="form-control" id="phone_no" placeholder="Enter your phone no." />
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-12 col-lg-12 mb-3">
+                                        <label htmlFor="upload_resume" className="form-label">Upload Resume</label>
+                                        <input type="file"
+                                            className="form-control"
+                                            id="upload_resume"
+                                            name="upload_resume" />
+                                        <span className='float-end text-secondary'><small>(Accepted format includes PDF, DOC & DOCX)</small></span>
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="passingYear" className="form-label">Total experiance</label>
+                                            <select className="form-select" id="qualification">
+                                                <option selected>Select Years</option>
+                                                <option >Fresher</option>
+                                                <option >1 Below year</option>
+                                                <option >2 Year</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="passingYear" className="form-label"> </label>
+                                            <select className="form-select mt-2" id="qualification">
+                                                <option selected>Select Months</option>
+                                                <option >1 Month</option>
+                                                <option >2 Months</option>
+                                                <option >3 Months</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="passingYear" className="form-label">Current Location *</label>
+                                            <select className="form-select" id="qualification">
+                                                <option selected>Select Current Location</option>
+                                                <option >Hyderabad</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="passingYear" className="form-label">Preferred Locations</label>
+                                            <select className="form-select" id="qualification">
+                                                <option selected>Select Preferred Locations</option>
+                                                <option>Bangalore</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="passingYear" className="form-label">Notice Period</label>
+                                            <select className='form-select'>
+                                                <option value="">Select Notice Period</option>
+                                                <option value="">Immediately Available</option>
+                                                <option value="">15 Days</option>
+                                                <option value="">30 Days</option>
+                                                <option value="">45 Days</option>
+                                                <option value="">2 Months</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+                            {/* education details end */}
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="modal fade" id="addEducation" aria-labelledby="addEducationLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
@@ -384,67 +481,75 @@ const Profiles = () => {
                         <div className="modal-body">
                             {/* education details start */}
                             <form className="education-form">
-                                <div className="mb-3">
-                                    <label htmlFor="qualification" className="form-label">Qualification *</label>
-                                    <select className="form-select" id="qualification">
-                                        <option selected>Enter or select your qualification</option>
-                                        {/* Options for qualifications */}
-                                    </select>
-                                </div>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="qualification" className="form-label">Qualification *</label>
+                                            <select className="form-select" id="qualification">
+                                                <option selected>Enter or select your qualification</option>
 
-                                <div className="mb-3">
-                                    <label htmlFor="specialization" className="form-label">Specialization *</label>
-                                    <select className="form-select" id="specialization">
-                                        <option selected>Enter or select your specialization</option>
-                                        {/* Options for specializations */}
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="institute" className="form-label">Institute *</label>
-                                    <select className="form-select" id="institute">
-                                        <option selected>Enter or select your institute</option>
-                                        {/* Options for institutes */}
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="gradingSystem" className="form-label">Grading system</label>
-                                    <select className="form-select" id="gradingSystem">
-                                        <option selected>Enter or Select your Grading system</option>
-                                        {/* Options for grading systems */}
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="marks" className="form-label">Marks</label>
-                                    <input type="number" className="form-control" id="marks" placeholder="Enter your Marks" />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="passingYear" className="form-label">Passing Year *</label>
-                                    <select className="form-select" id="passingYear">
-                                        <option selected>Select passing year</option>
-                                        {/* Options for years */}
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Education Type *</label>
-                                    <div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="educationType" id="fullTime" value="Full time" />
-                                            <label className="form-check-label" htmlFor="fullTime">Full time</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="educationType" id="partTime" value="Part time" />
-                                            <label className="form-check-label" htmlFor="partTime">Part time</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="educationType" id="correspondence" value="Correspondence" />
-                                            <label className="form-check-label" htmlFor="correspondence">Correspondence</label>
+                                            </select>
                                         </div>
                                     </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="specialization" className="form-label">Specialization *</label>
+                                            <select className="form-select" id="specialization">
+                                                <option selected>Enter or select your specialization</option>
+                                                {/* Options for specializations */}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="mb-3">
+                                            <label htmlFor="institute" className="form-label">Institute *</label>
+                                            <select className="form-select" id="institute">
+                                                <option selected>Enter or select your institute</option>
+                                                {/* Options for institutes */}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="gradingSystem" className="form-label">Grading system</label>
+                                            <select className="form-select" id="gradingSystem">
+                                                <option selected>Enter or Select your Grading system</option>
+                                                {/* Options for grading systems */}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="marks" className="form-label">Marks</label>
+                                            <input type="number" className="form-control" id="marks" placeholder="Enter your Marks" />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="passingYear" className="form-label">Passing Year *</label>
+                                            <input type="month" className='form-control' />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-8">
+                                        <div className="mb-3">
+                                            <label className="form-label">Education Type *</label>
+                                            <div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="educationType" id="fullTime" value="Full time" />
+                                                    <label className="form-check-label" htmlFor="fullTime">Full time</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="educationType" id="partTime" value="Part time" />
+                                                    <label className="form-check-label" htmlFor="partTime">Part time</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="educationType" id="correspondence" value="Correspondence" />
+                                                    <label className="form-check-label" htmlFor="correspondence">Correspondence</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </form>
                             {/* education details end */}
@@ -466,100 +571,110 @@ const Profiles = () => {
                         </div>
                         <div className="modal-body">
                             {/* work experiance start */}
-                            <form className="job-form">
-                                <div className="mb-3">
-                                    <label htmlFor="jobTitle" className="form-label">Current Job Title *</label>
-                                    <input type="text" className="form-control" id="jobTitle" placeholder="Most recent job title" />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="companyName" className="form-label">Company Name *</label>
-                                    <input type="text" className="form-control" id="companyName" placeholder="Most recent company" />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Is This Your Current Company?</label>
-                                    <div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="currentCompany" id="currentCompanyYes" value="yes" />
-                                            <label className="form-check-label" htmlFor="currentCompanyYes">Yes</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="currentCompany" id="currentCompanyNo" value="no" />
-                                            <label className="form-check-label" htmlFor="currentCompanyNo">No</label>
+                            <form className="job-form py-1">
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="jobTitle" className="form-label">Current Job Title *</label>
+                                            <input type="text" className="form-control" id="jobTitle" placeholder="Most recent job title" />
                                         </div>
                                     </div>
-                                </div>
-
-                                <div className="mb-3 row">
-                                    <div className="col">
-                                        <label htmlFor="startDateYear" className="form-label">Start Date *</label>
-                                        <select className="form-select" id="startDateYear">
-                                            <option selected>Year</option>
-                                            {/* Options for years */}
-                                        </select>
-                                    </div>
-                                    <div className="col">
-                                        <label htmlFor="startDateMonth" className="form-label">Month *</label>
-                                        <select className="form-select" id="startDateMonth">
-                                            <option selected>Month</option>
-                                            {/* Options for months */}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="noticePeriod" className="form-label">Notice Period *</label>
-                                    <select className="form-select" id="noticePeriod">
-                                        <option selected>Select your notice period</option>
-                                        {/* Options for notice period */}
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Workplace</label>
-                                    <div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="workplace" id="inOffice" value="inOffice" />
-                                            <label className="form-check-label" htmlFor="inOffice">In-Office</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="workplace" id="hybrid" value="hybrid" />
-                                            <label className="form-check-label" htmlFor="hybrid">Hybrid</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="workplace" id="workFromHome" value="workFromHome" />
-                                            <label className="form-check-label" htmlFor="workFromHome">Work from home</label>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="companyName" className="form-label">Company Name *</label>
+                                            <input type="text" className="form-control" id="companyName" placeholder="Most recent company" />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="mb-3">
-                                    <label htmlFor="employmentType" className="form-label">Employment Type</label>
-                                    <select className="form-select" id="employmentType">
-                                        <option selected>Select your employment type</option>
-                                        {/* Options for employment type */}
-                                    </select>
-                                </div>
-
-                                <div className="mb-3 row">
-                                    <div className="col">
-                                        <label htmlFor="salaryCurrency" className="form-label">Current Salary (Annually) *</label>
-                                        <select className="form-select" id="salaryCurrency">
-                                            <option selected>INR</option>
-                                            {/* Other currency options */}
-                                        </select>
+                                    <div className="col-md-12">
+                                        <div className="mb-3">
+                                            <label className="form-label">Is This Your Current Company?</label>
+                                            <div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="currentCompany" id="currentCompanyYes" value="yes" />
+                                                    <label className="form-check-label" htmlFor="currentCompanyYes">Yes</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="currentCompany" id="currentCompanyNo" value="no" />
+                                                    <label className="form-check-label" htmlFor="currentCompanyNo">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="col">
-                                        <label htmlFor=""></label>
-                                        <input type="number" className="form-control" id="salary" placeholder="Enter your current salary" />
-                                    </div>
-                                </div>
+                                    <div className="col-md-8">
+                                        <div className="mb-3 row">
+                                            <div className="col">
+                                                <label htmlFor="startDateYear" className="form-label">Start Date *</label>
+                                                <input type='date' className="form-control" id="startDateYear" />
 
-                                <div className="mb-3">
-                                    <label htmlFor="description" className="form-label">Description</label>
-                                    <textarea className="form-control" id="description" placeholder="Enter your description"></textarea>
-                                    <small className="form-text text-muted">Max. 1000 characters</small>
+                                            </div>
+                                            <div className="col">
+                                                <label htmlFor="endDateMonth" className="form-label">Start Date *</label>
+                                                <input type='date' className="form-control" id="endDateYear" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="noticePeriod" className="form-label">Notice Period *</label>
+                                            <select className="form-select" id="noticePeriod">
+                                                <option selected>Select your notice period</option>
+                                                {/* Options for notice period */}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="mb-3">
+                                            <label className="form-label">Workplace</label>
+                                            <div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="workplace" id="inOffice" value="inOffice" />
+                                                    <label className="form-check-label" htmlFor="inOffice">In-Office</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="workplace" id="hybrid" value="hybrid" />
+                                                    <label className="form-check-label" htmlFor="hybrid">Hybrid</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="workplace" id="workFromHome" value="workFromHome" />
+                                                    <label className="form-check-label" htmlFor="workFromHome">Work from home</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="employmentType" className="form-label">Employment Type</label>
+                                            <select className="form-select" id="employmentType">
+                                                <option selected>Select your employment type</option>
+                                                {/* Options for employment type */}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-8">
+                                        <div className="mb-3 row">
+                                            <div className="col">
+                                                <label htmlFor="salaryCurrency" className="form-label">Current Salary (Annually) *</label>
+                                                <select className="form-select" id="salaryCurrency">
+                                                    <option selected>INR</option>
+                                                    {/* Other currency options */}
+                                                </select>
+                                            </div>
+                                            <div className="col">
+                                                <label htmlFor=""></label>
+                                                <input type="number" className="form-control" id="salary" placeholder="Enter your current salary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="">
+                                            <label htmlFor="description" className="form-label">Description</label>
+                                            <textarea className="form-control" id="description" placeholder="Enter your description"></textarea>
+                                            <small className="form-text text-muted">Max. 1000 characters</small>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </form>
                             {/* work experiance end */}
@@ -582,22 +697,26 @@ const Profiles = () => {
                         <div className="modal-body">
                             {/* job prep start */}
                             <form className="job-preference-form">
-                                <div className="mb-3">
-                                    <label htmlFor="department" className="form-label">Preferred Department/Function</label>
-                                    <select className="form-select" id="department">
-                                        <option selected>Enter or select your preferred department</option>
-                                        {/* Options for departments */}
-                                    </select>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="department" className="form-label">Preferred Department/Function</label>
+                                            <select className="form-select" id="department">
+                                                <option selected>Enter or select your preferred department</option>
+                                                {/* Options for departments */}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="jobTitle" className="form-label">Preferred Job Title *</label>
+                                            <select className="form-select" id="jobTitle">
+                                                <option selected>Enter or select your preferred job title</option>
+                                                {/* Options for job titles */}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="jobTitle" className="form-label">Preferred Job Title *</label>
-                                    <select className="form-select" id="jobTitle">
-                                        <option selected>Enter or select your preferred job title</option>
-                                        {/* Options for job titles */}
-                                    </select>
-                                </div>
-
                                 <div className="mb-3">
                                     <label className="form-label">Job Type</label>
                                     <div>
