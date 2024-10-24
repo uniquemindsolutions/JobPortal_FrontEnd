@@ -18,10 +18,10 @@ import ViewJobs from './Admin/ViewJobs';
 import JobSeekerAdmin from './JobSeeker';
 import ViewJobDetails from './JobSeeker/SeekerDashboard/ViewJobDetails';
 import Profiles from './JobSeeker/Profile';
-
-
-
-
+import AppliedJobs from './JobSeeker/AppliedJobs';
+import SavedJobs from './JobSeeker/SavedJobs';
+import Setting from './JobSeeker/Settings';
+import ChangePassword from './JobSeeker/ChangePassword';
 
 
 
@@ -69,6 +69,10 @@ function App() {
               <Route path='seeker-dashboard' element={<SeekerDashboard/>}/>
               <Route path='/view-job-details' element={<ViewJobDetails/>}/>
               <Route path='profile' element={<Profiles/>}/>
+              <Route path='applied-jobs' element={<AppliedJobs/>}/>
+              <Route path='saved-jobs' element={<SavedJobs/>}/>
+              <Route path='settings' element={<Setting/>}/>
+              <Route path='change-password' element={<ChangePassword/>}/>
             </Route>
           </Route>
         </Routes>

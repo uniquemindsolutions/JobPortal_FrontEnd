@@ -34,3 +34,27 @@ body {
 .blue-bg {background-color:#023047;}
 .lt-blue-bg {background-color:#0386a7;}
 .llt-blue-bg {background-color:#8ecae6;}
+
+@media(max-width: 768px){
+  .xs-px-1 {
+    padding: 1rem;
+  }
+}
+
+.save-btns {
+  padding: 7px 30px;
+  background: var(--lt-blue-c);
+  border-radius: 7px;
+  border: solid 1px var(--lt-blue-c);
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  transition: 0.4s;
+}
+.save-btns:hover {
+  border: solid 1px var(--lt-blue-c);
+  background-color: white;
+  color: var(--lt-blue-c);
+  transition: 0.4s;
+  box-shadow: 0 5px 9px #00000030;
+}
