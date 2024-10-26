@@ -2,20 +2,42 @@ import React, { useEffect, useState } from 'react'
 import './sekerDashboard.scss'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { wait } from '@testing-library/user-event/dist/utils';
 
+interface MyData {
+  id: number;
+  applied_count: string;
+  // description: string;
+  // Add other fields based on the API response structure
+}
 const SeekerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [applyjobs, setApplyjobs] = useState<MyData[]>([])
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);  
   };
 
-  useEffect(()=>{
-    const dataFetching = async ()=>{
-      
-    }
-  })
+  // useEffect(()=>{
+  //   const dataFetching = async ()=>{
+  //     setLoading(true);     
+  //     try { 
+  //       const response = await axios.get('http://127.0.0.1:8000/user/Appliedjobs/');
+  //       setApplyjobs(response.applyjobs)
+  //     }
+   
+  //    catch (error) {
+  //     setError(error); // Save the error if there's any
+  //   } finally {
+  //     setLoading(false); // Stop loading
+  //   }
+  // }
+
+  // }, [])
+
   return (
     <main>
       <h4 className='mt-4'>Dashboard</h4>
