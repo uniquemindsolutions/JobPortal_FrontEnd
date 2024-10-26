@@ -71,22 +71,22 @@ const JobSeekerAdmin = () => {
                     <ul className="list-unstyled components">
                         <li>
                             <Link to="seeker-dashboard" className="text-white">
-                                <i className="fas fa-home me-2"></i> Dashboard
+                            <i className="bi bi-speedometer2 me-2"></i> Dashboard
                             </Link>
                         </li>
                         <li>
                             <Link to="/applied-jobs" className="text-white">
-                                <i className="fas fa-cog me-2"></i> Applied Jobs
+                            <i className="bi bi-calendar2-check me-2"></i> Applied Jobs
                             </Link>
                         </li>
                         <li>
                             <Link to="saved-jobs" className="text-white">
-                                <i className="fas fa-cog me-2"></i> Saved Jobs
+                            <i className="bi bi-save me-2"></i> Saved Jobs
                             </Link>
                         </li>
                         <li>
                             <Link to="#" className="text-white">
-                                <i className="fas fa-cog me-2"></i> My Interviews
+                            <i className="bi bi-person-lines-fill me-2"></i> My Interviews
                             </Link>
                         </li>
 

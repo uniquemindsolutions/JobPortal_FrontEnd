@@ -610,7 +610,7 @@ const SubmitJob = () => {
                         </div>
 
                         {/* Industry */}
-                        <div className="col-md-6 mb-3">
+                        <div className="col-md-5 mb-3">
                             <label htmlFor="industry" className="form-label">Industry*</label>
                             <select
                                 className="form-select"
@@ -775,7 +775,7 @@ const SubmitJob = () => {
                             </select>
                         </div>
                         {/* Upload File */}
-                        <div className="col-md-12 mb-3">
+                        <div className="col-md-10 mb-3">
                             <label htmlFor="upload_file" className="form-label">File Attachment</label>
                             <input
                                 className="form-control"
@@ -798,6 +798,16 @@ const SubmitJob = () => {
                                     </a>
                                 </div>
                             )}
+                        </div>
+                        <div className="col-md-2 mb-3">
+                            <label htmlFor="job_status" className="form-label">Job Status </label>
+                            <select className="form-select" name="job_status" id="job_status"
+                                onChange={handleInputChange}>
+                                <option value="">Select Staus</option>
+                                <option value="Basic">Active</option>
+                                <option value="Medium">In Active</option>
+                                <option value="Excellent">Expired</option>
+                            </select>
                         </div>
 
                         <h4 className='text-primary mt-4'>Company Info</h4>
