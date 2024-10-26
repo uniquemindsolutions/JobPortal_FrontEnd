@@ -121,3 +121,11 @@
     padding: 10px;
   }
 }
+::placeholder {
+  color: #c5c5c5!important;
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Edge 12-18 */
+  color: #c5c5c5!important;
+}

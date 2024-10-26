@@ -6,11 +6,17 @@ import axios from 'axios';
 import { error } from 'console';
 
 
+
+interface City {
+    id: number;
+    name: string;
+}
 export interface PostedJob {
     job_title: string;
     job_type: string;
     location: string;
     map_location: string;
+    city: City;
 }
 const Dashboard = () => {
     // const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -21,7 +27,7 @@ const Dashboard = () => {
     // interface SidebarProps {
     //     isVisible: boolean;
     // }
-
+    const [citys, setCitys] = useState<City[]>([]);
     const [stats, setStats] = useState({
         visitorCount: '0',
         views: '0',
@@ -31,6 +37,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState('')
     const [postedJobData, setPostedJobData] = useState<PostedJob[]>([])
+
+ 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,7 +88,21 @@ const Dashboard = () => {
             .catch(error => (
                 setError(error = 'data fetching fail')
             ))
+            
+            fetch("http://127.0.0.1:8000/cities/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Cities:", data); // Log to check the data
+                setCitys(data); // Store the cities in state
+            })
+            .catch(error => console.error('Error fetching cities:', error));
+            // myJobsDetails();
     }, []);
+
+    const getCityNameById = (id: number): string => {
+        const city = citys.find((city: City) => city.id === id); // Ensure the type is specified
+        return city ? city.name : "Unknown City"; // Return the city name or a default value
+    };
 
 
 
@@ -139,13 +161,13 @@ const Dashboard = () => {
                     <div className="card shadow-sm p-4">
                         <h5 className="mb-3">Posted Job</h5>
                         <ul className="list-unstyled border-top">
-                            {postedJobData.map((item, index) => (
+                            {postedJobData.map((item:any, index) => (
                                 <li key={index} className="d-flex justify-content-between align-items-center my-3">
                                     <div>
                                         <h6 className="mb-0 text-primary">{item.job_title}</h6>
-                                        <small className="text-muted"><span>{item.job_type}</span>, <span>{item.map_location}</span></small>
+                                        <small className="text-muted"><span>{item.job_type}</span>, <span>{getCityNameById(item.city)}</span></small>
                                     </div>
-                                    <div className="dropdown">
+                                    {/* <div className="dropdown">
                                         <button className="btn btn-link text-muted"
                                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i className="bi bi-three-dots-vertical"></i>
@@ -154,14 +176,11 @@ const Dashboard = () => {
                                             <li>
                                                 <a className="dropdown-item" href="#">View Job</a>
                                             </li>
-                                            <li>
-                                                <a className="dropdown-item" href="#">Archive</a>
-                                            </li>
-                                            <li>
+                                             <li>
                                                 <a className="dropdown-item text-danger" href="#">Delete</a>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> */}
                                 </li>
                             ))
 

@@ -101,7 +101,7 @@ const MyJobs = () => {
                                     <tr key={index}>
                                         <td>
                                             <div className="fw-bold">{items.job_title}</div>
-                                            <div className="info1">{items.job_type}.{getCityNameById(items.city)} {/* Get city name using the utility function */}</div>
+                                            <div className="info1">{items.job_type}, {getCityNameById(items.city)} {/* Get city name using the utility function */}</div>
                                         </td>
                                         <td>{items.created_date.split('T')[0]}
                                         </td>

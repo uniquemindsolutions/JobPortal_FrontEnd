@@ -10,7 +10,7 @@ const AppliedJobs = () => {
                 <div className="col-lg-8">
                     <h5>Applied Jobs</h5>
 
-                    <div className="card job-card p-3">
+                    <div className="card job-card mt-4">
                         <div className="row">
                             <div className="col-md-2 text-end">
                                 <div className="company-logo">
@@ -22,25 +22,28 @@ const AppliedJobs = () => {
                             <div className="col-md-10">
                                 <div className='d-flex justify-content-between'>
                                     <h5 className="job-title">Sr UX Designer</h5>
-                                    <div className="text-end">
+                                    <div className="text-end" style={{marginTop:'-5px', marginRight:'-6px'}}>
                                         <button className="btn btn-apply btn-sm me-2">Follow Up</button>
                                         <button className="btn bg-danger btn-sm"><i className="bi bi-trash3"></i></button>
                                     </div>
                                 </div>
-                                <p className="company-details">
-                                    Tech Mahindra
-                                </p>
-                                <div className="job-info">
-                                    <span className="experience">
-                                        <i className="bi bi-duffle"></i> 6 - 9 years
-                                    </span>
-                                    <span className="salary">
-                                        <i className="bi bi-currency-rupee"></i> Not Disclosed
-                                    </span>
-                                    <span className="location">
-                                        <i className="bi bi-geo-alt"></i> Hyderabad
-                                    </span>
+                                <div className="d-md-flex mt-1">
+                                    <div className="company-details">
+                                        Tech Mahindra
+                                    </div>
+                                    <div className="job-info ms-auto mt-0">
+                                        <span className="experience">
+                                            <i className="bi bi-duffle"></i> 6 - 9 years
+                                        </span>
+                                        <span className="salary">
+                                            <i className="bi bi-currency-rupee"></i> Not Disclosed
+                                        </span>
+                                        <span className="location">
+                                            <i className="bi bi-geo-alt"></i> Hyderabad
+                                        </span>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="border-bottom my-2"></div>
@@ -55,7 +58,7 @@ const AppliedJobs = () => {
                         </div>
                     </div>
 
-                    <div className="card job-card p-3">
+                    <div className="card job-card">
                         <div className="row">
                             <div className="col-md-2 text-end">
                                 <div className="company-logo">
@@ -67,25 +70,28 @@ const AppliedJobs = () => {
                             <div className="col-md-10">
                                 <div className='d-flex justify-content-between'>
                                     <h5 className="job-title">Sr UX Designer</h5>
-                                    <div className="text-end">
+                                    <div className="text-end" style={{marginTop:'-5px', marginRight:'-6px'}}>
                                         <button className="btn btn-apply btn-sm me-2">Follow Up</button>
                                         <button className="btn bg-danger btn-sm"><i className="bi bi-trash3"></i></button>
                                     </div>
                                 </div>
-                                <p className="company-details">
-                                    Tech Mahindra
-                                </p>
-                                <div className="job-info">
-                                    <span className="experience">
-                                        <i className="bi bi-duffle"></i> 6 - 9 years
-                                    </span>
-                                    <span className="salary">
-                                        <i className="bi bi-currency-rupee"></i> Not Disclosed
-                                    </span>
-                                    <span className="location">
-                                        <i className="bi bi-geo-alt"></i> Hyderabad
-                                    </span>
+                                <div className="d-md-flex mt-1">
+                                    <div className="company-details">
+                                        Tech Mahindra
+                                    </div>
+                                    <div className="job-info ms-auto mt-0">
+                                        <span className="experience">
+                                            <i className="bi bi-duffle"></i> 6 - 9 years
+                                        </span>
+                                        <span className="salary">
+                                            <i className="bi bi-currency-rupee"></i> Not Disclosed
+                                        </span>
+                                        <span className="location">
+                                            <i className="bi bi-geo-alt"></i> Hyderabad
+                                        </span>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="border-bottom my-2"></div>
@@ -99,8 +105,8 @@ const AppliedJobs = () => {
                             </div>
                         </div>
                     </div>
-
-                    <div className="card job-card p-3">
+                    
+                    <div className="card job-card">
                         <div className="row">
                             <div className="col-md-2 text-end">
                                 <div className="company-logo">
@@ -112,25 +118,28 @@ const AppliedJobs = () => {
                             <div className="col-md-10">
                                 <div className='d-flex justify-content-between'>
                                     <h5 className="job-title">Sr UX Designer</h5>
-                                    <div className="text-end">
+                                    <div className="text-end" style={{marginTop:'-5px', marginRight:'-6px'}}>
                                         <button className="btn btn-apply btn-sm me-2">Follow Up</button>
                                         <button className="btn bg-danger btn-sm"><i className="bi bi-trash3"></i></button>
                                     </div>
                                 </div>
-                                <p className="company-details">
-                                    Tech Mahindra
-                                </p>
-                                <div className="job-info">
-                                    <span className="experience">
-                                        <i className="bi bi-duffle"></i> 6 - 9 years
-                                    </span>
-                                    <span className="salary">
-                                        <i className="bi bi-currency-rupee"></i> Not Disclosed
-                                    </span>
-                                    <span className="location">
-                                        <i className="bi bi-geo-alt"></i> Hyderabad
-                                    </span>
+                                <div className="d-md-flex mt-1">
+                                    <div className="company-details">
+                                        Tech Mahindra
+                                    </div>
+                                    <div className="job-info ms-auto mt-0">
+                                        <span className="experience">
+                                            <i className="bi bi-duffle"></i> 6 - 9 years
+                                        </span>
+                                        <span className="salary">
+                                            <i className="bi bi-currency-rupee"></i> Not Disclosed
+                                        </span>
+                                        <span className="location">
+                                            <i className="bi bi-geo-alt"></i> Hyderabad
+                                        </span>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="border-bottom my-2"></div>
@@ -149,7 +158,7 @@ const AppliedJobs = () => {
 
                 <div className="col-lg-4">
                     <h5>Featured Employers</h5>
-                    <img src={process.env.PUBLIC_URL + '/images/Employers-logos.png'} />
+                    <img src={process.env.PUBLIC_URL + '/images/Employers-logos.png'} className='img-fluid' />
                 </div>
             </div>
         </main>

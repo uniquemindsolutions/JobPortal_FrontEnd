@@ -1,18 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './sekerDashboard.scss'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const SeekerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    setIsSidebarOpen(!isSidebarOpen);  
   };
+
+  useEffect(()=>{
+    const dataFetching = async ()=>{
+      
+    }
+  })
   return (
     <main>
       <h4 className='mt-4'>Dashboard</h4>
-      <div className="row text-center mt-4">
+      <div className="row text-center">
         {/* Applied Jobs */}
         <div className="col-lg-3 col-md-6 mb-3">
           <div className="card stat-card applied-jobs">
@@ -78,7 +85,7 @@ const SeekerDashboard = () => {
         <div className="col-lg-8">
           <h5>Reacent Jobs</h5>
 
-          <div className="card job-card p-3">
+          <div className="card job-card mt-4">
             <div className="row">
               <div className="col-md-2 text-end">
                 <div className="company-logo">
@@ -89,24 +96,26 @@ const SeekerDashboard = () => {
               </div>
               <div className="col-md-10">
                 <h5 className="job-title">Sr UX Designer</h5>
-                <p className="company-details">
-                  Tech Mahindra
-                </p>
-                <div className="job-info">
-                  <span className="experience">
-                    <i className="bi bi-duffle"></i> 6 - 9 years
-                  </span>
-                  <span className="salary">
-                    <i className="bi bi-currency-rupee"></i> Not Disclosed
-                  </span>
-                  <span className="location">
-                    <i className="bi bi-geo-alt"></i> Hyderabad
-                  </span>
+                <div className="d-md-flex">
+                  <div className="company-details">
+                    Tech Mahindra
+                  </div>
+                  <div className="job-info ms-auto mt-0">
+                    <span className="experience">
+                      <i className="bi bi-duffle"></i> 6 - 9 years
+                    </span>
+                    <span className="salary">
+                      <i className="bi bi-currency-rupee"></i> Not Disclosed
+                    </span>
+                    <span className="location">
+                      <i className="bi bi-geo-alt"></i> Hyderabad
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="border-bottom my-2"></div>
-            <div className="row">
+
+            <div className="row mt-2">
               <div className="col-md-7 pt-1">
                 <span className="job-meta">Posted: <strong>5 days ago</strong></span>
                 <span className="job-meta">Openings: <strong>2</strong></span>
@@ -122,7 +131,8 @@ const SeekerDashboard = () => {
 
           </div>
 
-          <div className="card job-card p-3">
+
+          <div className="card job-card mt-4">
             <div className="row">
               <div className="col-md-2 text-end">
                 <div className="company-logo">
@@ -133,24 +143,26 @@ const SeekerDashboard = () => {
               </div>
               <div className="col-md-10">
                 <h5 className="job-title">Sr UX Designer</h5>
-                <p className="company-details">
-                  Tech Mahindra
-                </p>
-                <div className="job-info">
-                  <span className="experience">
-                    <i className="bi bi-duffle"></i> 6 - 9 years
-                  </span>
-                  <span className="salary">
-                    <i className="bi bi-currency-rupee"></i> Not Disclosed
-                  </span>
-                  <span className="location">
-                    <i className="bi bi-geo-alt"></i> Hyderabad
-                  </span>
+                <div className="d-md-flex">
+                  <div className="company-details">
+                    Tech Mahindra
+                  </div>
+                  <div className="job-info ms-auto mt-0">
+                    <span className="experience">
+                      <i className="bi bi-duffle"></i> 6 - 9 years
+                    </span>
+                    <span className="salary">
+                      <i className="bi bi-currency-rupee"></i> Not Disclosed
+                    </span>
+                    <span className="location">
+                      <i className="bi bi-geo-alt"></i> Hyderabad
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="border-bottom my-2"></div>
-            <div className="row">
+
+            <div className="row mt-2">
               <div className="col-md-7 pt-1">
                 <span className="job-meta">Posted: <strong>5 days ago</strong></span>
                 <span className="job-meta">Openings: <strong>2</strong></span>
@@ -159,14 +171,14 @@ const SeekerDashboard = () => {
               <div className="col-md-5">
                 <div className="text-end">
                   <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to={'seeker-dashboard/view-job-details'} className="btn btn-primary btn-apply">Apply Now</Link>
+                  <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
                 </div>
               </div>
             </div>
 
           </div>
 
-          <div className="card job-card p-3">
+          <div className="card job-card mt-4">
             <div className="row">
               <div className="col-md-2 text-end">
                 <div className="company-logo">
@@ -177,24 +189,26 @@ const SeekerDashboard = () => {
               </div>
               <div className="col-md-10">
                 <h5 className="job-title">Sr UX Designer</h5>
-                <p className="company-details">
-                  Tech Mahindra
-                </p>
-                <div className="job-info">
-                  <span className="experience">
-                    <i className="bi bi-duffle"></i> 6 - 9 years
-                  </span>
-                  <span className="salary">
-                    <i className="bi bi-currency-rupee"></i> Not Disclosed
-                  </span>
-                  <span className="location">
-                    <i className="bi bi-geo-alt"></i> Hyderabad
-                  </span>
+                <div className="d-md-flex">
+                  <div className="company-details">
+                    Tech Mahindra
+                  </div>
+                  <div className="job-info ms-auto mt-0">
+                    <span className="experience">
+                      <i className="bi bi-duffle"></i> 6 - 9 years
+                    </span>
+                    <span className="salary">
+                      <i className="bi bi-currency-rupee"></i> Not Disclosed
+                    </span>
+                    <span className="location">
+                      <i className="bi bi-geo-alt"></i> Hyderabad
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="border-bottom my-2"></div>
-            <div className="row">
+
+            <div className="row mt-2">
               <div className="col-md-7 pt-1">
                 <span className="job-meta">Posted: <strong>5 days ago</strong></span>
                 <span className="job-meta">Openings: <strong>2</strong></span>
@@ -203,12 +217,13 @@ const SeekerDashboard = () => {
               <div className="col-md-5">
                 <div className="text-end">
                   <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to={'seeker-dashboard/view-job-details'} className="btn btn-primary btn-apply">Apply Now</Link>
+                  <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
                 </div>
               </div>
             </div>
 
           </div>
+
         </div>
 
         <div className="col-lg-4">
