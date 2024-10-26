@@ -3,6 +3,9 @@ import './submitJobs.scss';
 import { useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import axios from 'axios';
+import { text } from 'stream/consumers';
+import { colors } from 'react-select/dist/declarations/src/theme';
 
 
 interface SubmitJob {
@@ -15,8 +18,8 @@ interface SubmitJob {
     country: number;
     english_fluency: string;
     experience: string;
-    industry: string;
-    job_category: string;
+    industry: number;
+    job_category: number;
     job_type: string;
     city_location: number;
     max_salary: string;
@@ -24,7 +27,7 @@ interface SubmitJob {
     salary_type: string;
     skills: string;
     state: number;
-    upload_file: File | null;
+    // upload_file: File | null;
     about_company: string;
     work_mode: string;
     ssc: string;
@@ -109,6 +112,8 @@ const SubmitJob = () => {
     const [graduate, setGraduate] = useState<graduate[]>([]);
     const [postGraduate, setPostGraduate] = useState<postGraduate[]>([]);
     const [isDisabled, setIsDisabled] = useState(false);
+    const [fileUpload, setFile] = useState<any | null>(null);
+    const [link, setLink] = useState<string>();
     // const [error, setError] = useState('');
 
 
@@ -118,7 +123,6 @@ const SubmitJob = () => {
         industry: '',
         fetchError: '' // Add an error field for fetching job data
     });
-
     const [formData, setFormData] = useState<SubmitJob>({
         job_title: '',
         number_of_positions: '',
@@ -129,8 +133,8 @@ const SubmitJob = () => {
         country: 0,
         english_fluency: '',
         experience: '',
-        industry: '',
-        job_category: '',
+        industry: 0,
+        job_category: 0,
         job_type: '',
         city_location: 0,
         max_salary: '',
@@ -138,7 +142,7 @@ const SubmitJob = () => {
         salary_type: '',
         skills: '',
         state: 0,
-        upload_file: null,
+        // upload_file: null,
         about_company: '',
         work_mode: '',
         ssc: '',
@@ -191,42 +195,16 @@ const SubmitJob = () => {
                     console.log("Submit job details:", data);
                     setGetSubmit(data);
                     if (Object.keys(data).length > 0) {
-                        const copyobject = {
-                            job_title: data.job_title,
-                            number_of_positions: data.number_of_positions,
-                            industry: data.industry.industry,
-                            job_category: data.job_category.job_category,
-                            job_description: data.job_description,
-                            job_type: data.job_type,
-                            salary_type: data.salary_type,
-                            min_salary: data.min_salary,
-                            max_salary: data.max_salary,
-                            skills: data.skills,
-                            experience: data.experience,
-                            english_fluency: data.english_fluency,
-                            about_company: data.about_company,
-                            work_mode: data.work_mode,
-                            created_date: data.created_date ? data.created_date.split('T')[0] : "",
-                            address: data.address,
-                            ssc: data.ssc,
-                            status: data.status,
-                            city_location: data.city_location,
-                            country: data.country,
-                            state: data.state,
-                            city: data.city,
-                            intermediate: data.intermediate,
-                            ug_course: data.ug_course,
-                            pg_course: data.pg_course,
-
-                        }
-                        console.log("Copy Object:", copyobject);
-                        console.log(data.copyobject, "copyobject ======")
-                        Object.entries(copyobject).forEach(([key, value]) => {
+                        console.log(data, "copyobject ======")
+                        Object.entries(data).forEach(([key, value]) => {
                             console.log("Key and Value:", key, value);
                             setFormData((formData) => ({
                                 ...formData,
                                 [key]: value, // Dynamically update the key based on input name
-                            }));
+                            })); console.log(formData, "Form Data Latest...");
+                            setLink(data.upload_file);
+
+
                         });
                         console.log("Latest form data =", formData);
                     }
@@ -259,16 +237,30 @@ const SubmitJob = () => {
                 setCountries(data);
             })
             .catch(error => console.error('Error fetching countries:', error));
-
-        // Fetch cities
+        if (mode === '1' || mode === '2') {
+            fetch("http://127.0.0.1:8000/states/")
+                .then(response => response.json())
+                .then(data => {
+                    console.log("States:", data); // Log to check the data
+                    setStates(data);
+                })
+                .catch(error => console.error('Error fetching states:', error));
+            // Fetch cities
+            fetch("http://127.0.0.1:8000/cities/")
+                .then(response => response.json())
+                .then(data => {
+                    console.log("My Cities:", data); // Log to check the data
+                    setCities(data);
+                })
+                .catch(error => console.error('Error fetching cities:', error));
+        }
         fetch("http://127.0.0.1:8000/cities/")
             .then(response => response.json())
             .then(data => {
-                console.log("Cities:", data); // Log to check the data
+                console.log("My Cities:", data); // Log to check the data
                 setCitys(data);
             })
             .catch(error => console.error('Error fetching cities:', error));
-
         fetch("http://127.0.0.1:8000/education/intermediate/")
             .then(response => response.json())
             .then(data => {
@@ -331,23 +323,34 @@ const SubmitJob = () => {
     };
 
     // Handle file input change
-    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     setFormData({
-    //         ...formData,
-    //         upload_file: e.target.files ? e.target.files[0] : null
-    //     });
-    // };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            setFormData({
-                ...formData,
-                upload_file: e.target.files[0], // Capture the first selected file
-            });
+            alert("Hi")
+
+            setFile(e.target.files[0]);
+
+
+            //  console.log(fileUpload,"newfile",e.target.files[0]);
+            // const newfile = new FormData();
+
+            // if (fileUpload) { // Check if fileUpload is not null
+            //     newfile.append('file', e.target.files[0]);
+            // } else {
+            //     console.error("No file selected for upload.");
+            // }
+
+            console.log(fileUpload, "newfile");
+            // formData.append("file",file)
+            // setFormData({
+            //     ...formData,
+            //     upload_file: e.target.files[0], // Capture the first selected file
+            // });
+            // console.log(formData,"File Checking...");
         } else {
-            setFormData({
-                ...formData,
-                upload_file: null, // Clear if no file selected
-            });
+            // setFormData({
+            //     ...formData,
+            //     upload_file: null, // Clear if no file selected
+            // });
         }
     };
 
@@ -361,84 +364,153 @@ const SubmitJob = () => {
         }
         const apiUrl = isEditing ? `http://127.0.0.1:8000/submitnewjob/${id}/` : `http://127.0.0.1:8000/submitnewjob/`;
         console.log(apiUrl, 'submited data=====')
-
         const submissionData = new FormData();
+
+
+
+        if (fileUpload) {
+            submissionData.append('upload_file', fileUpload);
+
+
+        } else {
+            console.log(submissionData, "newfile", fileUpload);
+        }
+
+        console.log(submissionData, "submissionData.....");
+
 
         Object.keys(formData).forEach(key => {
             submissionData.append(key, (formData as any)[key]);
-        })
-        const payload = {
-            "job_title": formData.job_title,
-            "number_of_positions": formData.number_of_positions,
-            "job_description": formData.job_description,
-            "address": formData.address,
-            "city": formData.city,
-            "country": formData.country,
-            "english_fluency": formData.english_fluency,
-            "experience": formData.experience,
-            "industry": {
-                "industry": formData.industry
-            },
-            "job_category": {
-                "job_category": formData.job_category
-            },
-            "job_type": formData.job_type,
-            "city_location": formData.city_location,
-            "max_salary": formData.max_salary,
-            "min_salary": formData.min_salary,
-            "salary_type": formData.salary_type,
-            "skills": formData.skills,
-            "state": formData.state,
-            "upload_file": null,
-            "about_company": formData.about_company,
-            "work_mode": formData.work_mode,
-            "ssc": formData.ssc,
-            "intermediate": formData.intermediate,
-            "ug_course": formData.ug_course,
-            "pg_course": formData.pg_course
-        }
-        // submissionData.append('upload_file', formData.upload_file )
+        });
 
+
+
+
+        // const payload = {
+        //     "job_title": formData.job_title,
+        //     "number_of_positions": formData.number_of_positions,
+        //     "job_description": formData.job_description,
+        //     "address": formData.address,
+        //     "city": formData.city,
+        //     "created_date": formData.created_date ? formData.created_date.split('T')[0] : "",
+        //     "country": formData.country,
+        //     "english_fluency": formData.english_fluency,
+        //     "upload_file": fileUpload,
+        //     "experience": formData.experience,
+        //     "industry": formData.industry,
+        //     "job_category": formData.job_category,
+        //     "job_type": formData.job_type,
+        //     "city_location": formData.city_location,
+        //     "max_salary": formData.max_salary,
+        //     "min_salary": formData.min_salary,
+        //     "salary_type": formData.salary_type,
+        //     "skills": formData.skills,
+        //     "state": formData.state,
+        //     "about_company": formData.about_company,
+        //     "work_mode": formData.work_mode,
+        //     "ssc": formData.ssc,
+        //     "intermediate": formData.intermediate,
+        //     "ug_course": formData.ug_course,
+        //     "pg_course": formData.pg_course
+        // }
         try {
             if (methodType) {
                 // Update the job with a PUT request
-                fetch(`http://127.0.0.1:8000/submitnewjob/${id}/`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),  // Send updated form data
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        console.log("Job updated successfully:", data);
-                        setFormData(data);
-                    })
-                    .catch((error) => console.error("Error updating job:", error));
+                // fetch(`http://127.0.0.1:8000/submitnewjob/${id}/`, {
+                //     method: 'PUT',
+                //     headers: {
+                //         'Content-Type': 'Mulitpart/form-data',
+                //     },
+                //     // body: JSON.stringify(submissionData),  // Send updated form data
+                //     body:submissionData
+                // })
+                //     .then((response) => response.json())
+                //     .then((data) => {
+                //         console.log("Job updated successfully:", data);
+                //         setFormData(data);
+                //         alert("Job updated successfully");
+                //     })
+                //     .catch((error) => console.error("Error updating job:", error));
+
+                try {
+                    const response = await axios.put(`http://127.0.0.1:8000/submitnewjob/${id}/`, submissionData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data', // Ensure the content type is set correctly
+                        },
+                    });
+
+                    console.log('Job updated successfully:', response.data);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+
+
             } else {
                 // Create a new job with a POST request
-                const response = await fetch("http://127.0.0.1:8000/submitnewjob/", {
-                    method: "POST",
-                    body: JSON.stringify(payload),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+                // const response = await fetch("http://127.0.0.1:8000/submit-jobs/", {
+                //     method: "POST",
+                //     body:submissionData,
+                //     // body: JSON.stringify(payload),
+                //     // headers: {
+                //     //     'Content-Type': 'application/json',
+                //     // },
+                //     headers: {
+                //        'Content-Type': 'multipart/form-data',
+                //     },
+                // });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log("Job submitted successfully:", result);
-                } else {
+                try {
+                    const response = await axios.post('http://127.0.0.1:8000/submitnewjob/', submissionData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data', // Ensure the content type is set correctly
+                        },
+                    });
+
+                    console.log('File uploaded successfully:', response.data);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
                 }
-                console.error("Error submitting job:", response.statusText);
+
+                // if (response.ok) {
+                //     const result = await response.json();
+                //     alert("Job Created Sucessfully");
+                //     console.log("Job submitted successfully:", result);
+                //     setFormData({
+                //         job_title: '',
+                //         number_of_positions: '',
+                //         created_date: '',
+                //         job_description: '',
+                //         address: '',
+                //         city: 0,
+                //         country: 0,
+                //         english_fluency: '',
+                //         experience: '',
+                //         industry: 0,
+                //         job_category: 0,
+                //         job_type: '',
+                //         city_location: 0,
+                //         max_salary: '',
+                //         min_salary: '',
+                //         salary_type: '',
+                //         skills: '',
+                //         state: 0,
+                //         upload_file: null,
+                //         about_company: '',
+                //         work_mode: '',
+                //         ssc: '',
+                //         intermediate: 0,
+                //         ug_course: 0,
+                //         pg_course: 0,
+                //     });
+                // } else {
+                // }
+                // console.error("Error submitting job:", response.statusText);
             }
         } catch (error) {
             console.error("Error submitting job:", error);
         }
     };
     console.log("datachecking", industriesorg);
-
-
     const handleonchangecountry = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
         console.log('Submitting form:', formData);
@@ -481,6 +553,7 @@ const SubmitJob = () => {
                         {/* Job Title */}
                         <div className="col-md-6 mb-3">
                             <label htmlFor="job_title" className="form-label">Job Title*</label>
+                            {/* {formData.upload_file} */}
                             <input
                                 type="text"
                                 className="form-control"
@@ -516,7 +589,7 @@ const SubmitJob = () => {
                                 id='created_date'
                                 className="form-control"
                                 name="created_date"
-                                value={formData.created_date || ""}  // Handle empty case
+                                value={formData.created_date ? formData.created_date.split('T')[0] : ""}
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                                 required
@@ -532,7 +605,7 @@ const SubmitJob = () => {
                                 onChange={handleEditorChange}
                                 modules={modules}
                                 placeholder="Enter Job description"
-                                readOnly={isEditing} 
+                                readOnly={isEditing}
                             />
                         </div>
 
@@ -542,13 +615,13 @@ const SubmitJob = () => {
                             <select
                                 className="form-select"
                                 value={formData.industry}
+                                id="industry"
                                 name="industry"
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                                 required
                             >
                                 <option value="">Select industry</option>
-
                                 {industriesorg && industriesorg.length > 0 ? (
                                     industriesorg.map((industry: Industry) => (
                                         <option key={industry.id} value={industry.id}>
@@ -564,10 +637,7 @@ const SubmitJob = () => {
                         {/* Job Category */}
                         <div className="col-md-5 mb-3">
                             <label htmlFor="job_category" className="form-label">Job Category</label>
-                            <select
-                                className="form-select"
-                                name="job_category"
-                                value={formData.job_category || ""}  // Handle empty case
+                            <select className="form-select" value={formData.job_category || ""} id="job_category" name="job_category"
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                             >
@@ -710,9 +780,24 @@ const SubmitJob = () => {
                             <input
                                 className="form-control"
                                 type="file"
+                                id="upload_file"
                                 name="upload_file"
                                 onChange={handleFileChange}
+                                disabled={isEditing}
                             />
+                            {link && (
+                                <div>
+                                    <a
+                                        href={link}
+                                        download="downloaded-file.ext" // Set the desired file name and extension here
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: 'black', textDecoration: 'none' }}                                        
+                                    >
+                                        Download
+                                    </a>
+                                </div>
+                            )}
                         </div>
 
                         <h4 className='text-primary mt-4'>Company Info</h4>
@@ -726,7 +811,7 @@ const SubmitJob = () => {
                                 onChange={aboutCompanyHandleEditorChange}
                                 modules={modules}
                                 placeholder="Enter about company"
-                                readOnly={isEditing} 
+                                readOnly={isEditing}
                             />
                         </div>
                         {/* Address */}
