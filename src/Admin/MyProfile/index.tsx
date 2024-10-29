@@ -62,7 +62,7 @@ const MyProfile = () => {
     const [isEditing, setIsEditing] = useState(false);
     // Fetch countries, states, cities and profile data on component mount
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/myprofile/24/`)
+        fetch(`http://127.0.0.1:8000/myprofile/25/`)
             .then(response => response.json())
             .then(data => {
                 console.log("Submit myprofile:", data);
@@ -271,7 +271,7 @@ const MyProfile = () => {
                             <div className="ms-3">
                                 <button className="file_button_container btn btn-success me-3">
                                     Upload new photo
-                                    <input type="file" onChange={handleFileChange} disabled={!isEditing} />
+                                    <input type="file" onChange={handleFileChange}  disabled={isEditing} />
                                 </button>
 
                                 <button className="btn btn-outline-danger btn-sm">Delete</button>
@@ -283,38 +283,38 @@ const MyProfile = () => {
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label htmlFor="employee_Name" className="form-label">Employer Name*</label>
-                            <input type="text" className="form-control" id="employee_name" name="employee_name" value={profileFormData.employee_name || ''} onChange={handleInputChange} disabled={!isEditing} required />
+                            <input type="text" className="form-control" id="employee_name" name="employee_name" value={profileFormData.employee_name || ''} onChange={handleInputChange}  disabled={isEditing} required />
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="website" className="form-label">Website</label>
-                            <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange} disabled={!isEditing} />
+                            <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label htmlFor="email" className="form-label">Email*</label>
-                            <input type="email" className="form-control" id="email" name="email" value={profileFormData.email || ''} onChange={handleInputChange} disabled={!isEditing} required />
+                            <input type="email" className="form-control" id="email" name="email" value={profileFormData.email || ''} onChange={handleInputChange}  disabled={isEditing} required />
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="phoneNumber" className="form-label">Phone Number*</label>
-                            <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange} disabled={!isEditing} required />
+                            <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange}  disabled={isEditing} required />
                         </div>
                         <div className="col-md-3">
                             <label htmlFor="companySize" className="form-label">Company Size</label>
-                            <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} disabled={!isEditing} />
+                            <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-4">
                             <label htmlFor="foundedDate" className="form-label">Founded Date</label>
-                            <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} disabled={!isEditing} />
+                            <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="category" className="form-label">Industry</label>
                             {/* <input type="text" className="form-control" id="category" name="category" value={profileFormData.category || ''} onChange={handleInputChange} /> */}
-                            <select className='form-select' name="industry" id="industry" value={profileFormData.industry || ''} onChange={handleInputChange} disabled={!isEditing}  >
+                            <select className='form-select' name="industry" id="industry" value={profileFormData.industry || ''} onChange={handleInputChange}  disabled={isEditing}  >
                                 <option value="">Select Industry</option>
                                 {industriesorg && industriesorg.length > 0 ? (
                                     industriesorg.map((industry: Industry) => (
@@ -335,7 +335,7 @@ const MyProfile = () => {
                                 id="functional_area"
                                 value={profileFormData.functional_area || ''}
                                 onChange={handleInputChange}
-                                disabled={!isEditing}
+                                 disabled={isEditing}
                             >
                                 <option value="">Select Functional Area</option>
                                 {functional_areaorg && functional_areaorg.length > 0 ? (
@@ -356,18 +356,18 @@ const MyProfile = () => {
 
                         <div className="col-md-12">
                             <label htmlFor="aboutCompany" className="form-label">About Company</label>
-                            <textarea className="form-control" id="aboutCompany" name="about_company" value={profileFormData.about_company || ''} onChange={handleInputChange} disabled={!isEditing} />
+                            <textarea className="form-control" id="aboutCompany" name="about_company" value={profileFormData.about_company || ''} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-12 mb-3">
                             <label htmlFor="address" className="form-label">Address</label>
-                            <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange} disabled={!isEditing} />
+                            <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="country" className="form-label">Country</label>
-                            <select className="form-select" id="country" name="country" value={profileFormData.country || 0} onChange={handleonchangecountry} disabled={!isEditing}   >
+                            <select className="form-select" id="country" name="country" value={profileFormData.country || 0} onChange={handleonchangecountry}  disabled={isEditing}   >
                                 <option value="">Select Country</option>
                                 {countries.map((country) => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
@@ -378,7 +378,7 @@ const MyProfile = () => {
                             <label htmlFor="state" className="form-label">State</label>
                             <select className="form-select" value={profileFormData.state || ""} id="state" name="state"
                                 onChange={handleonchangestate}
-                                disabled={!isEditing}
+                                 disabled={isEditing}
                             >
                                 <option value="">Select State</option>
                                 {states?.map((state) => (
@@ -390,7 +390,7 @@ const MyProfile = () => {
                             <label htmlFor="city" className="form-label">City</label>
                             <select className="form-select" value={profileFormData.city || ""} id="city" name="city"
                                 onChange={handleInputChange}
-                                disabled={!isEditing}
+                                 disabled={isEditing}
                             >
                                 <option value="">Select City</option>
                                 {cities?.map((city) => (
@@ -403,11 +403,11 @@ const MyProfile = () => {
                     <div className="row mb-3">
                         <div className="col-md-4">
                             <label htmlFor="zipCode" className="form-label">Zip Code</label>
-                            <input type="number" className="form-control" id="zipCode" name="zip_code" value={profileFormData.zip_code || 0} onChange={handleInputChange} disabled={!isEditing} />
+                            <input type="number" className="form-control" id="zipCode" name="zip_code" value={profileFormData.zip_code || 0} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                         <div className="col-md-8">
                             <label htmlFor="mapLocation" className="form-label">Map Location</label>
-                            <input type="text" className="form-control" id="mapLocation" name="map_location" value={profileFormData.map_location || ''} onChange={handleInputChange} disabled={!isEditing} />
+                            <input type="text" className="form-control" id="mapLocation" name="map_location" value={profileFormData.map_location || ''} onChange={handleInputChange}  disabled={isEditing} />
                         </div>
                     </div>
 
