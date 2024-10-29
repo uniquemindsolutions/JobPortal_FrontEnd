@@ -2,41 +2,94 @@ import React, { useEffect, useState } from 'react'
 import './sekerDashboard.scss'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { wait } from '@testing-library/user-event/dist/utils';
+// import AppliedJobs from '../AppliedJobs';
 
-interface MyData {
-  id: number;
-  applied_count: string;
-  // description: string;
-  // Add other fields based on the API response structure
-}
+// interface MyData {
+//   id: number;
+//   applied_count: number;
+//   jobalert_count: number;
+//   message_count: number;
+//   shortlist_count: number;
+// }
 const SeekerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [applyjobs, setApplyjobs] = useState<MyData[]>([])
-
+  const [recentJobs, setRecentJobs] = useState<any>();
+  const [cities, setCities] = useState('')
+  const [dashboardfeilds, SetDashboardFeilds] = useState({
+    applied_count: '0',
+    jobalert_count: '0',
+    message_count: '0',
+    shortlist_count: '0'
+  })
   // Toggle sidebar visibility
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);  
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // useEffect(()=>{
-  //   const dataFetching = async ()=>{
-  //     setLoading(true);     
-  //     try { 
-  //       const response = await axios.get('http://127.0.0.1:8000/user/Appliedjobs/');
-  //       setApplyjobs(response.applyjobs)
-  //     }
-   
-  //    catch (error) {
-  //     setError(error); // Save the error if there's any
-  //   } finally {
-  //     setLoading(false); // Stop loading
-  //   }
-  // }
 
-  // }, [])
+  useEffect(() => {
+    fetchData();
+   
+    
+    const handleRecentJobs = async () => {
+      setLoading(true);
+      try {
+        const res_recentjob = await axios.get('http://127.0.0.1:8000/user/submit-job/');
+        const recentjob_data = res_recentjob;
+        setRecentJobs(recentjob_data.data)
+        console.log(res_recentjob)
+
+        // const res_cities = axios.get('http://127.0.0.1:8000/cities/') 
+        // const res_data = res_cities;
+        // setCities(res_data.data)
+      }
+      catch (error) { setError("Failed to fetch data...") }
+
+
+    }
+
+    handleRecentJobs()
+  }, []); // Empty dependency array means this runs once when component mounts
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const appliedcountResponse = await axios.get('http://127.0.0.1:8000/user/Appliedjobs/');
+      const jobalertcountResponse = await axios.get('http://127.0.0.1:8000/user/jobalerts/');
+      const messagecountResponse = await axios.get('http://127.0.0.1:8000/user/messages/');
+      const shortlistcountResponse = await axios.get('http://127.0.0.1:8000/user/shortlist/');
+
+      const applied_count = appliedcountResponse.data[0]?.applied_count;
+      const jobalert_count = jobalertcountResponse.data[0]?.jobalert_count;
+      const message_count = messagecountResponse.data[0]?.message_count;
+      const shortlist_count = shortlistcountResponse.data[0]?.shortlist_count;
+
+      SetDashboardFeilds({
+        applied_count,
+        jobalert_count,
+        message_count,
+        shortlist_count
+      })
+    }
+
+    catch (error) {
+      console.error("Error fetching data:", error);
+      SetDashboardFeilds({
+        applied_count: 'Error loading',
+        jobalert_count: 'Error loading',
+        message_count: 'Error loading',
+        shortlist_count: 'Error loading'
+      });
+    } finally {
+      setLoading(false)
+    }
+  };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+
 
   return (
     <main>
@@ -50,7 +103,7 @@ const SeekerDashboard = () => {
                 <div className='dashbd-icon'><i className="bi bi-briefcase stat-icon"></i></div>
                 <div className='dashbd-contet'>
                   <h5 className="card-title">Applied Jobs</h5>
-                  <p className="stat-value mb-0">300</p>
+                  <p className="stat-value mb-0">{dashboardfeilds ? dashboardfeilds.applied_count : 'No data found'}</p>
                 </div>
               </div>
             </div>
@@ -65,7 +118,7 @@ const SeekerDashboard = () => {
                 <div className='dashbd-icon'><i className="bi bi-file-earmark-text stat-icon"></i></div>
                 <div className='dashbd-contet'>
                   <h5 className="card-title">Job Alerts</h5>
-                  <p className="stat-value mb-0">1245</p>
+                  <p className="stat-value mb-0">{dashboardfeilds ? dashboardfeilds.jobalert_count : "No data found"}</p>
                 </div>
               </div>
             </div>
@@ -80,7 +133,7 @@ const SeekerDashboard = () => {
                 <div className='dashbd-icon'><i className="bi bi-chat-left stat-icon"></i></div>
                 <div className='dashbd-contet'>
                   <h5 className="card-title">Messages</h5>
-                  <p className="stat-value mb-0">85</p>
+                  <p className="stat-value mb-0">{dashboardfeilds ? dashboardfeilds.message_count : "No data found"}</p>
                 </div>
               </div>
             </div>
@@ -95,7 +148,7 @@ const SeekerDashboard = () => {
                 <div className='dashbd-icon'><i className="bi bi-bookmark stat-icon"></i></div>
                 <div className='dashbd-contet'>
                   <h5 className="card-title">Shortlist</h5>
-                  <p className="stat-value mb-0">57</p>
+                  <p className="stat-value mb-0">{dashboardfeilds ? dashboardfeilds.shortlist_count : 'No data found'}</p>
                 </div>
               </div>
             </div>
@@ -106,54 +159,62 @@ const SeekerDashboard = () => {
       <div className="row mt-4">
         <div className="col-lg-8">
           <h5>Reacent Jobs</h5>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : recentJobs.length > 0 ? (
+            recentJobs.map((item: any, index: any) => (
 
-          <div className="card job-card mt-4">
-            <div className="row">
-              <div className="col-md-2 text-end">
-                <div className="company-logo">
-                  <a href="#">
-                    <img className='img-fluid' src={window.location.origin + '/images/techm-logo.jpg'} />
-                  </a>
-                </div>
-              </div>
-              <div className="col-md-10">
-                <h5 className="job-title">Sr UX Designer</h5>
-                <div className="d-md-flex">
-                  <div className="company-details">
-                    Tech Mahindra
+              <div className="card job-card mt-4" key={index}>
+                <div className="row">
+                  <div className="col-md-2 text-end">
+                    <div className="company-logo">
+                      <a href="#">
+                        <img className='img-fluid' src={window.location.origin + '/images/techm-logo.jpg'} />
+                      </a>
+                    </div>
                   </div>
-                  <div className="job-info ms-auto mt-0">
-                    <span className="experience">
-                      <i className="bi bi-duffle"></i> 6 - 9 years
-                    </span>
-                    <span className="salary">
-                      <i className="bi bi-currency-rupee"></i> Not Disclosed
-                    </span>
-                    <span className="location">
-                      <i className="bi bi-geo-alt"></i> Hyderabad
-                    </span>
+                  <div className="col-md-10">                    
+                    <h5 className="job-title">{item.job_title}</h5>
+                    <div className="d-md-flex">
+                      <div className="company-details">
+                        {item.company_name}
+                      </div>
+                      <div className="job-info ms-auto mt-0">
+                        <span className="experience">
+                          <i className="bi bi-duffle"></i> 6 - 9 years
+                        </span>
+                        <span className="salary">
+                          <i className="bi bi-currency-rupee"></i> {item.min_salary} - {item.max_salary} Lacs P.A
+                        </span>
+                        <span className="location">
+                          <i className="bi bi-geo-alt"></i> {item.city_location}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="row mt-2">
-              <div className="col-md-7 pt-1">
-                <span className="job-meta">Posted: <strong>5 days ago</strong></span>
-                <span className="job-meta">Openings: <strong>2</strong></span>
-                <span className="job-meta">Applicants: <strong>82</strong></span>
-              </div>
-              <div className="col-md-5">
-                <div className="text-end">
-                  <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
+                <div className="row mt-2">
+                  <div className="col-md-7 pt-1">
+                    <span className="job-meta">Posted: <strong>{item.created_date.split('T')[0]}</strong></span>
+                    <span className="job-meta">Openings: <strong>{item.number_of_positions}</strong></span>
+                    <span className="job-meta">Applicants: <strong>82</strong></span>
+                  </div>
+                  <div className="col-md-5">
+                    <div className="text-end">
+                      <button className="btn btn-outline-primary btn-save me-3">Save</button>
+                      <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
+                    </div>
+                  </div>
                 </div>
+
               </div>
-            </div>
-
-          </div>
-
-
+            ))
+          ) : (
+            <p>No jobs found.</p>
+          )}
           <div className="card job-card mt-4">
             <div className="row">
               <div className="col-md-2 text-end">

@@ -281,13 +281,17 @@ const MyProfile = () => {
                     <hr />
 
                     <div className="row mb-3">
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <label htmlFor="employee_Name" className="form-label">Employer Name*</label>
                             <input type="text" className="form-control" id="employee_name" name="employee_name" value={profileFormData.employee_name || ''} onChange={handleInputChange}  disabled={isEditing} required />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <label htmlFor="website" className="form-label">Website</label>
                             <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange}  disabled={isEditing} />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="company_logo" className="form-label">Company Logo</label>
+                            <input type="file" className="form-control" id="company_logo" name="company_logo" />
                         </div>
                     </div>
 
