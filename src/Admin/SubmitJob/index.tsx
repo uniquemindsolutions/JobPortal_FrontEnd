@@ -6,8 +6,16 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import { text } from 'stream/consumers';
 import { colors } from 'react-select/dist/declarations/src/theme';
+import CommonPopup from '../CommonPopup'; // Adjust based on actual location
 
 
+const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 interface SubmitJob {
     job_title: string;
     number_of_positions: string;
@@ -28,12 +36,14 @@ interface SubmitJob {
     skills: string;
     state: number;
     // upload_file: File | null;
+    job_status: string;
     about_company: string;
     work_mode: string;
     ssc: string;
     intermediate: number;
     ug_course: number;
     pg_course: number;
+
 }
 
 interface JobCategory {
@@ -114,6 +124,8 @@ const SubmitJob = () => {
     const [isDisabled, setIsDisabled] = useState(false);
     const [fileUpload, setFile] = useState<any | null>(null);
     const [link, setLink] = useState<string>();
+    const [popupMessage, setPopupMessage] = useState<string>('');
+    const [isPopupVisible, setPopupVisible] = useState<boolean>(false);
     // const [error, setError] = useState('');
 
 
@@ -143,6 +155,7 @@ const SubmitJob = () => {
         skills: '',
         state: 0,
         // upload_file: null,
+        job_status: '',
         about_company: '',
         work_mode: '',
         ssc: '',
@@ -156,7 +169,7 @@ const SubmitJob = () => {
         // Check if job title is required and has a minimum length
         if (!formData.job_title) {
             newErrors.job_title = "Job Title is required";
-        } else if (formData.job_title.length < 3) {
+        } else if (formData.job_title.length < 3 && formData.job_title.length > 50) {
             newErrors.job_title = "Job Title must be at least 3 characters long";
         }
 
@@ -438,7 +451,6 @@ const SubmitJob = () => {
                             'Content-Type': 'multipart/form-data', // Ensure the content type is set correctly
                         },
                     });
-
                     console.log('Job updated successfully:', response.data);
                 } catch (error) {
                     console.error('Error uploading file:', error);
@@ -447,7 +459,7 @@ const SubmitJob = () => {
 
             } else {
                 // Create a new job with a POST request
-                // const response = await fetch("http://127.0.0.1:8000/submit-jobs/", {
+                // const response = await fetch("http://127.0.0.1:8000/submitnewjob/", {
                 //     method: "POST",
                 //     body:submissionData,
                 //     // body: JSON.stringify(payload),
@@ -465,11 +477,11 @@ const SubmitJob = () => {
                             'Content-Type': 'multipart/form-data', // Ensure the content type is set correctly
                         },
                     });
-
-                    console.log('File uploaded successfully:', response.data);
+                    setPopupMessage('Job Created successfully');
                 } catch (error) {
                     console.error('Error uploading file:', error);
                 }
+
 
                 // if (response.ok) {
                 //     const result = await response.json();
@@ -494,7 +506,6 @@ const SubmitJob = () => {
                 //         salary_type: '',
                 //         skills: '',
                 //         state: 0,
-                //         upload_file: null,
                 //         about_company: '',
                 //         work_mode: '',
                 //         ssc: '',
@@ -533,8 +544,9 @@ const SubmitJob = () => {
         setFormData({
             ...formData, [name]: value
         });
-        const stateId = e.target.options.selectedIndex;
-        console.log(stateId);
+        console.log(e.target.value, "statevalues");
+        const stateId = e.target.value;
+        console.log(stateId, "StateId ...");
         fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
             .then(response => response.json())
             .then(data => {
@@ -543,7 +555,10 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching states:', error));
     };
-    return (
+    const handleClosePopup = () => {
+        setPopupVisible(false);
+    };
+    return (                                                                
         <main>
             <h4 className="mt-4">Submit a Job</h4>
             <form onSubmit={handleSubmit}>
@@ -586,13 +601,14 @@ const SubmitJob = () => {
                             <label htmlFor="created_date" className="form-label">Date</label>
                             <input
                                 type="date"
-                                id='created_date'
+                                id="created_date"
                                 className="form-control"
                                 name="created_date"
                                 value={formData.created_date ? formData.created_date.split('T')[0] : ""}
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                                 required
+                                min={getTodayDate()}  // Set minimum date to today
                             />
                         </div>
                         {/* Job Description */}
@@ -746,7 +762,7 @@ const SubmitJob = () => {
                                 disabled={isEditing}>
                                 <option value="">Select Experience</option>
                                 <option value="Expert">Expert</option>
-                                <option value="Medium">Medium</option>
+                                <option value="Intermediate">Intermediate</option>
                                 <option value="Fresher">Fresher</option>
                             </select>
                         </div>
@@ -792,7 +808,7 @@ const SubmitJob = () => {
                                         download="downloaded-file.ext" // Set the desired file name and extension here
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        style={{ color: 'black', textDecoration: 'none' }}                                        
+                                        style={{ color: 'black', textDecoration: 'none' }}
                                     >
                                         Download
                                     </a>
@@ -802,11 +818,13 @@ const SubmitJob = () => {
                         <div className="col-md-2 mb-3">
                             <label htmlFor="job_status" className="form-label">Job Status </label>
                             <select className="form-select" name="job_status" id="job_status"
-                                onChange={handleInputChange}>
+                                value={formData.job_status || ""}
+                                onChange={handleInputChange}
+                                disabled={isEditing}>
                                 <option value="">Select Staus</option>
-                                <option value="Basic">Active</option>
-                                <option value="Medium">In Active</option>
-                                <option value="Excellent">Expired</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">In Active</option>
+                                <option value="Expired">Expired</option>
                             </select>
                         </div>
 

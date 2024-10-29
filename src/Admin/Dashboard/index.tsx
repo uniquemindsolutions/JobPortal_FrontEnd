@@ -18,6 +18,10 @@ export interface PostedJob {
     map_location: string;
     city: City;
 }
+interface JobView{
+    id:number;
+    job_title:string;
+}
 const Dashboard = () => {
     // const [isMenuOpen, setIsMenuOpen] = useState(true);
 
@@ -36,9 +40,8 @@ const Dashboard = () => {
     });
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState('')
-    const [postedJobData, setPostedJobData] = useState<PostedJob[]>([])
-
- 
+    const [postedJobData, setPostedJobData] = useState<PostedJob[]>([]);
+    const [jobview, setJobview] = useState<JobView[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,13 +54,13 @@ const Dashboard = () => {
                 const appliedJobsResponse = await axios.get('http://127.0.0.1:8000/appliedjobs/');
                 // Fetch shortlisted candidates
                 const shortlistedResponse = await axios.get('http://127.0.0.1:8000/shortlistedcandidates/');
+                const jobviewResponse = await axios.get('http://127.0.0.1:8000/jobviews/');
 
                 // Extract the data from the first item in each array
                 const visitorCount = visitorResponse.data[0]?.visitor_count || 'Error';
                 const views = viewsResponse.data[0]?.profile_view || 'Error';
                 const appliedJobs = appliedJobsResponse.data[0]?.appliedjobs_count || 'Error';
                 const shortlisted = shortlistedResponse.data[0]?.shortlisted_count || 'Error'; // Handling shortlisted candidates
-
                 // Update the state with all the fetched data
                 setStats({
                     visitorCount,
@@ -95,7 +98,13 @@ const Dashboard = () => {
                 console.log("Cities:", data); // Log to check the data
                 setCitys(data); // Store the cities in state
             })
-            .catch(error => console.error('Error fetching cities:', error));
+            fetch("http://127.0.0.1:8000/jobviews/")
+            .then(response => response.json())
+            .then(data => {
+                console.log("JobViews:", data); // Log to check the data
+                setJobview(data); // Store the cities in state
+            })
+            .catch(error => console.error('Error fetching jobview:', error));
             // myJobsDetails();
     }, []);
 
@@ -135,10 +144,15 @@ const Dashboard = () => {
                         <div className="d-flex align-items-center mb-3">
                             <label htmlFor="jobSelect" className="me-2">Jobs:</label>
                             <select id="jobSelect" className="form-select w-auto">
-                                <option>Web & Mobile Prototype Designer</option>
+                                <option value="">Select Industry </option>
+                                
+                                {/* <option>Web & Mobile Prototype Designer</option>
                                 <option>Web Developer</option>
                                 <option>python Developer</option>
-                                <option>React Developer</option>
+                                <option>React Developer</option> */}
+                                {jobview.map((jobview) => {
+                                    return <option key={jobview.id} value={jobview.id}>{jobview.job_title}</option>
+                                })}
                             </select>
                         </div>
                         {/* Placeholder for the Chart (use Chart.js here in your actual project) */}
