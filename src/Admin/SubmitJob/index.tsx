@@ -611,6 +611,50 @@ const SubmitJob = () => {
                                 min={getTodayDate()}  // Set minimum date to today
                             />
                         </div>
+
+                        <div className="col-md-6 col-lg-3 mb-3">
+                            <label htmlFor="company_name" className="form-label">Company Name</label>
+                            <input
+                                type="input"
+                                id='company_name'
+                                className="form-control"
+                                name="company_name"
+                                // value={formData.created_date ? formData.created_date.split('T')[0] : ""}
+                                // onChange={handleInputChange}
+                                disabled={isEditing}
+                                required
+                            />
+                        </div>
+                        <div className="col-md-6 col-lg-3 mb-3">
+                            <label htmlFor="company_logo" className="form-label">Company Logo</label>
+                            <input
+                                type="file"
+                                id='company_logo'
+                                className="form-control"
+                                name="company_logo"
+                                // value={formData.created_date ? formData.created_date.split('T')[0] : ""}
+                                // onChange={handleInputChange}
+                                disabled={isEditing}
+                                required
+                            />
+                        </div>
+                        <div className="col-md-6 col-lg-3 mb-3">
+                            <label htmlFor="min_experience" className="form-label">Min Experience</label>
+                            <select className='form-select' id='min_experience'>
+                                <option value="">Select min experience</option>
+                                <option value="">0</option>
+                                <option value="">1 Year</option>
+                                <option value="">2 Year</option>
+                            </select>
+                        </div>
+                        <div className="col-md-6 col-lg-3 mb-3">
+                            <label htmlFor="max_experience" className="form-label">Max Experience</label>
+                            <select className='form-select' id='max_experience'>
+                                <option value="">Select max experience</option>
+                                <option value="">1 Year</option>
+                                <option value="">2 Year</option>
+                            </select>
+                        </div>
                         {/* Job Description */}
                         <div className="col-md-12 mb-3">
                             <label htmlFor="job_description" className="form-label">Job Description</label>
