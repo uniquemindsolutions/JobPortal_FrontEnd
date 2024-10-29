@@ -11,12 +11,16 @@ import axios from 'axios';
 //   message_count: number;
 //   shortlist_count: number;
 // }
+interface City {
+  id: number;
+  name: string;
+}
 const SeekerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [recentJobs, setRecentJobs] = useState<any>();
-  const [cities, setCities] = useState('')
+  const [citys, setCitys] = useState<City[]>([]);
   const [dashboardfeilds, SetDashboardFeilds] = useState({
     applied_count: '0',
     jobalert_count: '0',
@@ -31,8 +35,8 @@ const SeekerDashboard = () => {
 
   useEffect(() => {
     fetchData();
-   
-    
+
+
     const handleRecentJobs = async () => {
       setLoading(true);
       try {
@@ -41,9 +45,12 @@ const SeekerDashboard = () => {
         setRecentJobs(recentjob_data.data)
         console.log(res_recentjob)
 
-        // const res_cities = axios.get('http://127.0.0.1:8000/cities/') 
-        // const res_data = res_cities;
-        // setCities(res_data.data)
+        fetch("http://127.0.0.1:8000/cities/")
+          .then(response => response.json())
+          .then(data => {
+            console.log("Cities:", data); // Log to check the data
+            setCitys(data); // Store the cities in state
+          })
       }
       catch (error) { setError("Failed to fetch data...") }
 
@@ -52,6 +59,11 @@ const SeekerDashboard = () => {
 
     handleRecentJobs()
   }, []); // Empty dependency array means this runs once when component mounts
+
+  const getCityNameById = (id: number) => {
+    const city = citys.find((city: City) => city.id === id)
+    return city ? city.name : 'Unknown City';
+  }
 
   const fetchData = async () => {
     setLoading(true);
@@ -175,7 +187,7 @@ const SeekerDashboard = () => {
                       </a>
                     </div>
                   </div>
-                  <div className="col-md-10">                    
+                  <div className="col-md-10">
                     <h5 className="job-title">{item.job_title}</h5>
                     <div className="d-md-flex">
                       <div className="company-details">
@@ -189,7 +201,7 @@ const SeekerDashboard = () => {
                           <i className="bi bi-currency-rupee"></i> {item.min_salary} - {item.max_salary} Lacs P.A
                         </span>
                         <span className="location">
-                          <i className="bi bi-geo-alt"></i> {item.city_location}
+                          <i className="bi bi-geo-alt"></i> {getCityNameById(item.city)}
                         </span>
                       </div>
                     </div>
@@ -215,97 +227,7 @@ const SeekerDashboard = () => {
           ) : (
             <p>No jobs found.</p>
           )}
-          <div className="card job-card mt-4">
-            <div className="row">
-              <div className="col-md-2 text-end">
-                <div className="company-logo">
-                  <a href="#">
-                    <img className='img-fluid' src={window.location.origin + '/images/techm-logo.jpg'} />
-                  </a>
-                </div>
-              </div>
-              <div className="col-md-10">
-                <h5 className="job-title">Sr UX Designer</h5>
-                <div className="d-md-flex">
-                  <div className="company-details">
-                    Tech Mahindra
-                  </div>
-                  <div className="job-info ms-auto mt-0">
-                    <span className="experience">
-                      <i className="bi bi-duffle"></i> 6 - 9 years
-                    </span>
-                    <span className="salary">
-                      <i className="bi bi-currency-rupee"></i> Not Disclosed
-                    </span>
-                    <span className="location">
-                      <i className="bi bi-geo-alt"></i> Hyderabad
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="row mt-2">
-              <div className="col-md-7 pt-1">
-                <span className="job-meta">Posted: <strong>5 days ago</strong></span>
-                <span className="job-meta">Openings: <strong>2</strong></span>
-                <span className="job-meta">Applicants: <strong>82</strong></span>
-              </div>
-              <div className="col-md-5">
-                <div className="text-end">
-                  <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div className="card job-card mt-4">
-            <div className="row">
-              <div className="col-md-2 text-end">
-                <div className="company-logo">
-                  <a href="#">
-                    <img className='img-fluid' src={window.location.origin + '/images/techm-logo.jpg'} />
-                  </a>
-                </div>
-              </div>
-              <div className="col-md-10">
-                <h5 className="job-title">Sr UX Designer</h5>
-                <div className="d-md-flex">
-                  <div className="company-details">
-                    Tech Mahindra
-                  </div>
-                  <div className="job-info ms-auto mt-0">
-                    <span className="experience">
-                      <i className="bi bi-duffle"></i> 6 - 9 years
-                    </span>
-                    <span className="salary">
-                      <i className="bi bi-currency-rupee"></i> Not Disclosed
-                    </span>
-                    <span className="location">
-                      <i className="bi bi-geo-alt"></i> Hyderabad
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row mt-2">
-              <div className="col-md-7 pt-1">
-                <span className="job-meta">Posted: <strong>5 days ago</strong></span>
-                <span className="job-meta">Openings: <strong>2</strong></span>
-                <span className="job-meta">Applicants: <strong>82</strong></span>
-              </div>
-              <div className="col-md-5">
-                <div className="text-end">
-                  <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                  <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
-                </div>
-              </div>
-            </div>
-
-          </div>
 
         </div>
 
