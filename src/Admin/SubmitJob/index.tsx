@@ -869,6 +869,7 @@ const SubmitJob = () => {
                                     </a>
                                 </div>
                             )}
+                            
                         </div>
                         <div className="col-md-2 mb-3">
                             <label htmlFor="job_status" className="form-label">Job Status </label>
