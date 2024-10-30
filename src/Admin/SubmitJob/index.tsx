@@ -113,6 +113,7 @@ const SubmitJob = () => {
     const [postGraduate, setPostGraduate] = useState<postGraduate[]>([]);
     const [isDisabled, setIsDisabled] = useState(false);
     const [fileUpload, setFile] = useState<any | null>(null);
+    const [fileUploadlogo, setFilelogo] = useState<any | null>(null);
     const [link, setLink] = useState<string>();
     // const [error, setError] = useState('');
 
@@ -351,6 +352,21 @@ const SubmitJob = () => {
         }
     };
 
+    const handleFileChangelogo = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFilelogo(e.target.files[0]);
+           
+
+            console.log(fileUpload, "newfile");
+         
+        } else {
+            // setFormData({
+            //     ...formData,
+            //     upload_file: null, // Clear if no file selected
+            // });
+        }
+    };
+
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -372,6 +388,18 @@ const SubmitJob = () => {
         } else {
             console.log(submissionData, "newfile", fileUpload);
         }
+
+        
+        if (fileUploadlogo) {
+            submissionData.append('company_logo', fileUploadlogo);
+
+
+        } else {
+            console.log(submissionData, "newfile", fileUploadlogo);
+        }
+
+
+        
 
         console.log(submissionData, "submissionData.....");
 
@@ -613,6 +641,8 @@ const SubmitJob = () => {
                                 id='company_logo'
                                 className="form-control"
                                 name="company_logo"
+                              
+                                onChange={handleFileChangelogo}
                                 // value={formData.created_date ? formData.created_date.split('T')[0] : ""}
                                 // onChange={handleInputChange}
                                 disabled={isEditing}
@@ -845,9 +875,9 @@ const SubmitJob = () => {
                             <select className="form-select" name="job_status" id="job_status"
                                 onChange={handleInputChange}>
                                 <option value="">Select Staus</option>
-                                <option value="Basic">Active</option>
-                                <option value="Medium">In Active</option>
-                                <option value="Excellent">Expired</option>
+                                <option value="Active">Active</option>
+                                <option value="In Active">In Active</option>
+                                <option value="Expired">Expired</option>
                             </select>
                         </div>
 
