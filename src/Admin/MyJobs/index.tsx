@@ -15,7 +15,7 @@ export interface myJobs {
     job_category: string;
     city: City;
     Applicants: number;
-    Status: string;
+    job_status: string;
 }
 
 const MyJobs = () => {
@@ -106,9 +106,9 @@ const MyJobs = () => {
                                         <td>{items.created_date.split('T')[0]}
                                         </td>
                                         <td>130 Applications</td>
-                                        <td><span className='status-active'></span> active</td>
+                                        <td><span className='status-active me-2'></span>{items.job_status}</td>
                                         <td className='text-end'>
-                                            <div className="dropdown">
+                                            <div className="dropdown"> 
                                                 <button type="button" className="btn border-0" data-bs-toggle="dropdown">
                                                     <i className="bi bi-three-dots-vertical"></i>
                                                 </button>

@@ -53,7 +53,7 @@ function App() {
             <Route path="register" element={<RegisterAdmin />} />
           <Route path="/" element={<Admin />}>
             <Route path="dashboard" index element={<Dashboard />} />
-            <Route path="myprofile" element={<MyProfile />} />
+            <Route path="myprofile/" element={<MyProfile />} />
             <Route path="saved-candidate" element={<SavedCandidate />} />
             <Route path="my-jobs" element={<MyJobs />} />
             <Route path="messages" element={<Messages />} />
