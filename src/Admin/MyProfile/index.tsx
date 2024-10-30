@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Select from 'react-select';
+
 interface MyProfile {
     id: number;
     photo: File | null;
@@ -61,6 +63,9 @@ const MyProfile = () => {
     const [functional_areaorg, setfunctional_area] = useState<any[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     // Fetch countries, states, cities and profile data on component mount
+    const [selectedExperience, setSelectedExperience] = useState<any>(null);
+    const [selectedCompanyType, setSelectedCompanyType] = useState<any>(null);
+
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/myprofile/24/`)
             .then(response => response.json())
@@ -248,77 +253,127 @@ const MyProfile = () => {
             .catch(error => console.error('Error fetching cities:', error));
     }
 
+    const HeadquarterLocation = [
+        { value: 'TS', label: 'Telangana' },
+        { value: 'HYD', label: 'Hyderabad' },
+        { value: 'MH', label: 'Maharastra' },
+        { value: 'MI', label: 'Mumbai' },
+        { value: 'TN', label: 'Tamilnadu' },
+        { value: 'KL', label: 'Kerala' },
+        { value: 'KA', label: 'Karnataka' },
+    ];
+    const CompanyType = [
+        { value: '1', label: 'Private' },
+        { value: '2', label: 'Public' },
+        { value: '3', label: 'Govt' },
+    ];
+
     return (
         <main>
-            <h4 className="mt-4">My Profile</h4>
+            <h4 className="mt-4">My Profile </h4>
             <form onSubmit={handleSubmit}>
                 <div className="custom-card">
-                    <div className="d-flex mb-3">
-                        <div className="d-flex align-items-center">
-                            <img
-                                className="admin-pic"
-                                src={
-                                    typeof profileFormData.photo === 'string'
-                                        ? profileFormData.photo
-                                        : profileFormData.photo
-                                            ? URL.createObjectURL(profileFormData.photo)
-                                            : window.location.origin + '/images/avtar-pic.avif'
-                                }
-                                style={{ width: '60px', height: '60px' }}
-                                alt="Profile"
-                            />
-                            {/* <button className="bi bi-pencil-square btn float-end position-absolute end-0" title='Edit'></button> */}
-                            <div className="ms-3">
-                                <button className="file_button_container btn btn-success me-3">
-                                    Upload new photo
-                                    <input type="file" onChange={handleFileChange} disabled={!isEditing} />
-                                </button>
 
-                                <button className="btn btn-outline-danger btn-sm">Delete</button>
+                    {/* company profile start */}
+                    <div className="row">
+                        <div className="text-end">
+                            <button type="submit" className="btn ms-4 lt-blue-c" onClick={handleEdit} title='Click to Edit Profile'>Edit <i className="bi bi-pencil-square"></i></button>
+                        </div>
+                        <div className="col-md-3">
+                            <div className="mb-3">
+                                <div className='border rounded d-flex justify-content-center align-items-center p-2' style={{ minHeight: '250px' }}>
+                                    <img className="img-fluid rounded"
+                                        src={
+                                            typeof profileFormData.photo === 'string'
+                                                ? profileFormData.photo
+                                                : profileFormData.photo
+                                                    ? URL.createObjectURL(profileFormData.photo)
+                                                    : window.location.origin + '/images/default-logo.png'
+                                        }
+                                        style={{ height: 'auto' }} alt="Profile"
+                                    />
+                                </div>
+                                {/* <button className="file_button_container btn btn-success me-3">
+                                Upload new photo
+                                <input type="file" onChange={handleFileChange} disabled={!isEditing} />
+                            </button> */}
+                                <label className="btn btn-outline-primary btn-sm">
+                                    <i className="fa fa-image"></i>Upload logo<input type="file" onChange={handleFileChange} disabled={!isEditing} style={{ display: 'none' }} name="image" />
+                                </label>
+                                <button className="btn btn-outline-warning btn-sm mx"><i className="bi bi-x-lg"></i></button>
+                            </div>
+                        </div>
+
+                        <div className="col-md-9">
+                            <div className="row">
+                                <div className="col-md-6 mb-3">
+                                    <label htmlFor="employee_Name" className="form-label">Company Name*</label>
+                                    <input type="text" className="form-control" />
+                                </div>
+                                <div className="col-md-6 mb-3">
+                                    <label htmlFor="employee_Name" className="form-label">Employer Name</label>
+                                    <input type="text" className="form-control" id="employee_name" name="employee_name" value={profileFormData.employee_name || ''} onChange={handleInputChange} disabled={!isEditing} required />
+                                </div>
+                                <div className="col-md-6 mb-3">
+                                    <div className="">
+                                        <label htmlFor="website" className="form-label">Website</label>
+                                        <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange} disabled={!isEditing} placeholder='Start with https:// or http:// or www.' />
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <label htmlFor="foundedDate" className="form-label">Headquarter Location</label>
+                                    {/* <select name="" id="" className='form-select'>
+                                        <option value="">Select Location</option>
+                                        <option value="">Hyderabad</option>
+                                        <option value="">AP</option>
+                                        <option value="">UP</option>
+                                    </select> */}
+                                    <Select
+                                        className="form-label"
+                                        options={HeadquarterLocation}
+                                        placeholder="Select experience"
+                                        value={selectedExperience}
+                                        onChange={setSelectedExperience}
+                                    />
+                                </div>
+                                <div className="col-md-5">
+                                    <label htmlFor="foundedDate" className="form-label">Company Type*</label>
+                                    <Select
+                                        className="form-label"
+                                        options={CompanyType}
+                                        placeholder="Select experience"
+                                        value={selectedCompanyType}
+                                        onChange={setSelectedCompanyType}
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <label htmlFor="foundedDate" className="form-label">Founded Date</label>
+                                    <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} disabled={!isEditing} />
+                                </div>
+
+                                <div className="col-md-3 mb-3">
+                                    <label htmlFor="companySize" className="form-label">Company Size</label>
+                                    <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} disabled={!isEditing} />
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
-                    <hr />
+                    {/* company profile end */}
 
                     <div className="row mb-3">
-                        <div className="col-md-4">
-                            <label htmlFor="employee_Name" className="form-label">Employer Name*</label>
-                            <input type="text" className="form-control" id="employee_name" name="employee_name" value={profileFormData.employee_name || ''} onChange={handleInputChange} disabled={!isEditing} required />
-                        </div>
-                        <div className="col-md-4">
-                            <label htmlFor="website" className="form-label">Website</label>
-                            <input type="url" className="form-control" id="website" name="website" value={profileFormData.website || ''} onChange={handleInputChange} disabled={!isEditing} />
-                        </div>
-                        <div className="col-md-4">
-                            <label htmlFor="company_logo" className="form-label">Company Logo</label>
-                            <input type="file" className="form-control" id="company_logo" name="company_logo" />
-                        </div>
-                    </div>
-
-                    <div className="row mb-3">
-                        <div className="col-md-6">
+                        <div className="col-md-3 mb-3">
                             <label htmlFor="email" className="form-label">Email*</label>
                             <input type="email" className="form-control" id="email" name="email" value={profileFormData.email || ''} onChange={handleInputChange} disabled={!isEditing} required />
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-3 mb-3">
                             <label htmlFor="phoneNumber" className="form-label">Phone Number*</label>
                             <input type="tel" className="form-control" id="phoneNumber" name="phone_number" value={profileFormData.phone_number || ''} onChange={handleInputChange} disabled={!isEditing} required />
                         </div>
                         <div className="col-md-3">
-                            <label htmlFor="companySize" className="form-label">Company Size</label>
-                            <input type="number" className="form-control" id="companySize" name="company_size" value={profileFormData.company_size || 0} onChange={handleInputChange} disabled={!isEditing} />
-                        </div>
-                    </div>
-
-                    <div className="row mb-3">
-                        <div className="col-md-4">
-                            <label htmlFor="foundedDate" className="form-label">Founded Date</label>
-                            <input type="date" className="form-control" id="foundedDate" name="founded_date" value={profileFormData.founded_date || ''} onChange={handleInputChange} disabled={!isEditing} />
-                        </div>
-                        <div className="col-md-4">
-                            <label htmlFor="category" className="form-label">Industry</label>
-                            {/* <input type="text" className="form-control" id="category" name="category" value={profileFormData.category || ''} onChange={handleInputChange} /> */}
-                            <select className='form-select' name="industry" id="industry" value={profileFormData.industry || ''} onChange={handleInputChange} disabled={!isEditing}  >
+                            <label htmlFor="category" className="form-label">Industry*</label>
+                            {/* <select className='form-select' name="industry" id="industry" value={profileFormData.industry || ''} onChange={handleInputChange} disabled={!isEditing}  >
                                 <option value="">Select Industry</option>
                                 {industriesorg && industriesorg.length > 0 ? (
                                     industriesorg.map((industry: Industry) => (
@@ -329,9 +384,24 @@ const MyProfile = () => {
                                 ) : (
                                     <option value="">No industries available</option>
                                 )}
-                            </select>
+                            </select> */}
+
+                            <Select
+                                name="industry"
+                                id="industry"
+                                value={industriesorg.find(
+                                    (ind) => ind.id === profileFormData.industry
+                                ) || null} // Find the selected industry to display
+                                onChange={handleInputChange}
+                                options={industriesorg.map((industry) => ({
+                                    value: industry.id,
+                                    label: industry.industry,
+                                }))} // Use value/label for options in react-select
+                                isDisabled={!isEditing}
+                            />
+
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <label htmlFor="functional_area" className="form-label">Functional Area</label>
                             <select
                                 className="form-select"
@@ -366,7 +436,7 @@ const MyProfile = () => {
 
                     <div className="row mb-3">
                         <div className="col-md-12 mb-3">
-                            <label htmlFor="address" className="form-label">Address</label>
+                            <label htmlFor="address" className="form-label">Address*</label>
                             <input type="text" className="form-control" id="address" name="address" value={profileFormData.address || ''} onChange={handleInputChange} disabled={!isEditing} />
                         </div>
                         <div className="col-md-4">
@@ -421,11 +491,14 @@ const MyProfile = () => {
                     <button type="submit" className="btn ms-4" onClick={handleEdit}>Cancel</button>
                 </div> */}
                 <div className="text-center my-4">
-                    {!isEditing ? (
+                    <button type="submit" className="btn btn-success px-5 btn-lg">Save</button>
+                    <button type="submit" className="btn ms-4">Cancel</button>
+
+                    {/* {!isEditing ? (
                         <button type="submit" className="btn ms-4" onClick={handleEdit}>Edit</button>
                     ) : (
                         <button type="submit" className="btn btn-success">Save</button>
-                    )}
+                    )} */}
                 </div>
             </form>
         </main>

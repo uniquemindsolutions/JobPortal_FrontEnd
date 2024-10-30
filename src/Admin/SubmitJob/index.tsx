@@ -325,11 +325,8 @@ const SubmitJob = () => {
     // Handle file input change
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            alert("Hi")
-
             setFile(e.target.files[0]);
-
-
+            
             //  console.log(fileUpload,"newfile",e.target.files[0]);
             // const newfile = new FormData();
 
@@ -742,7 +739,7 @@ const SubmitJob = () => {
                         </div>
                         {/* Min Salary */}
                         <div className="col-md-4 col-lg-3 mb-3">
-                            <label htmlFor="min_salary" className="form-label">Min Salary</label>
+                            <label htmlFor="min_salary" className="form-label">Min Salary(Lacs)</label>
                             <input
                                 type="number"
                                 value={formData.min_salary || ""}
@@ -757,7 +754,7 @@ const SubmitJob = () => {
 
                         {/* Max Salary */}
                         <div className="col-md-4 col-lg-3 mb-3">
-                            <label htmlFor="max_salary" className="form-label">Max Salary</label>
+                            <label htmlFor="max_salary" className="form-label">Max Salary(Lacs)</label>
                             <input
                                 type="number"
                                 className="form-control"

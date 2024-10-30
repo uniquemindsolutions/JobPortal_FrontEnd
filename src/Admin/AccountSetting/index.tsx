@@ -109,7 +109,7 @@ const AccountSetting = () => {
             <h4 className="mt-4">Account Settings</h4>
 
             <form onSubmit={handleSubmit}>
-                <div className="custom-card">
+                {/* <div className="custom-card">
                     <h3 className="text-primary">Edit & Update</h3>
                     <div className="row mb-3">
                         <div className="col-md-6 col-lg-6 mb-3">
@@ -157,10 +157,106 @@ const AccountSetting = () => {
                             />
                         </div>
                     </div>
+                </div> */}
+
+                <div className="custom-card">
+                    <h4>Email & Push Notifications</h4>
+                    <hr />
+                    <div className="row mt-4">
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="dailyJobs" defaultChecked />
+                                <label className="form-check-label" htmlFor="dailyJobs">
+                                    Daily New Jobs <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="appliedJobs" defaultChecked />
+                                <label className="form-check-label" htmlFor="appliedJobs">
+                                    Applied Jobs <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="followUpCredited" defaultChecked />
+                                <label className="form-check-label" htmlFor="followUpCredited">
+                                    Follow-up Credited <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="followUpUsed" defaultChecked />
+                                <label className="form-check-label" htmlFor="followUpUsed">
+                                    Follow-up Used <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="pendingTest" />
+                                <label className="form-check-label" htmlFor="pendingTest">
+                                    Pending Test <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="promotional" defaultChecked />
+                                <label className="form-check-label" htmlFor="promotional">
+                                    Promotional <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="chatNotifications" defaultChecked />
+                                <label className="form-check-label" htmlFor="chatNotifications">
+                                    Chat Notifications <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-3 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="educational" defaultChecked />
+                                <label className="form-check-label" htmlFor="educational">
+                                    Educational - Learn & Grow <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        {/* Add more notification items here as per the image */}
+
+
+                    </div>
+
+                    <h5 className='mt-4'>Account Settings</h5>
+                    <hr />
+                    <div className="row">
+                        <div className="col-6 col-md-4 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="HideProfile" defaultChecked />
+                                <label className="form-check-label" htmlFor="HideProfile">
+                                    Hide Profile from every recruiter <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-6 col-md-4 mb-4">
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" id="DeactivateAccount" defaultChecked />
+                                <label className="form-check-label" htmlFor="DeactivateAccount">
+                                    Deactivate Account? <i className="bi bi-info-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="col-md-4"> <button className='btn btn-outline-danger'>Delete Account?</button> </div>
+                    </div>
                 </div>
 
                 <div className="custom-card my-4">
-                    <h3 className="text-primary">Change Password</h3>
+                    <h4 className="text-primary mb-5">Change Password</h4>
                     <div className="row mb-3">
                         <div className="col-md-6 col-lg-4 mb-3">
                             <label htmlFor="old_password" className="form-label">Old Password</label>

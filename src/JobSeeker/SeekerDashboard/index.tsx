@@ -195,7 +195,7 @@ const SeekerDashboard = () => {
                       </div>
                       <div className="job-info ms-auto mt-0">
                         <span className="experience">
-                          <i className="bi bi-duffle"></i> 6 - 9 years
+                          <i className="bi bi-duffle"></i> 6 - 9 years 
                         </span>
                         <span className="salary">
                           <i className="bi bi-currency-rupee"></i> {item.min_salary} - {item.max_salary} Lacs P.A
