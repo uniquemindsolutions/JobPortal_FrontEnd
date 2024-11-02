@@ -107,7 +107,6 @@ const AccountSetting = () => {
     return (
         <main>
             <h4 className="mt-4">Account Settings</h4>
-
             <form onSubmit={handleSubmit}>
                 {/* <div className="custom-card">
                     <h3 className="text-primary">Edit & Update</h3>
@@ -171,14 +170,14 @@ const AccountSetting = () => {
                                 </label>
                             </div>
                         </div>
-                        <div className="col-6 col-md-3 mb-4">
+                        {/* <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="appliedJobs" defaultChecked />
                                 <label className="form-check-label" htmlFor="appliedJobs">
                                     Applied Jobs <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="followUpCredited" defaultChecked />
@@ -195,14 +194,14 @@ const AccountSetting = () => {
                                 </label>
                             </div>
                         </div>
-                        <div className="col-6 col-md-3 mb-4">
+                        {/* <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="pendingTest" />
                                 <label className="form-check-label" htmlFor="pendingTest">
                                     Pending Test <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="promotional" defaultChecked />
@@ -219,14 +218,14 @@ const AccountSetting = () => {
                                 </label>
                             </div>
                         </div>
-                        <div className="col-6 col-md-3 mb-4">
+                        {/* <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="educational" defaultChecked />
                                 <label className="form-check-label" htmlFor="educational">
                                     Educational - Learn & Grow <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
-                        </div>
+                        </div> */}
                         {/* Add more notification items here as per the image */}
 
 
@@ -239,7 +238,7 @@ const AccountSetting = () => {
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="HideProfile" defaultChecked />
                                 <label className="form-check-label" htmlFor="HideProfile">
-                                    Hide Profile from every recruiter <i className="bi bi-info-circle"></i>
+                                    Hide Profile from every one <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
                         </div>

@@ -50,7 +50,7 @@ const SideMenu = () => {
                     {/* <input type="file" className='amdin-pic' accept='image/*' onChange={handleImageUpload} /> */}
                     <img src={profileImage || window.location.origin + '/images/default-logo.png'} className='comp-logo' />
                     
-                    <h6 className="px-2 mt-3">Unique Maind Solutions</h6>
+                    <h6 className="px-2 mt-3">Unique Mind Solutions</h6>
                 </div>
                 <ul className="list-unstyled p-3">
                     <li className="">

@@ -4,11 +4,17 @@ import './JobSeekerAdmin.scss'
 
 const JobSeekerAdmin = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [activeLink, setActiveLink] = useState<string>('')
 
     // Toggle sidebar visibility
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
+    const handleLinkActive = (link:string)=>{
+        setActiveLink(link)
+    }
+
     return (
         <main>
             <div className="d-flex" id="wrapper">
@@ -70,22 +76,22 @@ const JobSeekerAdmin = () => {
 
                     <ul className="list-unstyled components">
                         <li>
-                            <Link to="seeker-dashboard" className="text-white">
+                            <Link to="seeker-dashboard" className={`menuLink ${activeLink === 'seeker-dashboard' ? 'active' : ''}`} onClick={()=> handleLinkActive('seeker-dashboard')}>
                             <i className="bi bi-speedometer2 me-2"></i> Dashboard
                             </Link>
                         </li>
                         <li>
-                            <Link to="/applied-jobs" className="text-white">
+                            <Link to="/applied-jobs" className={`menuLink ${activeLink === 'applied-jobs' ? 'active' : ''}`} onClick={()=>handleLinkActive('applied-jobs')}>
                             <i className="bi bi-calendar2-check me-2"></i> Applied Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="saved-jobs" className="text-white">
+                            <Link to="saved-jobs" className={`menuLink ${activeLink === 'saved-jobs' ? 'active' : ''}`} onClick={()=>handleLinkActive('saved-jobs')}>
                             <i className="bi bi-save me-2"></i> Saved Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="#" className="text-white">
+                            <Link to="#" className={`menuLink ${activeLink === '' ? 'active' : ''}`} onClick={()=>handleLinkActive('')}>
                             <i className="bi bi-person-lines-fill me-2"></i> My Interviews
                             </Link>
                         </li>
