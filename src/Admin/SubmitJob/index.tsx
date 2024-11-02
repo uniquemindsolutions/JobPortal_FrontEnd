@@ -646,8 +646,7 @@ const SubmitJob = () => {
                                 // value={formData.created_date ? formData.created_date.split('T')[0] : ""}
                                 // onChange={handleInputChange}
                                 disabled={isEditing}
-                                required
-                            />
+                               />
                         </div>
                         <div className="col-md-6 col-lg-3 mb-3">
                             <label htmlFor="min_experience" className="form-label">Min Experience</label>
@@ -856,6 +855,13 @@ const SubmitJob = () => {
                                 onChange={handleFileChange}
                                 disabled={isEditing}
                             />
+                            {/* <input
+                                type="hiden"
+                                value={formData.upload_file_path}
+                                id="upload_file_path"
+                                name="upload_file_path"
+                                /> */}
+
                             {link && (
                                 <div>
                                     <a

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './sekerDashboard.scss'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import SavedJobs from '../SavedJobs';
+
 // import AppliedJobs from '../AppliedJobs';
 
 // interface MyData {
@@ -21,6 +23,7 @@ const SeekerDashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [recentJobs, setRecentJobs] = useState<any>();
   const [citys, setCitys] = useState<City[]>([]);
+  const [saveJobs, setSaveJob] = useState([])
   const [dashboardfeilds, SetDashboardFeilds] = useState({
     applied_count: '0',
     jobalert_count: '0',
@@ -101,6 +104,20 @@ const SeekerDashboard = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
+  const handleSaveJobs = async ()=>{
+    setLoading(true)
+    try {
+      const res_saveJobs = await axios.get("http://127.0.0.1:8000/user/submit-job/")
+      const savejobsData = res_saveJobs.data;
+      setSaveJob(savejobsData)
+
+      console.log("save jobs details ====", savejobsData)
+    } catch(error){
+      setError('No data found')
+    } finally {
+      setLoading(false)
+    }
+  }
 
 
   return (
@@ -183,7 +200,7 @@ const SeekerDashboard = () => {
                   <div className="col-md-2 text-end">
                     <div className="company-logo">
                       <a href="#">
-                        <img className='img-fluid' src={window.location.origin + '/images/techm-logo.jpg'} />
+                        <img className='img-fluid p-1' src={item.company_logo ? item.company_logo : window.location.origin + '/images/techm-logo.jpg'} />
                       </a>
                     </div>
                   </div>
@@ -195,10 +212,10 @@ const SeekerDashboard = () => {
                       </div>
                       <div className="job-info ms-auto mt-0">
                         <span className="experience">
-                          <i className="bi bi-duffle"></i> 6 - 9 years 
+                          <i className="bi bi-duffle"></i> {item.min_experience} - {item.max_experience} Years 
                         </span>
                         <span className="salary">
-                          <i className="bi bi-currency-rupee"></i> {item.min_salary} - {item.max_salary} Lacs P.A
+                          <i className="bi bi-currency-rupee"></i> {item.min_salary} - {item.max_salary} L.P.A
                         </span>
                         <span className="location">
                           <i className="bi bi-geo-alt"></i> {getCityNameById(item.city)}
@@ -216,8 +233,8 @@ const SeekerDashboard = () => {
                   </div>
                   <div className="col-md-5">
                     <div className="text-end">
-                      <button className="btn btn-outline-primary btn-save me-3">Save</button>
-                      <Link to='/view-job-details' className="btn btn-primary btn-apply">Apply Now</Link>
+                      <button onClick={handleSaveJobs} className="btn btn-outline-primary btn-save me-3">Save</button>
+                      <Link to={`/view-job-details/${item.id}`} className="btn btn-primary btn-apply">Apply Now</Link>
                     </div>
                   </div>
                 </div>
@@ -228,7 +245,8 @@ const SeekerDashboard = () => {
             <p>No jobs found.</p>
           )}
 
-
+         
+          
         </div>
 
         <div className="col-lg-4">
