@@ -93,6 +93,7 @@ interface Projects {
     details_of_project: string;
 }
 interface PersonDetails {
+    length: number;
     gender: string;
     date_of_birth: string;
     category: string;
@@ -121,6 +122,10 @@ interface Email_Push_Notifications {
     chat_notifications: boolean;
     educational_notifications: boolean;
 }
+interface Industry {
+    id: number;
+    industry: string;
+}
 
 interface Account_settings {
     hide_profile_from_recruiters: boolean;
@@ -131,6 +136,20 @@ const Profiles = () => {
         { id: 1, skill: 'HTML', version: '5', lastUsed: '-', experience: '8 Years' },
         { id: 2, skill: 'React', version: '-', lastUsed: '-', experience: '-' },
     ]);
+    const [personalFormData, setPersonalFormData] = useState<PersonDetails>({
+        length: 0,
+        gender: '',
+        date_of_birth: '',
+        category: '',
+        Have_you_taken_a_career_break: '',
+        resident_status: '',
+        work_permit_for_USA: '',
+        work_permit_for_other_country: '',
+        Nationality: '',
+        i_am_specially_abled: '',
+    });
+    const [personDetais, setPersonDetais] = useState([]);
+    const [imageUrl, setImageUrl] = useState('')
     const [cities, setCities] = useState<City[]>([]);
     const [countries, setCountries] = useState<Country[]>([]);
     const [newSkill, setNewSkill] = useState<ITSkill>({ skill: '', version: '', lastUsed: '', experience: '', id: 0 });
@@ -228,11 +247,20 @@ const Profiles = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const [industry, setIndustry] = useState<Industry[]>([]);
     const handleChange = (e: any) => {
         const { name, value } = e.target;
         setNewSkill({ ...newSkill, [name]: value })
 
     }
+    const [workExpData, setWorkExpData] = useState([]);
+    const [eduUpdate, setEduUpdate] = useState([])
+
+    useEffect(() => {
+        fetchProfileImage();
+        presonGetMethod();
+    }, []);
+
     useEffect(() => {
         const fetchCities = async () => {
             try {
@@ -323,6 +351,12 @@ const Profiles = () => {
         };
         Languange();
 
+        workExperiance();
+        educationPutData();
+        workExpUpdated();
+        handleIndustry();
+
+        handlePeronalGet();
     }, []);
     const handleAddSkill = () => {
         if (!newSkill.skill) return; // Don't add empty skill
@@ -364,7 +398,11 @@ const Profiles = () => {
     const handleDeleteSkill = (id: any) => {
         setItSkills(itSkills.filter((skill) => skill.id !== id));
     };
-    const handleForm1Submit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+
+    // user profile start
+
+    const handlePersonalDetails = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevents page reload on form submit
         const formData = new FormData();
         for (const key in userprofileFormdata) {
@@ -374,8 +412,7 @@ const Profiles = () => {
         try {
             // Make POST request to the API endpoint
             const response = await axios.post(
-                "http://127.0.0.1:8000/user/Userprofile/",
-                formData,
+                "http://127.0.0.1:8000/user/Userprofile/", formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
                 }
@@ -388,7 +425,88 @@ const Profiles = () => {
             console.error(err);
         }
     };
-    const handleForm2Submit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0]);
+            console.log(fileUpload, "profile pic ====");
+        }
+    }
+
+    const uploadImage = async () => {
+        if (!fileUpload) return;  // Don't proceed if no image is selected
+
+        const formData = new FormData();
+        formData.append("image", fileUpload);
+
+        try {
+            // Send POST request to upload image to server
+            const response = await axios.post("http://127.0.0.1:8000/user/Userprofile/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            setImageUrl(response.data.imageUrl);  // Update image URL after successful upload
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
+    };
+
+    const fetchProfileImage = async () => {
+        try {
+            const response = await axios.get("/api/profile-image");
+            setImageUrl(response.data.imageUrl); // Use default if no image is found
+        } catch (error) {
+            console.error("Error fetching profile image:", error);
+            setImageUrl(imageUrl);  // Fallback to default image on error
+        }
+    };
+
+    // const handleFileChangelogo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     if (e.target.files && e.target.files.length > 0) {
+    //         setFilelogo(e.target.files[0]);
+    //          console.log(fileUpload, "newfile");         
+    //     } else {
+    //         // setFormData({
+    //         //     ...formData,
+    //         //     upload_file: null, // Clear if no file selected
+    //         // });
+    //     }
+    // };
+
+    const handleForm1Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setUserProfileFormdata(userprofileFormdata => ({
+            ...userprofileFormdata,
+            [name]: value,
+        }));
+    }
+
+    const handleIndustry = async () => {
+        try {
+            const res_industry = await axios.get("http://127.0.0.1:8000/industry/")
+            const industry_list = res_industry.data;
+            setIndustry(industry_list)
+        } catch (error) {
+            setError("Not found Industry")
+        }
+    }
+
+    const handlePeronalGet = async () => {
+        setLoading(true);
+        try {
+            const res_personal_details = await axios.get("http://127.0.0.1:8000/user/Userprofile/")
+            const personal_details_list = res_personal_details.data
+            setUserProfileFormdata(personal_details_list)
+        } catch (error) {
+            setError("Personal dat not found")
+        }
+    }
+
+    // user profile end
+
+    // work experiance start 
+    const handleWorkExp = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevents page reload on form submit
         const formData = new FormData();
         for (const key in Workexperience) {
@@ -409,6 +527,45 @@ const Profiles = () => {
             console.error(err);
         }
     };
+
+    const workExperiance = async () => {
+        setLoading(true)
+        try {
+            const res_work_exp = await axios.get('http://127.0.0.1:8000/user/Workexperience/')
+            const work_exp_data = res_work_exp.data;
+            setWorkExpData(work_exp_data)
+            setMessage(message)
+
+        } catch (error) {
+            setError("Data not found")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const workExpUpdated = async () => {
+        try {
+            const res_work_exp_put = await axios.put('http://127.0.0.1:8000/user/Workexperience/1/', workExpData)
+            setMessage(res_work_exp_put.data)
+        } catch (error) {
+            setError("Work experiance not updated")
+        }
+    }
+    // work experiance end 
+
+    const educationPutData = async () => {
+        //     try {
+        //         const response = await axios.put(
+        //             "http://127.0.0.1:8000/user/EducationDetails/", FormData,
+        //         );
+        //         setMessage("EducationDetails Created sucessfully");
+        //         console.log('education data put =====', response.data);
+        //    }catch (err) {
+        //     setError('Failed to create EducationDetails');
+        //     console.error(err);
+        // }
+    }
+
     const handleForm3Submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevents page reload on form submit
         const formData = new FormData();
@@ -419,32 +576,19 @@ const Profiles = () => {
         try {
             // Make POST request to the API endpoint
             const response = await axios.post(
-                "http://127.0.0.1:8000/user/EducationDetails/",
-                formData,
+                "http://127.0.0.1:8000/user/EducationDetails/", formData,
             );
             setMessage("EducationDetails Created sucessfully");
-            alert('EducationDetails created successfully!');
             console.log(response.data);
         } catch (err) {
             setError('Failed to create EducationDetails');
             console.error(err);
         }
     };
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
 
-            setFile(e.target.files[0]);
-            console.log(fileUpload, "newfile");
-        }
-    }
-    const handleForm1Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUserProfileFormdata(userprofileFormdata => ({
-            ...userprofileFormdata,
-            [name]: value,
-        }));
-    }
+
     const handleForm2Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
+        e.preventDefault();
         const { name, value } = e.target;
         setWorkexperience(Workexperience => ({
             ...Workexperience,
@@ -507,6 +651,41 @@ const Profiles = () => {
             [name]: value,
         }));
     };
+
+
+    // personal details start
+    const presonGetMethod = async () => {
+        setLoading(true);
+        try {
+            const res_personal_get = await axios.get("http://127.0.0.1:8000/user/PersonDetails/")
+            const personal_list = res_personal_get
+            setPersonDetais(personal_list.data)
+            console.log("personal data list ===", personal_list.data)
+        } catch (error) {
+            setError("personal data not found")
+        }
+    }
+
+    const handleInputPersonalDetails = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setPersonalFormData({ ...personalFormData, [e.target.name]: e.target.value })
+    }
+
+    const handlePersonalFormPostData = async (e: any) => {
+        e.preventDefault();
+        try {
+            const res_personal_post = await axios.post("http://127.0.0.1:8000/user/PersonDetails/", personDetais)
+            const personal_list_post = res_personal_post.data;
+            setPersonDetais(personal_list_post.data)
+            console.log("personal data ===", personal_list_post)
+        } catch (error) {
+            setError("personal data not found")
+        }
+
+    }
+
+
+    // personal details end
+
     return (
         <main>
             <div className=" mt-4">
@@ -521,12 +700,13 @@ const Profiles = () => {
                     ></button>
                     <div className="row">
                         <div className="col-sm-3 col-lg-3 text-center mb-3">
+                            <h6>Profile picture</h6>
                             <img
                                 className='profile-pic'
-                                src={window.location.origin + '/images/avtar-pic.avif'}
-                                alt="Profile"
+                                src={imageUrl || window.location.origin + '/images/avtar-pic.avif'}
+                                alt="Profile pic"
                             />
-                            <label className="btn btn-outline-primary btn-sm">
+                            {/* <label className="btn btn-outline-primary btn-sm">
                                 <i className="fa fa-image"></i>Upload image
                                 <input
                                     type="file"
@@ -534,7 +714,7 @@ const Profiles = () => {
                                     name="profile_photo"
                                     onChange={(e) => handleForm1Change(e)}
                                 />
-                            </label>
+                            </label> */}
                         </div>
                         <div className="col-sm-9 col-lg-8 offset-lg-1">
                             <div className="row">
@@ -546,7 +726,7 @@ const Profiles = () => {
                                         placeholder='Shekhar'
                                         className="form-control"
                                         value={userprofileFormdata.first_name}
-                                        onChange={handleForm1Change}
+                                        onChange={handleForm1Change} readOnly
                                     />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
@@ -557,7 +737,7 @@ const Profiles = () => {
                                         placeholder='Vadla'
                                         className="form-control"
                                         value={userprofileFormdata.last_name}
-                                        onChange={handleForm1Change}
+                                        onChange={handleForm1Change} readOnly
                                     />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
@@ -568,7 +748,7 @@ const Profiles = () => {
                                         placeholder='test@gmail.com'
                                         className="form-control"
                                         value={userprofileFormdata.email}
-                                        onChange={handleForm1Change}
+                                        onChange={handleForm1Change} readOnly
                                     />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
@@ -579,17 +759,16 @@ const Profiles = () => {
                                         placeholder='+91-9876543210'
                                         className="form-control"
                                         value={userprofileFormdata.phone_number}
-                                        onChange={handleForm1Change}
+                                        onChange={handleForm1Change} readOnly
                                     />
                                 </div>
                                 <div className="col-sm-6 col-lg-6 mb-3">
-                                    <label htmlFor="resume" className="form-label">Resume</label>
+                                    <label className="form-label">Resume</label>
                                     <input
                                         type="text"
-                                        name="resume"
                                         placeholder='shekhar-vadla-resume.pdf'
                                         className="form-control"
-                                        onChange={handleForm1Change}
+                                        onChange={handleForm1Change} readOnly
                                     />
                                     <button className='btn-sm btn'>Download</button>
                                 </div>
@@ -598,8 +777,7 @@ const Profiles = () => {
                                     <input
                                         type="text"
                                         placeholder='IT'
-                                        className="form-control"
-
+                                        className="form-control" readOnly
                                     />
                                 </div>
                             </div>
@@ -611,7 +789,9 @@ const Profiles = () => {
                             <div className="row">
                                 <div className="col-sm-4 col-lg-4 mb-3">
                                     <label htmlFor="current_location" className="form-label">Current Location</label>
-                                    <select
+                                    <input type="text" onChange={handleForm1Change} value={userprofileFormdata.current_location} name="current_location" className="form-control" readOnly />
+
+                                    {/* <select
                                         name="current_location"
                                         className="form-control"
                                         value={userprofileFormdata.current_location}
@@ -621,35 +801,29 @@ const Profiles = () => {
                                         {countries.map((country) => (
                                             <option key={country.id} value={country.id}>{country.name}</option>
                                         ))}
-                                        {/* <option value="India">India</option>
-                                            <option value="USA">USA</option>
-                                            <option value="UK">UK</option>
-                                            <option value="Australia">Australia</option>
-                                            <option value="Canada">Canada</option> */}
-                                        {/* Add more options as needed */}
-                                    </select>
+                                    </select> */}
                                 </div>
                                 <div className="col-sm-4 col-lg-4 mb-3">
                                     <label htmlFor="preferred_location" className="form-label">Preferred Locations</label>
-                                    <select
+                                    <input type="text" className="form-control" value={userprofileFormdata.preferred_location}
+                                        onChange={handleForm1Change} readOnly />
+                                    {/* <select
                                         name="preferred_location"
                                         className="form-control"
                                         value={userprofileFormdata.preferred_location}
                                         onChange={handleForm1Change}
-                                    >
+                                        >
                                         <option value="">Select Preferred Location</option>
                                         {cities.map((city) => (
                                             <option key={city.id} value={city.id}>{city.name}</option>
                                         ))}
-                                        {/* <option value="Pan India">Pan India</option>
-                                            <option value="Remote">Remote</option>
-                                            <option value="On-site">On-site</option> */}
-                                        {/* Add more options as needed */}
-                                    </select>
+                                    </select> */}
                                 </div>
                                 <div className="col-sm-4 col-lg-4 mb-3">
                                     <label htmlFor="noticeperiod" className="form-label">Notice Period</label>
-                                    <select
+                                    <input type="text" value={userprofileFormdata.notice_period}
+                                        onChange={handleForm1Change} className="form-control readOnly" />
+                                    {/* <select
                                         name="noticeperiod"
                                         className="form-control"
                                         value={userprofileFormdata.notice_period}
@@ -662,8 +836,7 @@ const Profiles = () => {
                                         <option value="45 days">45 days</option>
                                         <option value="2 Months">2 Month</option>
                                         <option value="1 Months">3 Month</option>
-                                        {/* Add more options as needed */}
-                                    </select>
+                                    </select> */}
                                 </div>
                             </div>
                         </div>
@@ -678,13 +851,16 @@ const Profiles = () => {
                             <div className="card-header fw-bold">
                                 <span><i className="bi bi-duffle text-secondary me-2"></i> Work Experience</span>  <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addWorkExperiance"> +Add</button></div>
                             <div className="card-body">
-                                <ul className='list-unstyled profile-sec'>
-                                    <li className='lt-blue-c'>Ui Developer <button className="bi bi-pencil-square float-end btn" data-bs-toggle="modal" data-bs-target="#addWorkExperiance"></button></li>
-                                    <li>TCS</li>
-                                    <li>Oct 2022 to present</li>
-                                    <li>Notice Period : Immediately available</li>
-                                    <li>Description</li>
-                                </ul>
+                                {workExpData.map((item: any, index: number) => (
+                                    <ul className='list-unstyled profile-sec' key={index}>
+                                        <li><span className='text-secondary'>Job Titile:</span> <span className='lt-blue-c'>{item.current_job_title}</span>
+                                            <button className="bi bi-pencil-square float-end btn" data-bs-toggle="modal" data-bs-target="#addWorkExperiance"></button></li>
+                                        <li><span className='text-secondary'>Company Name:</span> {item.company_name}</li>
+                                        <li><span className='text-secondary'>Date:</span> {item.start_date.split('T')[0]} to {item.end_date.split('T')[0]} {item.is_company_name}</li>
+                                        <li><span className='text-secondary'>Description:</span> {item.description}</li>
+                                    </ul>
+                                ))}
+
 
                                 <ul className='list-unstyled profile-sec'>
                                     <li className='lt-blue-c'>Ui Designer And Developer <button className="bi bi-pencil-square float-end btn" data-bs-toggle="modal" data-bs-target="#addWorkExperiance"></button></li>
@@ -824,17 +1000,36 @@ const Profiles = () => {
                                 <span><i className="bi bi-person-vcard text-secondary me-2"></i> Personal Details </span>
                                 <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addPersonalDetails"></button></div>
                             <div className="card-body">
-                                <ul className='list-unstyled profile-sec'>
-                                    <li className='lt-blue-c'>Gender: <b>Male</b> </li>
-                                    <li>Date of Birth: <b>05/02/2000</b></li>
-                                    <li>Category: <b>Gen</b></li>
-                                    <li>Have you taken a career break?: <b>No</b> </li>
-                                    <li>Work Permit for USA: <b>No</b> </li>
-                                    <li>Nationality: <b>India</b> </li>
-                                    <li>Specially abled: <b>No</b> </li>
-                                    <li>Add Resident Status: <b>yes</b> </li>
-                                    <li>Add Work Permit for Other Country: <b>No</b> </li>
-                                </ul>
+                                        <ul className='list-unstyled profile-sec'>
+                                            <li className='lt-blue-c'>Gender: {personalFormData.gender} </li>
+                                            <li>Date of Birth: <b>{personalFormData.date_of_birth}</b></li>
+                                            {/* <li>Category: <b>Gen</b></li> */}
+                                            <li>Have you taken a career break?: <b>{personalFormData.Have_you_taken_a_career_break}</b> </li>
+                                            <li>Work Permit for USA: <b>{personalFormData.work_permit_for_USA}</b> </li>
+                                            <li>Nationality: <b>{personalFormData.Nationality}</b> </li>
+                                            <li>Specially abled: <b>{personalFormData.i_am_specially_abled}</b> </li>
+                                            <li>Add Resident Status: <b>{personalFormData.resident_status}</b> </li>
+                                            <li>Add Work Permit for Other Country: <b>{personalFormData.work_permit_for_other_country}</b> </li>
+                                        </ul>
+                                {/* {Array.isArray(personalFormData) ? (
+                                    personalFormData.map((item: any, index: number) => (
+                                        <ul key={index} className='list-unstyled profile-sec'>
+                                            <li className='lt-blue-c'>Gender: <b>{item.gender}</b> </li>
+                                            <li>Date of Birth: <b>05/02/2000</b></li>
+                                            <li>Category: <b>Gen</b></li>
+                                            <li>Have you taken a career break?: <b>No</b> </li>
+                                            <li>Work Permit for USA: <b>No</b> </li>
+                                            <li>Nationality: <b>India</b> </li>
+                                            <li>Specially abled: <b>No</b> </li>
+                                            <li>Add Resident Status: <b>yes</b> </li>
+                                            <li>Add Work Permit for Other Country: <b>No</b> </li>
+                                        </ul>
+                                    ))
+                                ) : (
+                                    "no data found"
+                                )} */}
+                                {/* {personalFormData.length ? personalFormData.length>0 : } */}
+
                             </div>
                         </div>
 
@@ -884,12 +1079,12 @@ const Profiles = () => {
             {/* <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkExperiance">
                 Launch demo modal
             </button> */}
-            <form onSubmit={handleForm1Submit}>
+            <form onSubmit={handlePersonalDetails}>
                 <div className="modal fade" id="addProfile" aria-labelledby="addProfileLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
                         <div className="modal-content">
                             <div className="modal-header bg-light">
-                                <h5 className="modal-title" id="addProfileLabel">Personal Details</h5>
+                                <h5 className="modal-title" id="addProfileLabel">Profile Details</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body py-0">
@@ -897,11 +1092,18 @@ const Profiles = () => {
                                 <form className="education-form">
                                     <div className="row">
                                         <div className="col-sm-12 col-lg-12 mb-3">
-                                            <label htmlFor="upload_ profile_image" className="form-label">Upload Profile Image</label>
-                                            <input type="file" className="form-control" id="profile_photo"
-                                                name="profile_photo" onChange={handleFileChange} />
-                                            <span className='float-end text-secondary'><small>(Upload a picture less than 100kb)</small></span>
+                                            <label htmlFor="upload_ profile_image" className="form-label">Upload Profile Image </label>  <span className='float-end text-secondary'><small>(Upload a picture less than 100kb)</small></span>
+                                            {/* <input type="file" className="form-control" id="profile_photo"
+                                                name="profile_photo" onChange={handleFileChange} /> */}
+
+                                            <div>
+                                                <input type="file" id="profile_photo"
+                                                    name="profile_photo" onChange={handleFileChange} />
+                                                <button onClick={uploadImage}>Upload Image</button>
+                                            </div>
                                         </div>
+
+
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="first_name" className="form-label">First Name *</label>
@@ -919,18 +1121,16 @@ const Profiles = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="email" className="form-label">Email Id *</label>
-                                                <input type="email" className="form-control" id="email" placeholder="Enter your Email id" name="email"
-                                                    onChange={handleForm1Change} />
+                                                <input type="email" className="form-control" id="email" placeholder="Enter your Email id" name="email" onChange={handleForm1Change} />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="phone_number" className="form-label">Phone Number *</label>
-                                                <input type="number" className="form-control" id="phone_number" placeholder="Enter your phone no." name="phone_number"
-                                                    onChange={handleForm1Change} />
+                                                <input type="number" className="form-control" id="phone_number" maxLength={10} placeholder="Enter your phone no." name="phone_number" onChange={handleForm1Change} />
                                             </div>
                                         </div>
-                                        <div className="col-sm-12 col-lg-12 mb-3">
+                                        <div className="col-sm-6 col-lg-6 mb-3">
                                             <label htmlFor="upload_resume" className="form-label">Upload Resume</label>
                                             <input type="file"
                                                 className="form-control"
@@ -938,6 +1138,23 @@ const Profiles = () => {
                                                 name="resume"
                                                 onChange={handleFileChange} />
                                             <span className='float-end text-secondary'><small>(Accepted format includes PDF, DOC & DOCX)</small></span>
+                                        </div>
+
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="industry" className="form-label">Industry</label>
+
+                                                <select className="form-select" id="total_experience" name="total_experience" onChange={handleIndustry}>
+                                                    <option selected>Select Industry</option>
+                                                    {industry && industry.length > 0 ? industry.map((ind: any, index: number) => (
+                                                        <option key={index} value={ind.id}>
+                                                            {ind.industry}
+                                                        </option>
+                                                    )) : (
+                                                        <option value="">No industries available</option>
+                                                    )}
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div className="col-md-6">
@@ -1019,257 +1236,259 @@ const Profiles = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-primary">Save changes</button>
+                                <button type="button" className="update-btn" data-bs-dismiss="modal">Update</button>
+                                <button type="submit" data-bs-dismiss="modal" className="save-btns">Save changes</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
             <form onSubmit={handleForm3Submit}>
-            <div className="modal fade" id="addEducation" aria-labelledby="addEducationLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                        <div className="modal-header bg-light">
-                            <h5 className="modal-title" id="addEducationLabel">Education Details</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            {/* education details start */}
-                            <form className="education-form">
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="qualification" className="form-label">Qualification *</label>
-                                            <select className="form-select" id="qualification" name='qualification' onChange={handleForm3Change}>
-                                                <option selected>Enter or select your qualification</option>
-                                                {Qualification.map((qualification) => {
-                                                    return <option key={qualification.id} value={qualification.id}>{qualification.name}</option>
-                                                })}
+                <div className="modal fade" id="addEducation" aria-labelledby="addEducationLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header bg-light">
+                                <h5 className="modal-title" id="addEducationLabel">Education Details</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                {/* education details start */}
+                                <form className="education-form">
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="qualification" className="form-label">Qualification *</label>
+                                                <select className="form-select" id="qualification" name='qualification' onChange={handleForm3Change}>
+                                                    <option selected>Enter or select your qualification</option>
+                                                    {Qualification.map((qualification) => {
+                                                        return <option key={qualification.id} value={qualification.id}>{qualification.name}</option>
+                                                    })}
 
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="specialization" className="form-label">Specialization *</label>
-                                            <select className="form-select" id="specialization" name='specialization' onChange={handleForm3Change}>
-                                                <option selected>Enter or select your specialization</option>
-                                                {/* Options for specializations */}
-                                                {Specialization.map((specialization) => {
-                                                    return <option key={specialization.id} value={specialization.id}>{specialization.name}</option>
-                                                })}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-12">
-                                        <div className="mb-3">
-                                            <label htmlFor="institute" className="form-label">Institute *</label>
-                                            <select className="form-select" id="institute" name="institute" onChange={handleForm3Change}>
-                                                <option selected>Enter or select your institute</option>
-                                                {/* Options for institutes */}
-                                                {Institute.map((institute) => {
-                                                    return <option key={institute.id} value={institute.id}>{institute.institute_name}</option>
-                                                })}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="gradingSystem" className="form-label">Grading system</label>
-                                            <select className="form-select" id="grading_system" name='grading_system' onChange={handleForm3Change}>
-                                                <option selected>Enter or Select your Grading system</option>
-                                                <option value="Scale 10 Grading System">Scale 10 Grading System</option>
-                                                <option value="Scale 4 Grading System">Scale 4 Grading System</option>
-                                                <option value="% Marks out of 100">% Marks out of 100</option>
-                                                <option value="Course only required to pass">Course only required to pass</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="marks" className="form-label">Marks</label>
-                                            <input type="number" className="form-control" id="marks" name='marks' placeholder="Enter your Marks" onChange={handleForm3Change}/>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="passingYear" className="form-label">Passing Year *</label>
-                                            <input type="month" className='form-control' id="passing_year" name="passing_year" onChange={handleForm3Change}/>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8">
-                                        <div className="mb-3">
-                                            <label className="form-label">Education Type *</label>
-                                            <div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="education_type" id="Full time" value="Full time" />
-                                                    <label className="form-check-label" htmlFor="fullTime">Full time</label>
-                                                </div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="education_type" id="Part time" value="Part time" />
-                                                    <label className="form-check-label" htmlFor="partTime">Part time</label>
-                                                </div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="education_type" id="Correspondence" value="Correspondence" />
-                                                    <label className="form-check-label" htmlFor="correspondence">Correspondence</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </form>
-                            {/* education details end */}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" className="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </form>
-            <form onSubmit={handleForm2Submit}>
-            <div className="modal fade" id="addWorkExperiance" aria-labelledby="addWorkExperianceLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                        <div className="modal-header bg-light">
-                            <h5 className="modal-title" id="addWorkExperianceLabel">Work Experience</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            {/* work experiance start */}
-                            <form className="job-form py-1">
-                                <div className="row">
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="jobTitle" className="form-label">Current Job Title *</label>
-                                            <input type="text" className="form-control" id="current_job_title" name='current_job_title' placeholder="Most recent job title"
-                                            onChange={handleForm2Change} />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="companyName" className="form-label">Company Name *</label>
-                                            <input type="text" className="form-control" id="company_name" placeholder="Most recent company" name='company_name' onChange={handleForm2Change}/>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-md-12">
-                                        <div className="mb-3">
-                                            <label className="form-label">Is This Your Current Company?</label>
-                                            <div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="is_current_company" id="is_current_company" value="yes" onChange={handleForm2Change}/>
-                                                    <label className="form-check-label" htmlFor="currentCompanyYes">Yes</label>
-                                                </div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="is_current_company" id="is_current_company" value="no" onChange={handleForm2Change}/>
-                                                    <label className="form-check-label" htmlFor="currentCompanyNo">No</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8">
-                                        <div className="mb-3 row">
-                                            <div className="col">
-                                                <label htmlFor="startDateYear" className="form-label">Start Date *</label>
-                                                <input type='date' className="form-control" id="start_date" name='start_date' onChange={handleForm2Change}/>
-
-                                            </div>
-                                            <div className="col">
-                                                <label htmlFor="endDateMonth" className="form-label">Start Date *</label>
-                                                <input type='date' className="form-control" id="end_date" name='end_date'onChange={handleForm2Change} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="noticePeriod" className="form-label">Notice Period *</label>
-                                            <select className="form-select" id="noticePeriod" onChange={handleForm2Change}>
-                                                <option selected>Select your notice period</option>
-                                                {/* Options for notice period */}
-                                                <option value="Immediately available">Immediately Available</option>
-                                                <option value="15 days">15 Days</option>
-                                                <option value="30 days">30 Days</option>
-                                                <option value="45 days">45 Days</option>
-                                                <option value="2 Months">2 Months</option>
-                                                <option value="3 Months">3 Months</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-12">
-                                        <div className="mb-3">
-                                            <label className="form-label">Workplace</label>
-                                            <div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="workplace" id="workplace" value="in_office" onChange={handleForm2Change} />
-                                                    <label className="form-check-label" htmlFor="inOffice">In-Office</label>
-                                                </div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="workplace" id="hybrid" value="hybrid" onChange={handleForm2Change}/>
-                                                    <label className="form-check-label" htmlFor="hybrid">Hybrid</label>
-                                                </div>
-                                                <div className="form-check form-check-inline">
-                                                    <input className="form-check-input" type="radio" name="workplace" id="workFromHome" value="work_from_home" onChange={handleForm2Change} />
-                                                    <label className="form-check-label" htmlFor="workFromHome">Work from home</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="employmentType" className="form-label">Employment Type</label>
-                                            <select className="form-select" id="employment_type" name='employment_type' onChange={handleForm2Change}>
-                                                <option selected>Select your employment type</option>
-                                                {/* Options for employment type */}
-                                                <option value="Full Time">Full Time</option>
-                                                <option value="Part Time">Part Time</option>
-                                                <option value="Internship">Internship</option>
-                                                <option value="Freelance">Freelance</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8">
-                                        <div className="mb-3 row">
-                                            <div className="col">
-                                                <label htmlFor="salaryCurrency" className="form-label">Current Salary (Annually) *</label>
-                                                <select className="form-select" id="current_salary" name='current_salary' onChange={handleForm2Change}>
-                                                    <option selected>Select a Current Salary</option>
-                                                    {/* Other currency options */}
-                                                    <option value="INR">Indian Rupee (INR)</option>
-                                                    <option value="USD">US Dollar (USD)</option>
-                                                    <option value="AED">UAE Dirham (AED)</option>
                                                 </select>
                                             </div>
-                                            <div className="col">
-                                                <label htmlFor=""></label>
-                                                <input type="number" className="form-control" id="salary" placeholder="Enter your current salary" />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="specialization" className="form-label">Specialization *</label>
+                                                <select className="form-select" id="specialization" name='specialization' onChange={handleForm3Change}>
+                                                    <option selected>Enter or select your specialization</option>
+                                                    {/* Options for specializations */}
+                                                    {Specialization.map((specialization) => {
+                                                        return <option key={specialization.id} value={specialization.id}>{specialization.name}</option>
+                                                    })}
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-md-12">
-                                        <div className="">
-                                            <label htmlFor="description" className="form-label">Description</label>
-                                            <textarea className="form-control" id="description" name='description' placeholder="Enter your description" onChange={handleForm2Change}></textarea>
-                                            <small className="form-text text-muted">Max. 1000 characters</small>
+                                        <div className="col-md-12">
+                                            <div className="mb-3">
+                                                <label htmlFor="institute" className="form-label">Institute *</label>
+                                                <select className="form-select" id="institute" name="institute" onChange={handleForm3Change}>
+                                                    <option selected>Enter or select your institute</option>
+                                                    {/* Options for institutes */}
+                                                    {Institute.map((institute) => {
+                                                        return <option key={institute.id} value={institute.id}>{institute.institute_name}</option>
+                                                    })}
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="gradingSystem" className="form-label">Grading system</label>
+                                                <select className="form-select" id="grading_system" name='grading_system' onChange={handleForm3Change}>
+                                                    <option selected>Enter or Select your Grading system</option>
+                                                    <option value="Scale 10 Grading System">Scale 10 Grading System</option>
+                                                    <option value="Scale 4 Grading System">Scale 4 Grading System</option>
+                                                    <option value="% Marks out of 100">% Marks out of 100</option>
+                                                    <option value="Course only required to pass">Course only required to pass</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="marks" className="form-label">Marks</label>
+                                                <input type="number" className="form-control" id="marks" name='marks' placeholder="Enter your Marks" onChange={handleForm3Change} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="mb-3">
+                                                <label htmlFor="passingYear" className="form-label">Passing Year *</label>
+                                                <input type="month" className='form-control' id="passing_year" name="passing_year" onChange={handleForm3Change} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-8">
+                                            <div className="mb-3">
+                                                <label className="form-label">Education Type *</label>
+                                                <div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="education_type" id="Full time" value="Full time" />
+                                                        <label className="form-check-label" htmlFor="fullTime">Full time</label>
+                                                    </div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="education_type" id="Part time" value="Part time" />
+                                                        <label className="form-check-label" htmlFor="partTime">Part time</label>
+                                                    </div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="education_type" id="Correspondence" value="Correspondence" />
+                                                        <label className="form-check-label" htmlFor="correspondence">Correspondence</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                </div>
-                            </form>
-                            {/* work experiance end */}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" className="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                                {/* education details end */}
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" className="btn btn-primary">Save changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </form>
-    
+            <form onSubmit={handleWorkExp}>
+                <div className="modal fade" id="addWorkExperiance" aria-labelledby="addWorkExperianceLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header bg-light">
+                                <h5 className="modal-title" id="addWorkExperianceLabel">Work Experience</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                {/* work experiance start */}
+                                <form className="job-form py-1">
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="jobTitle" className="form-label">Current Job Title *</label>
+                                                <input type="text" className="form-control" id="current_job_title" name='current_job_title' placeholder="Most recent job title"
+                                                    onChange={handleForm2Change} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="companyName" className="form-label">Company Name *</label>
+                                                <input type="text" className="form-control" id="company_name" placeholder="Most recent company" name='company_name' onChange={handleForm2Change} />
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-12">
+                                            <div className="mb-3">
+                                                <label className="form-label">Is This Your Current Company?</label>
+                                                <div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="is_current_company" id="is_current_company" value="yes" onChange={handleForm2Change} />
+                                                        <label className="form-check-label" htmlFor="currentCompanyYes">Yes</label>
+                                                    </div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="is_current_company" id="is_current_company" value="no" onChange={handleForm2Change} />
+                                                        <label className="form-check-label" htmlFor="currentCompanyNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-8">
+                                            <div className="mb-3 row">
+                                                <div className="col">
+                                                    <label htmlFor="startDateYear" className="form-label">Start Date</label>
+                                                    <input type='date' className="form-control" id="start_date" name='start_date' onChange={handleForm2Change} />
+
+                                                </div>
+                                                <div className="col">
+                                                    <label htmlFor="endDateMonth" className="form-label">End Date</label>
+                                                    <input type='date' className="form-control" id="end_date" name='end_date' onChange={handleForm2Change} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="mb-3">
+                                                <label htmlFor="noticePeriod" className="form-label">Notice Period</label>
+                                                <select className="form-select" id="noticePeriod" onChange={handleForm2Change}>
+                                                    <option selected>Select your notice period</option>
+                                                    {/* Options for notice period */}
+                                                    <option value="Immediately available">Immediately Available</option>
+                                                    <option value="15 days">15 Days</option>
+                                                    <option value="30 days">30 Days</option>
+                                                    <option value="45 days">45 Days</option>
+                                                    <option value="2 Months">2 Months</option>
+                                                    <option value="3 Months">3 Months</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <div className="mb-3">
+                                                <label className="form-label">Workplace</label>
+                                                <div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="workplace" id="workplace" value="in_office" onChange={handleForm2Change} />
+                                                        <label className="form-check-label" htmlFor="inOffice">In-Office</label>
+                                                    </div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="workplace" id="hybrid" value="hybrid" onChange={handleForm2Change} />
+                                                        <label className="form-check-label" htmlFor="hybrid">Hybrid</label>
+                                                    </div>
+                                                    <div className="form-check form-check-inline">
+                                                        <input className="form-check-input" type="radio" name="workplace" id="workFromHome" value="work_from_home" onChange={handleForm2Change} />
+                                                        <label className="form-check-label" htmlFor="workFromHome">Work from home</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <div className="mb-3">
+                                                <label htmlFor="employmentType" className="form-label">Employment Type</label>
+                                                <select className="form-select" id="employment_type" name='employment_type' onChange={handleForm2Change}>
+                                                    <option selected>Select your employment type</option>
+                                                    {/* Options for employment type */}
+                                                    <option value="Full Time">Full Time</option>
+                                                    <option value="Part Time">Part Time</option>
+                                                    <option value="Internship">Internship</option>
+                                                    <option value="Freelance">Freelance</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-8">
+                                            <div className="mb-3 row">
+                                                <div className="col">
+                                                    <label htmlFor="salaryCurrency" className="form-label">Current Salary (Annually) *</label>
+                                                    <select className="form-select" id="current_salary" name='current_salary' onChange={handleForm2Change}>
+                                                        <option selected>Select a Current Salary</option>
+                                                        {/* Other currency options */}
+                                                        <option value="INR">Indian Rupee (INR)</option>
+                                                        <option value="USD">US Dollar (USD)</option>
+                                                        <option value="AED">UAE Dirham (AED)</option>
+                                                    </select>
+                                                </div>
+                                                <div className="col">
+                                                    <label htmlFor=""></label>
+                                                    <input type="number" className="form-control" id="salary" placeholder="Enter your current salary" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <div className="">
+                                                <label htmlFor="description" className="form-label">Description</label>
+                                                <textarea className="form-control" id="description" name='description' placeholder="Enter your description" onChange={handleForm2Change}></textarea>
+                                                <small className="form-text text-muted">Max. 1000 characters</small>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                                {/* work experiance end */}
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" onClick={workExpUpdated} className="update-btn" data-bs-dismiss="modal">Update</button>
+                                <button type="submit" data-bs-dismiss="modal" className="save-btns">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
             <div className="modal fade" id="addJobPreferences" aria-labelledby="addJobPreferencesLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
@@ -1318,7 +1537,7 @@ const Profiles = () => {
                                             <label className="form-check-label" htmlFor="temporary">Temporary/Contract</label>
                                         </div>
                                         <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="jobType" id="bothJobType" value="Both" onChange={handleForm2Change}/>
+                                            <input className="form-check-input" type="radio" name="jobType" id="bothJobType" value="Both" onChange={handleForm2Change} />
                                             <label className="form-check-label" htmlFor="bothJobType">Both</label>
                                         </div>
                                     </div>
@@ -1328,7 +1547,7 @@ const Profiles = () => {
                                     <label className="form-label">Employment Type</label>
                                     <div>
                                         <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="employmentType" id="fullTime" value="Full time" onChange={handleForm2Change}/>
+                                            <input className="form-check-input" type="radio" name="employmentType" id="fullTime" value="Full time" onChange={handleForm2Change} />
                                             <label className="form-check-label" htmlFor="fullTime">Full time</label>
                                         </div>
                                         <div className="form-check form-check-inline">
@@ -1336,7 +1555,7 @@ const Profiles = () => {
                                             <label className="form-check-label" htmlFor="partTime">Part time</label>
                                         </div>
                                         <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="employmentType" id="bothEmployment" value="Both" onChange={handleForm2Change}/>
+                                            <input className="form-check-input" type="radio" name="employmentType" id="bothEmployment" value="Both" onChange={handleForm2Change} />
                                             <label className="form-check-label" htmlFor="bothEmployment">Both</label>
                                         </div>
                                     </div>
@@ -1556,50 +1775,78 @@ const Profiles = () => {
                             <h5 className="modal-title" id="addPersonalDetails">Personal Details</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
-                            {/* personal details start */}
-                            <form>
+                        <form onSubmit={handlePersonalFormPostData}>
+                            <div className="modal-body">
+                                {/* personal details start */}
                                 <div className="row">
-                                    <div className="col-md-12 mb-3">
+                                    <div className="col-md-12">
                                         <div className="mb-3">
-                                            <label className="form-label me-3">Gender </label>
+                                            <label className="form-label me-3">Gender: </label>
                                             <div className="form-check form-check-inline">
-                                                <input className="form-check-input" type="radio" name="gender" id="female" value="female" />
-                                                <label className="form-check-label" htmlFor="female">Female</label>
+                                                <input className="form-check-input" 
+                                                    type="radio" 
+                                                    name="gender" 
+                                                    id="Male"
+                                                    value="Male"
+                                                    checked={personalFormData.gender === 'Male'}
+                                                    onChange={handleInputPersonalDetails} />
+                                                <label className="form-check-label" htmlFor="Male">Male</label>
                                             </div>
                                             <div className="form-check form-check-inline">
-                                                <input className="form-check-input" type="radio" name="gender" id="male" value="male" />
-                                                <label className="form-check-label" htmlFor="male">Male</label>
+                                                <input className="form-check-input"
+                                                    type="radio" 
+                                                    name="gender"
+                                                    id="Female"
+                                                    value="Female"
+                                                    checked={personalFormData.gender === 'Female'}
+                                                    onChange={handleInputPersonalDetails} />
+                                                <label className="form-check-label" htmlFor="Female">Female</label>
                                             </div>
                                             <div className="form-check form-check-inline">
-                                                <input className="form-check-input" type="radio" name="gender" id="preferNotToSay" value="preferNotToSay" />
-                                                <label className="form-check-label" htmlFor="preferNotToSay">Others</label>
+                                                <input className="form-check-input" type="radio"
+                                                    name="gender"
+                                                    id="Others"
+                                                    value="Others"
+                                                    checked={personalFormData.gender === 'Others'}
+                                                    onChange={handleInputPersonalDetails} />
+                                                <label className="form-check-label" htmlFor="Others">Others</label>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="yearOfBirth" className="form-label">Date Of Birth</label>
-                                        <input type="date" className='form-control' />
+                                        <input type="date" className='form-control'
+                                            id='yearOfBirth'
+                                            // value={personalFormData.date_of_birth}
+                                            onChange={handleInputPersonalDetails} />
                                     </div>
 
                                     <div className="col-md-6 mb-3">
-                                        <label htmlFor="category" className="form-label">Category</label>
+                                        <label htmlFor="category" className="form-label">Material Status</label>
                                         <select className="form-select" id="category">
-                                            <option value="">Select a Category</option>
-                                            {/* Add more category options */}
-                                            <option value="OC">OC</option>
-                                            <option value="General">General</option>
+                                            <option value="">Select</option>
+                                            <option value="OC">Single</option>
+                                            <option value="General">Married</option>
+                                            <option value="Divorced">Divorced</option>
+                                            <option value="Widowed">Widowed</option>
+                                            <option value="Separated">Separated</option>
+                                            <option value="partnered">In a Relationship/Partnered</option>
                                         </select>
                                     </div>
+
                                     <div className="col-md-6 mb-3">
                                         <label className="form-label">Have you taken a career break?</label>
                                         <div className="d-flex">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="careerBreak" id="yesCareerBreak" value="yes" />
+                                                <input className="form-check-input" type="radio" name="careerBreak" id="yesCareerBreak"
+                                                    value="personalFormData.yes"
+                                                    onChange={handleInputPersonalDetails} />
                                                 <label className="form-check-label" htmlFor="yesCareerBreak">Yes</label>
                                             </div>
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="careerBreak" id="noCareerBreak" value="no" />
+                                                <input className="form-check-input" type="radio" name="careerBreak" id="noCareerBreak"
+                                                    value="personalFormData.no"
+                                                    onChange={handleInputPersonalDetails} />
                                                 <label className="form-check-label" htmlFor="noCareerBreak">No</label>
                                             </div>
                                         </div>
@@ -1607,56 +1854,68 @@ const Profiles = () => {
 
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="residentStatus" className="form-label">Resident Status</label>
-                                        <select className="form-select" id="residentStatus">
-                                            <option>Select your resident status</option>
+                                        <select className="form-select" id="residentStatus" onChange={handleInputPersonalDetails}>
+                                            <option>Select</option>
                                             {/* Add resident status options */}
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            {countries.map((country) => (
+                                                <option key={country.id} value={country.id}>{country.name}</option>
+                                            ))}
                                         </select>
                                     </div>
 
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="workPermitUSA" className="form-label">Work Permit For USA</label>
-                                        <select className="form-select" id="workPermitUSA">
-                                            <option>Select your work permit for USA</option>
-                                            {/* Add work permit options */}
+                                        <select className="form-select" id="workPermitUSA"
+                                            onChange={handleInputPersonalDetails}>
+                                            <option>Select</option>
                                             <option value="Green Card holder">Green Card holder</option>
+                                            <option value="Have L1 Visa">Have L1 Visa</option>
+                                            <option value="US Citizen">US Citizen</option>
+                                            <option value="TN Permit Holder">TN Permit Holder</option>
+                                            <option value="Have H1 Visa">Have H1 Visa</option>
+                                            <option value="I  have Work Authorization">I  have Work Authorization</option>
+                                            <option value="Authorized to work in the US">Authorized to work in the US</option>
+                                            <option value="No US Work authorization">No US Work authorization</option>
                                         </select>
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="workPermitOther" className="form-label">Work Permit For Other Country</label>
-                                        <select className="form-select" id="workPermitOther">
-                                            <option>Select your work permit</option>
-                                            {/* Add options */}
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                        <select className="form-select" id="workPermitOther" onChange={handleInputPersonalDetails}>
+                                            <option>Select</option>
+                                            {countries.map((country) => (
+                                                <option key={country.id} value={country.id}>{country.name}</option>
+                                            ))}
+                                            {/* <option value="Yes">Yes</option>
+                                            <option value="No">No</option> */}
                                         </select>
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="nationality" className="form-label">Nationality</label>
-                                        <select className="form-select" id="nationality">
-                                            <option>Indian</option>
+                                        <select className="form-select" id="nationality" onChange={handleInputPersonalDetails}>
+                                            <option>Select Nationality</option>
                                             {/* Add more nationality options */}
                                             {countries.map((country) => (
                                                 <option key={country.id} value={country.id}>{country.name}</option>
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="col-md-12 mb-3">
-                                        <div className="mb-3 form-check">
-                                            <input type="checkbox" className="form-check-input" id="speciallyAbled" />
+                                    <div className="col-md-6 mb-3">
+                                        <div className="mb-3 mt-4 form-check">
+                                            <input type="checkbox" className="form-check-input" id="speciallyAbled"
+                                                onChange={handleInputPersonalDetails} />
                                             <label className="form-check-label" htmlFor="speciallyAbled">I am specially abled</label>
                                         </div>
                                     </div>
 
                                 </div>
-                            </form>
-                            {/* personal details end */}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
-                        </div>
+
+                                {/* personal details end */}
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

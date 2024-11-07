@@ -3,7 +3,6 @@ import './sekerDashboard.scss'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import SavedJobs from '../SavedJobs';
-import { useNavigate } from 'react-router-dom';
 
 // import AppliedJobs from '../AppliedJobs';
 
@@ -36,10 +35,6 @@ const SeekerDashboard = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const navigate = useNavigate();
-  const handleUserClick = (id: number) => {
-    navigate(`/view-job-details/${id}`); // Redirect to user detail page with dynamic ID
-  };
 
   useEffect(() => {
     fetchData();
@@ -112,7 +107,7 @@ const SeekerDashboard = () => {
   const handleSaveJobs = async ()=>{
     setLoading(true)
     try {
-      const res_saveJobs = await axios.get(`http://127.0.0.1:8000/user/submit-job/`)
+      const res_saveJobs = await axios.get("http://127.0.0.1:8000/user/submit-job/")
       const savejobsData = res_saveJobs.data;
       setSaveJob(savejobsData)
 
@@ -239,7 +234,7 @@ const SeekerDashboard = () => {
                   <div className="col-md-5">
                     <div className="text-end">
                       <button onClick={handleSaveJobs} className="btn btn-outline-primary btn-save me-3">Save</button>
-                      <button onClick={() => handleUserClick(item.id)} className="btn btn-primary btn-apply">Apply Now</button>
+                      <Link to={`/view-job-details/${item.id}`} className="btn btn-primary btn-apply">Apply Now</Link>
                     </div>
                   </div>
                 </div>
