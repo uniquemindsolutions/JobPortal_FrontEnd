@@ -1,11 +1,16 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 
+interface EmailandPushNotificationsModel {
+    daily_new_jobs: boolean;
+    follow_up_credited: boolean;
+    follow_up_used: boolean;
+    promotional: boolean;
+    chat_notifications: boolean;
+}
 interface accountSettingModel {
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone_number: string;
+    hide_profile_from_recruiters: boolean;
+    deactivate_account: boolean;
 }
 interface changepasswordModel {
     old_password: string;
@@ -14,11 +19,17 @@ interface changepasswordModel {
 }
 
 const AccountSetting = () => {
-    const [acountData, setAcountData] = useState<accountSettingModel>({
-        firstname: '',
-        lastname: '',
-        email: '',
-        phone_number: ''
+    const [EmailandPushNotificationsData, setEmailandPushNotificationsData] = useState<EmailandPushNotificationsModel>({
+        daily_new_jobs: false,
+        follow_up_credited: false,
+        follow_up_used: false,
+        promotional: false,
+        chat_notifications: false
+
+    });
+    const [accountData, setAcountData] = useState<accountSettingModel>({
+        hide_profile_from_recruiters: false,
+        deactivate_account: false
     });
 
     const [changepasswordData, setChangepasswordData] = useState<changepasswordModel>({
@@ -29,69 +40,39 @@ const AccountSetting = () => {
 
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;  // Extract name and value from the event target
+        setChangepasswordData({
+            ...changepasswordData,
+            [name]: value  // Use the name as the key and value for the input
+        });
+    };
+
 
     // Handle input changes for both account data and password change data
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        if (['firstname', 'lastname', 'email', 'phone_number'].includes(name)) {
-            setAcountData({ ...acountData, [name]: value });
-        } else {
-            setChangepasswordData({ ...changepasswordData, [name]: value });
-        }
+    const handleEmailPushNotificationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, checked } = event.target;
+        setEmailandPushNotificationsData((prevData) => ({
+            ...prevData,
+            [id]: checked,
+        }));
     };
-
-    // Form validation
-    const validateForm = () => {
-        if (!acountData.firstname || !acountData.lastname) {
-            setErrorMsg("First name and last name are required.");
-            return false;
-        }
-
-        // Email format validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(acountData.email)) {
-            setErrorMsg("Please enter a valid email address.");
-            return false;
-        }
-
-        const phoneRegex = /^\d{10}$/;
-        if (!phoneRegex.test(acountData.phone_number)) {
-            setErrorMsg("Please enter a valid 10-digit phone number.");
-            return false;
-        }
-
-        if (!changepasswordData.old_password || !changepasswordData.new_password || !changepasswordData.confirm_password) {
-            setErrorMsg("All password fields are required.");
-            return false;
-        }
-
-        if (changepasswordData.new_password.length < 6) {
-            setErrorMsg("New password must be at least 6 characters long.");
-            return false;
-        }
-
-        if (changepasswordData.new_password !== changepasswordData.confirm_password) {
-            setErrorMsg("New password and confirm password do not match.");
-            return false;
-        }
-
-        setErrorMsg('');
-        return true;
+    const handleAccountSettingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, checked } = event.target;
+        setAcountData((prevData) => ({
+            ...prevData,
+            [id]: checked,
+        }));
     };
-
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!validateForm()) {
-            return;
-        }
-
         try {
             // accountsettings API call
-            const proData = await axios.post('http://127.0.0.1:8000/accountsettings/', acountData);
+            const proData = await axios.post('http://127.0.0.1:8000/accountsettings/', accountData);
             console.log('Account API response:', proData.data);
-
+            const emaildata = await axios.post('http://127.0.0.1:8000/user/Emailpushnotification/',EmailandPushNotificationsData);
+            console.log('Eamil push notification data:', emaildata.data);
             // change-password API call
             const proPass = await axios.put('http://127.0.0.1:8000/change-password/', changepasswordData);
             console.log('Password API response:', proPass.data);
@@ -164,8 +145,14 @@ const AccountSetting = () => {
                     <div className="row mt-4">
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="dailyJobs" defaultChecked />
-                                <label className="form-check-label" htmlFor="dailyJobs">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="daily_new_jobs"
+                                    checked={EmailandPushNotificationsData.daily_new_jobs}
+                                    onChange={handleEmailPushNotificationChange}
+                                />
+                                <label className="form-check-label" htmlFor="daily_new_jobs">
                                     Daily New Jobs <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
@@ -180,16 +167,28 @@ const AccountSetting = () => {
                         </div> */}
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="followUpCredited" defaultChecked />
-                                <label className="form-check-label" htmlFor="followUpCredited">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="follow_up_credited"
+                                    checked={EmailandPushNotificationsData.follow_up_credited}
+                                    onChange={handleEmailPushNotificationChange}
+                                />
+                                <label className="form-check-label" htmlFor="follow_up_credited">
                                     Follow-up Credited <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
                         </div>
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="followUpUsed" defaultChecked />
-                                <label className="form-check-label" htmlFor="followUpUsed">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="follow_up_used"
+                                    checked={EmailandPushNotificationsData.follow_up_used}
+                                    onChange={handleEmailPushNotificationChange}
+                                />
+                                <label className="form-check-label" htmlFor="follow_up_used">
                                     Follow-up Used <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
@@ -204,7 +203,13 @@ const AccountSetting = () => {
                         </div> */}
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="promotional" defaultChecked />
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="promotional"
+                                    checked={EmailandPushNotificationsData.promotional}
+                                    onChange={handleEmailPushNotificationChange}
+                                />
                                 <label className="form-check-label" htmlFor="promotional">
                                     Promotional <i className="bi bi-info-circle"></i>
                                 </label>
@@ -212,13 +217,20 @@ const AccountSetting = () => {
                         </div>
                         <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="chatNotifications" defaultChecked />
-                                <label className="form-check-label" htmlFor="chatNotifications">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="chat_notifications"
+                                    checked={EmailandPushNotificationsData.chat_notifications}
+                                    onChange={handleEmailPushNotificationChange}
+                                />
+                                <label className="form-check-label" htmlFor="chat_notifications">
                                     Chat Notifications <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
                         </div>
-                        {/* <div className="col-6 col-md-3 mb-4">
+                    </div>
+                    {/* <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
                                 <input className="form-check-input" type="checkbox" id="educational" defaultChecked />
                                 <label className="form-check-label" htmlFor="educational">
@@ -226,69 +238,80 @@ const AccountSetting = () => {
                                 </label>
                             </div>
                         </div> */}
-                        {/* Add more notification items here as per the image */}
+                    {/* Add more notification items here as per the image */}
 
 
-                    </div>
 
-                    <h5 className='mt-4'>Account Settings</h5>
+                    <h4>Account Settings</h4>
                     <hr />
-                    <div className="row">
-                        <div className="col-6 col-md-4 mb-4">
+                    <div className="row mt-4">
+                        <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="HideProfile" defaultChecked />
-                                <label className="form-check-label" htmlFor="HideProfile">
-                                    Hide Profile from every one <i className="bi bi-info-circle"></i>
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="hide_profile_from_recruiters"
+                                    checked={accountData.hide_profile_from_recruiters}
+                                    onChange={handleAccountSettingChange}
+                                />
+                                <label className="form-check-label" htmlFor="hide_profile_from_recruiters">
+                                    Hide Profile from Recruiters <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
                         </div>
-                        <div className="col-6 col-md-4 mb-4">
+                        <div className="col-6 col-md-3 mb-4">
                             <div className="form-check">
-                                <input className="form-check-input" type="checkbox" id="DeactivateAccount" defaultChecked />
-                                <label className="form-check-label" htmlFor="DeactivateAccount">
-                                    Deactivate Account? <i className="bi bi-info-circle"></i>
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="deactivate_account"
+                                    checked={accountData.deactivate_account}
+                                    onChange={handleAccountSettingChange}
+                                />
+                                <label className="form-check-label" htmlFor="deactivate_account">
+                                    Deactivate Account <i className="bi bi-info-circle"></i>
                                 </label>
                             </div>
+                           <button className='btn btn-outline-danger'>Delete Account?</button>
                         </div>
-                        <div className="col-md-4"> <button className='btn btn-outline-danger'>Delete Account?</button> </div>
                     </div>
-                </div>
 
-                <div className="custom-card my-4">
-                    <h4 className="text-primary mb-5">Change Password</h4>
-                    <div className="row mb-3">
-                        <div className="col-md-6 col-lg-4 mb-3">
-                            <label htmlFor="old_password" className="form-label">Old Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                name="old_password"
-                                id="old_password"
-                                value={changepasswordData.old_password}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div className="col-md-6 col-lg-4 mb-3">
-                            <label htmlFor="new_password" className="form-label">New Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                name="new_password"
-                                id="new_password"
-                                value={changepasswordData.new_password}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div className="col-md-6 col-lg-4 mb-3">
-                            <label htmlFor="confirm_password" className="form-label">Confirm Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                name="confirm_password"
-                                id="confirm_password"
-                                value={changepasswordData.confirm_password}
-                                onChange={handleInputChange}
-                            />
+                    <div className="custom-card my-4">
+                        <h4 className="text-primary mb-5">Change Password</h4>
+                        <div className="row mb-3">
+                            <div className="col-md-6 col-lg-4 mb-3">
+                                <label htmlFor="old_password" className="form-label">Old Password</label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    name="old_password"
+                                    id="old_password"
+                                    value={changepasswordData.old_password}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="col-md-6 col-lg-4 mb-3">
+                                <label htmlFor="new_password" className="form-label">New Password</label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    name="new_password"
+                                    id="new_password"
+                                    value={changepasswordData.new_password}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="col-md-6 col-lg-4 mb-3">
+                                <label htmlFor="confirm_password" className="form-label">Confirm Password</label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    name="confirm_password"
+                                    id="confirm_password"
+                                    value={changepasswordData.confirm_password}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -299,8 +322,8 @@ const AccountSetting = () => {
                     <button type="submit" className="btn btn-success btn-lg px-5">Save & Update</button>
                     <button type="button" className="btn btn-lg ms-4">Cancel</button>
                 </div>
-            </form>
-        </main>
+            </form >
+        </main >
     );
 };
 

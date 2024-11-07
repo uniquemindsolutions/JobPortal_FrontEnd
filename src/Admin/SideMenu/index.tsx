@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import './sideMenu.scss'
 
+interface ProfileData {
+    company_logo: string;
+    company_name: string;
+}
 const SideMenu = () => {
     // const [isMenuOpen, setIsMenuOpen] = useState(true);
 
@@ -25,7 +29,7 @@ const SideMenu = () => {
 
     const [activeLink, setActiveLink] = useState('dashboard');
     const [profileImage, setProfileImage] = useState<string | null>(null)
-
+    const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const handleLinkClick = (link: string) => {
         setActiveLink(link);
     };
@@ -36,21 +40,44 @@ const SideMenu = () => {
             const imgUrl = URL.createObjectURL(file)
             setProfileImage(imgUrl)
         }
-
     }
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/myprofile/'); // Replace with your API URL
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data: ProfileData = await response.json(); // Parse JSON
+                setProfileData(data); 
+                console.log("Data,,,,",data);
+                if (Array.isArray(data) && data.length > 0) {
+                    setProfileData(data[0]); // Set the first object in the array as profile data
+                } else {
+                    console.error("No profile data found");
+                }
+            } catch (error) {
+                console.error('Error fetching profile data:', error); // Handle errors
+            }
+        };
 
-
+        fetchProfileData(); // Call the fetch function
+    }, []); // Empty dependency array to run only once on mount
     return (
         <main className='side-main'>
             {/* <div className={` bg-dark text-white ${isSidebarVisible ? 'show' : 'hide'}`}
                 style={{ width: isSidebarVisible ? '250px' : '0' }}> */}
             <div>
-                
+
                 <div className="comp-logo-sec text-center pt-2">
                     {/* <input type="file" className='amdin-pic' accept='image/*' onChange={handleImageUpload} /> */}
-                    <img src={profileImage || window.location.origin + '/images/default-logo.png'} className='comp-logo' />
-                    
-                    <h6 className="px-2 mt-3">Unique Mind Solutions</h6>
+                    <img
+                        src={profileData?.company_logo || `${window.location.origin}/images/default-logo.png`}
+                        alt="Company Logo"
+                        className='comp-logo'
+                    />
+
+                    <h6 className="px-2 mt-3">{profileData?.company_name || ''}</h6>
                 </div>
                 <ul className="list-unstyled p-3">
                     <li className="">
