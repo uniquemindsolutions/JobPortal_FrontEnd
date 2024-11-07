@@ -626,6 +626,67 @@ const SubmitJob = () => {
                                 required
                             />
                         </div>
+                         {/* Industry */}
+                         <div className="col-md-5 mb-3">
+                            <label htmlFor="industry" className="form-label">Industry*</label>
+                            <select
+                                className="form-select"
+                                value={formData.industry}
+                                id="industry"
+                                name="industry"
+                                onChange={handleInputChange}
+                                disabled={isEditing}
+                                required
+                            >
+                                <option value="">Select</option>
+                                {industriesorg && industriesorg.length > 0 ? (
+                                    industriesorg.map((industry: Industry) => (
+                                        <option key={industry.id} value={industry.id}>
+                                            {industry.industry}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option value="">No industries available</option>
+                                )}
+                            </select>
+                            {errors.industry && <span className="text-danger">{errors.industry}</span>}
+                        </div>
+                        {/* Job Category */}
+                        <div className="col-md-5 mb-3">
+                            <label htmlFor="job_category" className="form-label">Job Category</label>
+                            <select className="form-select" value={formData.job_category || ""} id="job_category" name="job_category"
+                                onChange={handleInputChange}
+                                disabled={isEditing}
+                            >
+                                <option value="">Select</option>
+                                {jobcategoriesorg && jobcategoriesorg.length > 0 ? (
+                                    jobcategoriesorg.map((job_category: JobCategory) => (
+                                        <option key={job_category.id} value={job_category.id}>
+                                            {job_category.job_category}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option value="">No Job Category available</option>
+                                )}
+                            </select>
+                        </div>
+                        <div className="col-md-2 mb-3">
+                            <label htmlFor="JobType" className="form-label">Job Type</label>
+                            <select
+                                className="form-select"
+                                name="job_type" // Correctly bind this to "job_type"
+                                id="job_type"
+                                value={formData.job_type || ""}  // Handle empty case
+                                onChange={handleInputChange} // Update the job_type field in formData
+                                disabled={isEditing}
+                            >
+                                <option value="">Select</option>
+                                <option value="Full Time">Full Time</option>
+                                <option value="Part Time">Part Time</option>
+                                <option value="Hourly-Contract">Hourly-Contract</option>
+                                <option value="Fixed-Price">Fixed-Price</option>
+                            </select>
+                        </div>
                         <div className="col-md-6 col-lg-3 mb-3">
                             <label htmlFor="min_experience" className="form-label">Min Experience(Years)</label>
                             <input
@@ -648,82 +709,11 @@ const SubmitJob = () => {
                                 disabled={isEditing}
                             />
                         </div>
-                        {/* Job Description */}
-                        <div className="col-md-12 mb-3">
-                            <label htmlFor="job_description" className="form-label">Job Description</label>
-                            <ReactQuill
-                                theme="snow"
-                                value={formData.job_description}
-                                // name="job_description"
-                                onChange={handleEditorChange}
-                                modules={modules}
-                                placeholder="Enter Job description"
-                                readOnly={isEditing}
-                            />
-                        </div>
+                       
 
-                        {/* Industry */}
-                        <div className="col-md-5 mb-3">
-                            <label htmlFor="industry" className="form-label">Industry*</label>
-                            <select
-                                className="form-select"
-                                value={formData.industry}
-                                id="industry"
-                                name="industry"
-                                onChange={handleInputChange}
-                                disabled={isEditing}
-                                required
-                            >
-                                <option value="">Select industry</option>
-                                {industriesorg && industriesorg.length > 0 ? (
-                                    industriesorg.map((industry: Industry) => (
-                                        <option key={industry.id} value={industry.id}>
-                                            {industry.industry}
-                                        </option>
-                                    ))
-                                ) : (
-                                    <option value="">No industries available</option>
-                                )}
-                            </select>
-                            {errors.industry && <span className="text-danger">{errors.industry}</span>}
-                        </div>
-                        {/* Job Category */}
-                        <div className="col-md-5 mb-3">
-                            <label htmlFor="job_category" className="form-label">Job Category</label>
-                            <select className="form-select" value={formData.job_category || ""} id="job_category" name="job_category"
-                                onChange={handleInputChange}
-                                disabled={isEditing}
-                            >
-                                <option value="">Select Job Category</option>
-                                {jobcategoriesorg && jobcategoriesorg.length > 0 ? (
-                                    jobcategoriesorg.map((job_category: JobCategory) => (
-                                        <option key={job_category.id} value={job_category.id}>
-                                            {job_category.job_category}
-                                        </option>
-                                    ))
-                                ) : (
-                                    <option value="">No Job Category available</option>
-                                )}
-                            </select>
-                        </div>
+                       
 
-                        <div className="col-md-2 mb-3">
-                            <label htmlFor="JobType" className="form-label">Job Type</label>
-                            <select
-                                className="form-select"
-                                name="job_type" // Correctly bind this to "job_type"
-                                id="job_type"
-                                value={formData.job_type || ""}  // Handle empty case
-                                onChange={handleInputChange} // Update the job_type field in formData
-                                disabled={isEditing}
-                            >
-                                <option value="">Select Job Type</option>
-                                <option value="Full Time">Full Time</option>
-                                <option value="Part Time">Part Time</option>
-                                <option value="Hourly-Contract">Hourly-Contract</option>
-                                <option value="Fixed-Price">Fixed-Price</option>
-                            </select>
-                        </div>
+                        
 
                         <div className="col-md-4 col-lg-3 mb-3">
                             <label htmlFor="work_mode" className="form-label">Work Mode</label>
@@ -731,7 +721,7 @@ const SubmitJob = () => {
                                 value={formData.work_mode || ""}  // Handle empty case
                                 onChange={handleInputChange}
                             >
-                                <option value="">Select work mode</option>
+                                <option value="">Select</option>
                                 <option value="Work from office">Work from Office</option>
                                 <option value="Work from Home">Work from Home</option>
                                 <option value="Remote">Remote</option>
@@ -744,7 +734,7 @@ const SubmitJob = () => {
                                 value={formData.salary_type || ""}  // Handle empty case
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
-                                <option value="">Select Type</option>
+                                <option value="">Select</option>
                                 <option value="Monthly">Monthly</option>
                                 <option value="Weekly">Weekly</option>
                             </select>
@@ -778,6 +768,19 @@ const SubmitJob = () => {
                                 placeholder="Max Salary"
                             />
                         </div>
+                         {/* Job Description */}
+                         <div className="col-md-12 mb-3">
+                            <label htmlFor="job_description" className="form-label">Job Description</label>
+                            <ReactQuill
+                                theme="snow"
+                                value={formData.job_description}
+                                // name="job_description"
+                                onChange={handleEditorChange}
+                                modules={modules}
+                                placeholder="Enter Job description"
+                                readOnly={isEditing}
+                            />
+                        </div>
                         {/* Skills */}
                         <div className="col-md-12 mb-3">
                             <label htmlFor="skills" className="form-label">Skills</label>
@@ -793,11 +796,11 @@ const SubmitJob = () => {
                             />
                         </div>
                         <div className="col-md-4 mb-3">
-                            <label htmlFor="Experience" className="form-label">Experience</label>
+                            <label htmlFor="Experience" className="form-label">Expertise Levels</label>
                             <select className="form-select" value={formData.experience || ""} name="experience" id="Experience"
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
-                                <option value="">Select Experience</option>
+                                <option value="">Select</option>
                                 <option value="Expert">Expert</option>
                                 <option value="Medium">Medium</option>
                                 <option value="Fresher">Fresher</option>
@@ -809,7 +812,7 @@ const SubmitJob = () => {
                                 value={formData.city_location || ""}
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
-                                <option value="">Select Location</option>
+                                <option value="">Select</option>
                                 {citys.map((ctys) => (
                                     <option key={ctys.id} value={ctys.id}>{ctys.name}</option>
                                 ))}
@@ -821,7 +824,7 @@ const SubmitJob = () => {
                             <select className="form-select" value={formData.english_fluency || ""} name="english_fluency" id="EnglishFluency"
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
-                                <option value="">Select English Fluency</option>
+                                <option value="">Select</option>
                                 <option value="Basic">Basic</option>
                                 <option value="Medium">Medium</option>
                                 <option value="Excellent">Excellent</option>
@@ -866,7 +869,7 @@ const SubmitJob = () => {
                                 value={formData.job_status}
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
-                                <option value="">Select Staus</option>
+                                <option value="">Select</option>
                                 <option value="Active">Active</option>
                                 <option value="In Active">In Active</option>
                                 <option value="Expired">Expired</option>
@@ -906,7 +909,7 @@ const SubmitJob = () => {
                                 onChange={handleonchangecountry}
                                 disabled={isEditing}
                             >
-                                <option value="">Select Country</option>
+                                <option value="">Select</option>
                                 {countries.map((country) => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
                                 ))}
@@ -918,7 +921,7 @@ const SubmitJob = () => {
                                 onChange={handleonchangestate}
                                 disabled={isEditing}
                             >
-                                <option value="">Select State</option>
+                                <option value="">Select</option>
                                 {states?.map((state) => (
                                     <option key={state.id} value={state.id}>{state.name}</option>
                                 ))}
@@ -930,7 +933,7 @@ const SubmitJob = () => {
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                             >
-                                <option value="">Select City</option>
+                                <option value="">Select</option>
                                 {cities?.map((city) => (
                                     <option key={city.id} value={city.id}>{city.name}</option>
                                 ))}
@@ -943,7 +946,7 @@ const SubmitJob = () => {
                             <select className="form-select" value={formData.ssc || ""} id="ssc" name="ssc"
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
-                                <option value="">Select Class</option>
+                                <option value="">Select</option>
                                 <option value="SSC">SSC</option>
                             </select>
                         </div>
@@ -951,7 +954,7 @@ const SubmitJob = () => {
                             <label htmlFor="inter" className="form-label">Intermediate</label>
                             <select className="form-select" value={formData.intermediate || ""} id="intermediate" name="intermediate"
                                 onChange={handleInputChange} disabled={isEditing}>
-                                <option value="">Select intermediate</option>
+                                <option value="">Select</option>
                                 {inter.map((intermediate) => (
                                     <option key={intermediate.id} value={intermediate.id}>{intermediate.inter}</option>
                                 ))}
@@ -963,7 +966,7 @@ const SubmitJob = () => {
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                             >
-                                <option value="">Select UG</option>
+                                <option value="">Select</option>
                                 {graduate.map((graduate) => {
                                     return <option key={graduate.id} value={graduate.id}>{graduate.ug_name}</option>
                                 })}
@@ -975,7 +978,7 @@ const SubmitJob = () => {
                                 onChange={handleInputChange}
                                 disabled={isEditing}
                             >
-                                <option value="">Select PG</option>
+                                <option value="">Select</option>
                                 {postGraduate.map((postGraduate) => {
                                     return <option key={postGraduate.id} value={postGraduate.id}>{postGraduate.pg_name}</option>
                                 })}

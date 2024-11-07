@@ -58,3 +58,31 @@ body {
   transition: 0.4s;
   box-shadow: 0 5px 9px #00000030;
 }
+.update-btn {
+  padding: 7px 30px;
+  background: var(--lt-orange-c);
+  border-radius: 7px;
+  border: solid 1px var(--lt-orange-c);
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  transition: 0.4s;
+}
+.update-btn:hover {
+  border: solid 1px var(--lt-orange-c);
+  background-color: white;
+  color: var(--lt-orange-c);
+  transition: 0.4s;
+  box-shadow: 0 5px 9px #00000030;
+}
+.modal-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--lt-blue-c);
+  padding: 6px 15px;
+}
+.modal-content .form-label {
+  font-weight: 600;
+}
