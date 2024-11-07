@@ -12,6 +12,8 @@ interface SubmitJob {
     job_title: string;
     number_of_positions: string;
     created_date: string;
+    min_experience: number;
+    max_experience: number;
     job_description: string;
     address: string;
     city: number;
@@ -28,12 +30,13 @@ interface SubmitJob {
     skills: string;
     state: number;
     // upload_file: File | null;
+    job_status: string;
     about_company: string;
     work_mode: string;
     ssc: string;
-    intermediate: number;
-    ug_course: number;
-    pg_course: number;
+    intermediate: string;
+    ug_course: string;
+    pg_course: string;
 }
 
 interface JobCategory {
@@ -128,6 +131,8 @@ const SubmitJob = () => {
         job_title: '',
         number_of_positions: '',
         created_date: '',
+        min_experience: 0,
+        max_experience: 0,
         job_description: '',
         address: '',
         city: 0,
@@ -144,12 +149,13 @@ const SubmitJob = () => {
         skills: '',
         state: 0,
         // upload_file: null,
+        job_status: '',
         about_company: '',
         work_mode: '',
         ssc: '',
-        intermediate: 0,
-        ug_course: 0,
-        pg_course: 0,
+        intermediate: '',
+        ug_course: '',
+        pg_course: '',
     });
     const validateForm = () => {
         const newErrors: any = {};
@@ -327,7 +333,7 @@ const SubmitJob = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
-            
+
             //  console.log(fileUpload,"newfile",e.target.files[0]);
             // const newfile = new FormData();
 
@@ -355,10 +361,10 @@ const SubmitJob = () => {
     const handleFileChangelogo = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setFilelogo(e.target.files[0]);
-           
+
 
             console.log(fileUpload, "newfile");
-         
+
         } else {
             // setFormData({
             //     ...formData,
@@ -389,7 +395,7 @@ const SubmitJob = () => {
             console.log(submissionData, "newfile", fileUpload);
         }
 
-        
+
         if (fileUploadlogo) {
             submissionData.append('company_logo', fileUploadlogo);
 
@@ -399,7 +405,7 @@ const SubmitJob = () => {
         }
 
 
-        
+
 
         console.log(submissionData, "submissionData.....");
 
@@ -620,50 +626,27 @@ const SubmitJob = () => {
                                 required
                             />
                         </div>
-
                         <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="company_name" className="form-label">Company Name</label>
+                            <label htmlFor="min_experience" className="form-label">Min Experience(Years)</label>
                             <input
-                                type="input"
-                                id='company_name'
+                                type="number"
                                 className="form-control"
-                                name="company_name"
-                                // value={formData.created_date ? formData.created_date.split('T')[0] : ""}
-                                // onChange={handleInputChange}
+                                name="min_experience"
+                                value={formData.min_experience}
+                                onChange={handleInputChange}
                                 disabled={isEditing}
-                                required
                             />
                         </div>
                         <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="company_logo" className="form-label">Company Logo</label>
+                            <label htmlFor="max_experience" className="form-label">Max Experience(Years)</label>
                             <input
-                                type="file"
-                                id='company_logo'
+                                type="number"
                                 className="form-control"
-                                name="company_logo"
-                              
-                                onChange={handleFileChangelogo}
-                                // value={formData.created_date ? formData.created_date.split('T')[0] : ""}
-                                // onChange={handleInputChange}
+                                name="max_experience"
+                                value={formData.max_experience}
+                                onChange={handleInputChange}
                                 disabled={isEditing}
-                               />
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="min_experience" className="form-label">Min Experience</label>
-                            <select className='form-select' id='min_experience'>
-                                <option value="">Select min experience</option>
-                                <option value="">0</option>
-                                <option value="">1 Year</option>
-                                <option value="">2 Year</option>
-                            </select>
-                        </div>
-                        <div className="col-md-6 col-lg-3 mb-3">
-                            <label htmlFor="max_experience" className="form-label">Max Experience</label>
-                            <select className='form-select' id='max_experience'>
-                                <option value="">Select max experience</option>
-                                <option value="">1 Year</option>
-                                <option value="">2 Year</option>
-                            </select>
+                            />
                         </div>
                         {/* Job Description */}
                         <div className="col-md-12 mb-3">
@@ -869,18 +852,20 @@ const SubmitJob = () => {
                                         download="downloaded-file.ext" // Set the desired file name and extension here
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        style={{ color: 'black', textDecoration: 'none' }}                                        
+                                        style={{ color: 'black', textDecoration: 'none' }}
                                     >
                                         Download
                                     </a>
                                 </div>
                             )}
-                            
+
                         </div>
                         <div className="col-md-2 mb-3">
                             <label htmlFor="job_status" className="form-label">Job Status </label>
                             <select className="form-select" name="job_status" id="job_status"
-                                onChange={handleInputChange}>
+                                value={formData.job_status}
+                                onChange={handleInputChange}
+                                disabled={isEditing}>
                                 <option value="">Select Staus</option>
                                 <option value="Active">Active</option>
                                 <option value="In Active">In Active</option>
@@ -965,12 +950,11 @@ const SubmitJob = () => {
                         <div className="col-md-3">
                             <label htmlFor="inter" className="form-label">Intermediate</label>
                             <select className="form-select" value={formData.intermediate || ""} id="intermediate" name="intermediate"
-                                onChange={handleInputChange}
-                                disabled={isEditing}>
+                                onChange={handleInputChange} disabled={isEditing}>
                                 <option value="">Select intermediate</option>
-                                {inter.map((intermediate) => {
-                                    return <option key={intermediate.id} value={intermediate.id}>{intermediate.inter}</option>
-                                })}
+                                {inter.map((intermediate) => (
+                                    <option key={intermediate.id} value={intermediate.id}>{intermediate.inter}</option>
+                                ))}
                             </select>
                         </div>
                         <div className="col-md-3">
