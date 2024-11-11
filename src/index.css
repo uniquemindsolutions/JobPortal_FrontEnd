@@ -41,17 +41,17 @@ body {
   }
 }
 
-.save-btns {
-  padding: 7px 30px;
+.save-btn {
+  padding: 6px 25px;
   background: var(--lt-blue-c);
   border-radius: 7px;
   border: solid 1px var(--lt-blue-c);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
   color: white;
   transition: 0.4s;
 }
-.save-btns:hover {
+.save-btn:hover {
   border: solid 1px var(--lt-blue-c);
   background-color: white;
   color: var(--lt-blue-c);
@@ -59,12 +59,12 @@ body {
   box-shadow: 0 5px 9px #00000030;
 }
 .update-btn {
-  padding: 7px 30px;
+  padding: 6px 25px;
   background: var(--lt-orange-c);
   border-radius: 7px;
   border: solid 1px var(--lt-orange-c);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
   color: white;
   transition: 0.4s;
 }
@@ -72,6 +72,23 @@ body {
   border: solid 1px var(--lt-orange-c);
   background-color: white;
   color: var(--lt-orange-c);
+  transition: 0.4s;
+  box-shadow: 0 5px 9px #00000030;
+}
+.cancel-btn {
+  padding: 6px 25px;
+  background: #989898;
+  border-radius: 7px;
+  border: solid 1px #989898;
+  font-size: 18px;
+  font-weight: 400;
+  color: white;
+  transition: 0.4s;
+}
+.cancel-btn:hover {
+  border: solid 1px #989898;;
+  background-color: white;
+  color: #232323;
   transition: 0.4s;
   box-shadow: 0 5px 9px #00000030;
 }
