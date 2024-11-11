@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './profile.scss'
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { url } from 'inspector';
 
 interface ITSkill {
     id: number;
@@ -71,7 +73,7 @@ interface PreferredJobTitle {
     preferredjobtitle: string;
 }
 interface Job_Preferences {
-    preferred_department_function: string;
+    preferred_department_function: number;
     preferred_job_title: string;
     job_type: string;
     employee_type: string;
@@ -86,6 +88,7 @@ interface Skills {
     experience: string;
 }
 interface Projects {
+    id: any;
     title: string;
     url: string;
     start_date: string;
@@ -95,14 +98,15 @@ interface Projects {
 interface PersonDetails {
     length: number;
     gender: string;
-    date_of_birth: string;
+    data_of_birth: string;
+    marital_status: string;
     category: string;
     Have_you_taken_a_career_break: string;
     resident_status: string;
     work_permit_for_USA: string;
     work_permit_for_other_country: string;
     Nationality: string;
-    i_am_specially_abled: string;
+    i_am_specially_abled: boolean;
 }
 interface Language {
     id: number;
@@ -132,23 +136,37 @@ interface Account_settings {
     deactivate_account: boolean;
 }
 const Profiles = () => {
+    const { id } = useParams();
     const [itSkills, setItSkills] = useState([
         { id: 1, skill: 'HTML', version: '5', lastUsed: '-', experience: '8 Years' },
         { id: 2, skill: 'React', version: '-', lastUsed: '-', experience: '-' },
     ]);
-    const [personalFormData, setPersonalFormData] = useState<PersonDetails>({
+    // const [personalFormData, setPersonalFormData] = useState<PersonDetails>();
+    const [getPersonDetais, setGetPersonDetais] = useState<PersonDetails | null>(null);
+    const [postPersonDetais, setPostPersonDetais] = useState<PersonDetails>({
         length: 0,
         gender: '',
-        date_of_birth: '',
+        data_of_birth: '',
+        marital_status: '',
         category: '',
         Have_you_taken_a_career_break: '',
         resident_status: '',
         work_permit_for_USA: '',
         work_permit_for_other_country: '',
         Nationality: '',
-        i_am_specially_abled: '',
+        i_am_specially_abled: false,
     });
-    const [personDetais, setPersonDetais] = useState([]);
+    const [updatePersonDetais, setUpdatePersonDetais] = useState<any>({
+        gender: "",
+        date_of_birth: "",
+        Have_you_taken_a_career_break: "",
+        resident_status: "",
+        work_permit_for_USA: "",
+        work_permit_for_other_country: "",
+        Nationality: "",
+        i_am_specially_abled: false,
+    });
+
     const [imageUrl, setImageUrl] = useState('')
     const [cities, setCities] = useState<City[]>([]);
     const [countries, setCountries] = useState<Country[]>([]);
@@ -190,8 +208,11 @@ const Profiles = () => {
         passing_year_temp: '',
         education_type: ''
     });
+
     const [PreferredDepartmentFunction, setPreferredDepartmentFunction] = useState<PreferredDepartmentFunction[]>([]);
-    const [PreferredJobTitle, setPreferredJobTitle] = useState<PreferredJobTitle[]>([]);;
+    const [PreferredJobTitle, setPreferredJobTitle] = useState<PreferredJobTitle[]>([]);
+
+    const [getJobPreferences, setGetJobPreferences] = useState<Job_Preferences | null>(null);
     const [Job_Preferences, setJob_Preferences] = useState({
         preferred_department_function: '',
         preferred_job_title: '',
@@ -207,13 +228,24 @@ const Profiles = () => {
         last_used: '',
         experience: ''
     });
-    const [projects, setProjects] = useState({
+    const [projectsData, setProjectsData] = useState<any>({
+        id: '',
         title: '',
         url: '',
         start_date: '',
         end_date: '',
         details_of_project: ''
     });
+    const [projectsDataEdit, setEditProjectsData] = useState<any | null>(null);
+    const [projectsCreate, setProjectsCreate] = useState<Projects | any>({
+        id: '',
+        title: '',
+        url: '',
+        start_date: '',
+        end_date: '',
+        details_of_project: ''
+    });
+    const [updateBtn, setUpdateBtn] = useState(false);
     const [PersonDetails, setPersonDetails] = useState({
         gender: '',
         date_of_birth: '',
@@ -223,7 +255,7 @@ const Profiles = () => {
         work_permit_for_USA: '',
         work_permit_for_other_country: '',
         Nationality: '',
-        i_am_specially_abled: ''
+        i_am_specially_abled: false
     });
     const [languange, SetLanguage] = useState<Language[]>([]);;
     const [Language_Page, SetLanguagePage] = useState({
@@ -254,12 +286,7 @@ const Profiles = () => {
 
     }
     const [workExpData, setWorkExpData] = useState([]);
-    const [eduUpdate, setEduUpdate] = useState([])
-
-    useEffect(() => {
-        fetchProfileImage();
-        presonGetMethod();
-    }, []);
+    const [eduUpdate, setEduUpdate] = useState([]);
 
     useEffect(() => {
         const fetchCities = async () => {
@@ -328,6 +355,7 @@ const Profiles = () => {
             }
         };
         PreferredDepartmentFunction();
+
         const PreferredJobTitle = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8000/user/PreferredJobTitle/');
@@ -355,8 +383,13 @@ const Profiles = () => {
         educationPutData();
         workExpUpdated();
         handleIndustry();
-
+        fetchProfileImage();
+        presonGetMethod();
         handlePeronalGet();
+        handleUpdatepersonalDetails(0);
+        projectGetMethod();
+        jobPreferencesGet();
+      
     }, []);
     const handleAddSkill = () => {
         if (!newSkill.skill) return; // Don't add empty skill
@@ -377,6 +410,10 @@ const Profiles = () => {
             console.error('Skill not found');
         }
     };
+
+
+
+
 
     // Handle saving an edited skill
     const handleSaveEdit = () => {
@@ -602,89 +639,229 @@ const Profiles = () => {
             [name]: value,
         }));
     }
-    const handleForm4Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setJob_Preferences(Job_Preferences => ({
-            ...Job_Preferences,
-            [name]: value,
-        }));
-    }
-    const handleForm5Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setSkills(Skills => ({
-            ...Skills,
-            [name]: value,
-        }));
-    }
-    const handleForm6Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setProjects(Projects => ({
-            ...Projects,
-            [name]: value,
-        }));
-    }
-    const handleForm7Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setPersonDetails(PersonDetails => ({
-            ...PersonDetails,
-            [name]: value,
-        }));
-    }
-    const handleForm8Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        SetLanguagePage(LanguagePage => ({
-            ...LanguagePage,
-            [name]: value,
-        }));
-    }
-    const handleForm9Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        SetEmail_Push_Notifications(Email_Push_Notifications => ({
-            ...Email_Push_Notifications,
-            [name]: value,
-        }));
-    }
-    const handleForm10Change = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setAccountSetting(AccountSetting => ({
-            ...AccountSetting,
-            [name]: value,
-        }));
-    };
+
 
 
     // personal details start
     const presonGetMethod = async () => {
         setLoading(true);
         try {
-            const res_personal_get = await axios.get("http://127.0.0.1:8000/user/PersonDetails/")
-            const personal_list = res_personal_get
-            setPersonDetais(personal_list.data)
-            console.log("personal data list ===", personal_list.data)
+            const res_personal_get = await axios.get("http://127.0.0.1:8000/user/PersonDetails/1/");
+            const personal_list: PersonDetails = res_personal_get.data;
+            setGetPersonDetais(personal_list);
+            console.log("personal data list ===", personal_list);
         } catch (error) {
-            setError("personal data not found")
+            setError("personal data not found");
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     const handleInputPersonalDetails = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        setPersonalFormData({ ...personalFormData, [e.target.name]: e.target.value })
+        setPostPersonDetais({ ...postPersonDetais, [e.target.name]: e.target.value })
     }
+
 
     const handlePersonalFormPostData = async (e: any) => {
         e.preventDefault();
         try {
-            const res_personal_post = await axios.post("http://127.0.0.1:8000/user/PersonDetails/", personDetais)
+            const res_personal_post = await axios.post("http://127.0.0.1:8000/user/PersonDetails/", postPersonDetais)
             const personal_list_post = res_personal_post.data;
-            setPersonDetais(personal_list_post.data)
+            setPostPersonDetais(personal_list_post.data)
             console.log("personal data ===", personal_list_post)
         } catch (error) {
             setError("personal data not found")
         }
+    }
+
+    const handleUpdatepersonalDetails = async (userId: any) => {
+
+        try {
+
+            const updatePersonalDetails = {
+                gender: updatePersonDetais.gender,
+                date_of_birth: updatePersonDetais.date_of_birth,
+                Have_you_taken_a_career_break: updatePersonDetais.Have_you_taken_a_career_break,
+                resident_status: updatePersonDetais.resident_status,
+                work_permit_for_USA: updatePersonDetais.work_permit_for_USA,
+                work_permit_for_other_country: updatePersonDetais.work_permit_for_other_country,
+                Nationality: updatePersonDetais.Nationality,
+                i_am_specially_abled: updatePersonDetais.i_am_specially_abled // Fix the boolean assignment
+            };
+
+            const res_personal_update = await axios.put(`http://127.0.0.1:8000/user/PersonDetails/1/`, updatePersonalDetails);
+
+            const personal_list_update = res_personal_update.data;
+            setUpdatePersonDetais(personal_list_update); // Assuming the API returns the updated data
+            console.log("personal data ===", personal_list_update.title);
+        } catch (error) {
+            setError("Error: data not found");
+            console.error(error);
+        }
+    };
+    // personal details end
+
+    //project start
+
+
+    const projectGetMethod = async () => {
+        setLoading(true);
+        try {
+            const res_project_get = await axios.get(`http://127.0.0.1:8000/user/Projects/`);
+            const project_list = res_project_get.data;
+            console.log("Project data list ===", project_list);
+
+            if (Array.isArray(project_list) && project_list.length > 0) {
+                setProjectsData(res_project_get.data); // Set the first project if array is not empty
+            } else {
+                console.error("No Projects data found");
+            }
+        } catch (error) {
+            console.error("Error fetching project data:", error);
+            setError("Project data not found");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleInputProjects = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setProjectsCreate({ ...projectsCreate, [name]: value })
+    }
+
+    const handleSubmitProjectPostMethod = async (e: any) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(`http://127.0.0.1:8000/user/Projects/`, projectsCreate);
+            // setProjectsCreate(projectsCreate)
+            console.log("API Response:", response.data); // Log response here
+            // Handle response, e.g., add project to state or show success message
+        } catch (error) {
+            console.error("API Error:", error); // Log any errors
+        }
+    };
+    const projectpostnew = async () => {
+        setUpdateBtn(false)
+    };
+
+    const handleEditProjects = async (id: number) => {
+        setUpdateBtn(true)
+        setLoading(true);
+        try {
+            const res_project_edit = await axios.get(`http://127.0.0.1:8000/user/Projects/${id}/`);
+            const projectdataEdit = res_project_edit.data;
+            setEditProjectsData(projectdataEdit);
+            console.log("Projectdata", res_project_edit)
+            if (Object.keys(projectdataEdit).length > 0) {
+
+                Object.entries(projectdataEdit).forEach(([key, value]) => {
+
+                    setProjectsCreate((projectdata: any) => ({
+                        ...projectdata,
+                        [key]: value, // Dynamically update the key based on input name
+                    }));
+                });
+            }
+            console.log("projectsCreateformdata ====", projectsCreate);
+        } catch (error) {
+            setError("personal data not found");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateProjects = async (id: number) => {
+        try {
+            console.log("Updating project with ID:", id);
+            const payLoadProjects = {
+                id: projectsCreate.id,
+                title: projectsCreate.title,
+                url: projectsCreate.url,
+                start_date: projectsCreate.start_date,
+                end_date: projectsCreate.end_date,
+                details_of_project: projectsCreate.details_of_project,
+            }
+
+            console.log("payLoadProjects ===:", payLoadProjects);
+            const put_response = await axios.post(`http://127.0.0.1:8000/user/Projects/`, payLoadProjects);
+            const result = put_response.data;
+            // alert("Hi")
+            // const put_data=put_response.;
+            console.log("projectlist", projectsData);
+
+
+
+            const dataobj = Array.isArray(projectsData);
+            if (dataobj) {
+                const updatedUsers = projectsData?.map(user =>
+                    user.id === result.id ? result : user
+                );
+
+                console.log(updatedUsers, "updatedUsers");
+                setProjectsData(updatedUsers);
+            };
+        } catch (error) {
+            console.error("Error submitting project:", error);
+            alert("Failed to submit the project");
+        }
 
     }
 
+    const handleClearForm = () => {
+        setProjectsCreate({
+            id: '',
+            title: '',
+            url: '',
+            start_date: '',
+            end_date: '',
+            details_of_project: ''
+        });
+    };
 
-    // personal details end
+    const handleDeleteProject = async (id: any) => {
+        try {
+            alert("Item deleted");
+            // Proceed with delete request if ID is valid
+            await axios.delete(`http://127.0.0.1:8000/user/Projects/${id}/`);
+            setProjectsData((prevItems: any) =>
+                Array.isArray(prevItems) ? prevItems.filter(item => item.id !== id) : []
+            );
+        } catch (error) {
+            console.error("Error deleting item:", error);
+            alert("Failed to delete the item");
+        }
+    };
+    //project end
+
+    //Job Preferences start
+    const jobPreferencesGet = async () => {
+        setLoading(true);
+        try {
+            const res_jobPreferences = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/2/`)
+            const jobPreferences_list = res_jobPreferences.data;
+            setGetJobPreferences(jobPreferences_list)
+            console.log("Job Preferences data list1 ===", jobPreferences_list);
+        } catch (error) {
+            setError("Job Preferences data not found");
+        }
+    }
+    const getDepartmentName = (departmentId: number) => {
+        const department = PreferredDepartmentFunction.find(dept => dept.id === departmentId);
+        return department ? department.preferred_departement_name : 'N/A';
+    };
+
+    const cityList = (cityId:any)=> {
+        const cityListName = cities.find(cities => cities.id === cityId);
+        return cityListName ? cityListName.name : 'N/A';
+    }
+
+    const PreferJobTitle = (jobId:any)=> {
+        const jobTitile = PreferredJobTitle.find(jobTitleId => jobTitleId.id === jobId);
+        return jobTitile ? jobTitile.preferredjobtitle : 'N/A';
+    }
+
+    //Job Preferences end
 
     return (
         <main>
@@ -902,16 +1079,19 @@ const Profiles = () => {
                             <div className="card-header fw-bold">
                                 <span><i className="bi bi-card-checklist text-secondary me-2"></i> Job Preferences </span>  <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addJobPreferences"></button></div>
                             <div className="card-body">
-                                <ul className='list-unstyled profile-sec'>
-                                    <li className='lt-blue-c'>Preferred Department: <b>IT</b></li>
-                                    <li>Preferred Location: <b>Hyd</b></li>
-                                    <li>Add Preferred Job Title: <b>aaa</b></li>
-                                    <li>Add Job Type: <b>Permanent</b></li>
-                                    <li>Add Employment Type: <b>Full time </b></li>
-                                    <li>Add Preferred Workplace: <b>Work from home</b></li>
-                                    <li>Add What are you currently looking for?: <b>aaa</b></li>
-                                </ul>
-                                {/* */}
+                                {getJobPreferences && (
+                                    <ul className='list-unstyled profile-sec'>
+                                        <li className='lt-blue-c'>
+                                            Preferred Department: {getDepartmentName(getJobPreferences.preferred_department_function)}
+                                        </li>
+                                        <li><span className='text-secondary'>Preferred Location:</span> {cityList(getJobPreferences.preferred_location)}</li>
+                                        <li><span className='text-secondary'>Add Preferred Job Title:</span> {PreferJobTitle(getJobPreferences.preferred_job_title)}</li>
+                                        <li><span className='text-secondary'>Add Job Type:</span> {getJobPreferences.job_type}</li>
+                                        <li><span className='text-secondary'>Add Employment Type:</span> {getJobPreferences.employee_type}</li>
+                                        <li><span className='text-secondary'>Add Preferred Workplace:</span> {getJobPreferences.prefreed_workplace}</li>
+                                        <li><span className='text-secondary'>Add What are you currently looking for?:</span>  {getJobPreferences.what_are_you_currently_looking_for}</li>
+                                    </ul>
+                                )}
 
                             </div>
                         </div>
@@ -984,14 +1164,57 @@ const Profiles = () => {
                             <div className="card-header fw-bold">
                                 <span><i className="bi bi-clipboard-data text-secondary me-2"></i> Projects </span> <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addProjects"> +Add</button></div>
                             <div className="card-body">
-                                <ul className='list-unstyled profile-sec'>
-                                    <li className='lt-blue-c'>Targee Security <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addProjects"></button></li>
-                                    <li><a href="#" className='text-decoration-none'>https://targheesec.com/</a></li>
-                                    <li>Jan 2024</li>
-                                    <li>
-                                        Targhee Security streamlines the security assessment process by automating tasks and improving how you communicate your security and trust postures.
-                                    </li>
-                                </ul>
+
+                                {Array.isArray(projectsData) ? (
+                                    projectsData.map((item: any) => (
+                                        <ul key={item.id} className="list-unstyled">
+                                            <li className="lt-blue-c">
+                                                <span className='text-secondary'>Project Name:</span> {item.title}
+                                                <button onClick={() => handleEditProjects(item.id)}
+                                                    className="bi bi-pencil-square float-end btn py-0"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#addProjects"
+                                                ></button>
+                                            </li>
+                                            <li>
+                                                <span className='text-secondary'>Url:</span> <a href={item.url || "#"} className="text-decoration-none">
+                                                    {item.url || "No URL provided"}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <span className='text-secondary'>Start Date:</span> <span>{item.start_date.split('T')[0]}</span> to <span className='text-secondary'>End Date</span> <span>{item.end_date.split('T')[0]}</span>
+                                            </li>
+                                            <li>
+                                                <span className='text-secondary'>Description: </span>{item.details_of_project || "No description available"}
+                                            </li>
+                                        </ul>
+                                    ))
+                                ) : projectsData ? (
+                                    <ul className="list-unstyled">
+                                        <li className="lt-blue-c">
+                                            Project Name: {projectsData.title}
+                                            <button
+                                                className="bi bi-pencil-square float-end btn py-0"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addProjects"
+                                            ></button>
+                                        </li>
+                                        <li>
+                                            Url: <a href={projectsData.url || "#"} className="text-decoration-none">
+                                                {projectsData.url || "No URL provided"}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            Start Date: <span>{projectsData.start_date.split('T')[0]}</span> to End Date <span>{projectsData.end_date.split('T')[0]}</span>
+                                        </li>
+                                        <li>
+                                            Description: {projectsData.details_of_project || "No description available"}
+                                        </li>
+                                    </ul>
+                                ) : (
+                                    <p>No Projects Available</p>
+                                )}
+
                             </div>
                         </div>
 
@@ -1000,36 +1223,21 @@ const Profiles = () => {
                                 <span><i className="bi bi-person-vcard text-secondary me-2"></i> Personal Details </span>
                                 <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addPersonalDetails"></button></div>
                             <div className="card-body">
-                                        <ul className='list-unstyled profile-sec'>
-                                            <li className='lt-blue-c'>Gender: {personalFormData.gender} </li>
-                                            <li>Date of Birth: <b>{personalFormData.date_of_birth}</b></li>
-                                            {/* <li>Category: <b>Gen</b></li> */}
-                                            <li>Have you taken a career break?: <b>{personalFormData.Have_you_taken_a_career_break}</b> </li>
-                                            <li>Work Permit for USA: <b>{personalFormData.work_permit_for_USA}</b> </li>
-                                            <li>Nationality: <b>{personalFormData.Nationality}</b> </li>
-                                            <li>Specially abled: <b>{personalFormData.i_am_specially_abled}</b> </li>
-                                            <li>Add Resident Status: <b>{personalFormData.resident_status}</b> </li>
-                                            <li>Add Work Permit for Other Country: <b>{personalFormData.work_permit_for_other_country}</b> </li>
-                                        </ul>
-                                {/* {Array.isArray(personalFormData) ? (
-                                    personalFormData.map((item: any, index: number) => (
-                                        <ul key={index} className='list-unstyled profile-sec'>
-                                            <li className='lt-blue-c'>Gender: <b>{item.gender}</b> </li>
-                                            <li>Date of Birth: <b>05/02/2000</b></li>
-                                            <li>Category: <b>Gen</b></li>
-                                            <li>Have you taken a career break?: <b>No</b> </li>
-                                            <li>Work Permit for USA: <b>No</b> </li>
-                                            <li>Nationality: <b>India</b> </li>
-                                            <li>Specially abled: <b>No</b> </li>
-                                            <li>Add Resident Status: <b>yes</b> </li>
-                                            <li>Add Work Permit for Other Country: <b>No</b> </li>
-                                        </ul>
-                                    ))
-                                ) : (
-                                    "no data found"
-                                )} */}
-                                {/* {personalFormData.length ? personalFormData.length>0 : } */}
-
+                                <ul className='list-unstyled profile-sec'>
+                                    {getPersonDetais && (
+                                        <>
+                                            <li className='lt-blue-c'>Gender: {getPersonDetais.gender}</li>
+                                            <li>Date of Birth: <b>{getPersonDetais.data_of_birth}</b></li>
+                                            <li>Marital Status: <b>{getPersonDetais.marital_status}</b></li>
+                                            <li>Have you taken a career break?: <b>{getPersonDetais.Have_you_taken_a_career_break ? 'Yes' : 'No'}</b></li>
+                                            <li>Work Permit for USA: <b>{getPersonDetais.work_permit_for_USA ? 'Yes' : 'No'}</b></li>
+                                            <li>Nationality: <b>{getPersonDetais.Nationality}</b></li>
+                                            <li>Specially abled: <b>{getPersonDetais.i_am_specially_abled ? 'Yes' : 'No'}</b></li>
+                                            <li>Add Resident Status: <b>{getPersonDetais.resident_status}</b></li>
+                                            <li>Add Work Permit for Other Country: <b>{getPersonDetais.work_permit_for_other_country}</b></li>
+                                        </>
+                                    )}
+                                </ul>
                             </div>
                         </div>
 
@@ -1237,7 +1445,7 @@ const Profiles = () => {
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="button" className="update-btn" data-bs-dismiss="modal">Update</button>
-                                <button type="submit" data-bs-dismiss="modal" className="save-btns">Save changes</button>
+                                <button type="submit" data-bs-dismiss="modal" className="save-btn">Save changes</button>
                             </div>
                         </div>
                     </div>
@@ -1482,7 +1690,7 @@ const Profiles = () => {
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="button" onClick={workExpUpdated} className="update-btn" data-bs-dismiss="modal">Update</button>
-                                <button type="submit" data-bs-dismiss="modal" className="save-btns">Save</button>
+                                <button type="submit" data-bs-dismiss="modal" className="save-btn">Save</button>
                             </div>
                         </div>
                     </div>
@@ -1504,7 +1712,7 @@ const Profiles = () => {
                                         <div className="mb-3">
                                             <label htmlFor="department" className="form-label">Preferred Department/Function</label>
                                             <select className="form-select" id="department" onChange={handleForm2Change}>
-                                                <option selected>Enter or select your preferred department</option>
+                                                <option>Select</option>
                                                 {/* Options for departments */}
                                                 {PreferredDepartmentFunction.map((preferreddepartmentfunction) => {
                                                     return <option key={preferreddepartmentfunction.id} value={preferreddepartmentfunction.id}>{preferreddepartmentfunction.preferred_departement_name}</option>
@@ -1516,7 +1724,7 @@ const Profiles = () => {
                                         <div className="mb-3">
                                             <label htmlFor="jobTitle" className="form-label">Preferred Job Title *</label>
                                             <select className="form-select" id="jobTitle" onChange={handleForm2Change}>
-                                                <option selected>Enter or select your preferred job title</option>
+                                                <option>Select</option>
                                                 {/* Options for job titles */}
                                                 {PreferredJobTitle.map((preferredjobtitle) => {
                                                     return <option key={preferredjobtitle.id} value={preferredjobtitle.id}>{preferredjobtitle.preferredjobtitle}</option>
@@ -1691,79 +1899,112 @@ const Profiles = () => {
             </div>
 
             <div className="modal fade" id="addProjects" aria-labelledby="addProjectsLabel" aria-hidden="true">
-                <div className="modal-dialog modal-sm">
+                <div className="modal-dialog modal-md">
                     <div className="modal-content">
                         <div className="modal-header bg-light">
-                            <h5 className="modal-title" id="addProjectsLabel">Job Preferences</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h5 className="modal-title" id="addProjectsLabel">Projects</h5>
+                            <button type="button" onClick={() => projectpostnew()} className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
-                            {/* projects start */}
-                            <form className="mt-4">
-                                <div className="mb-3">
-                                    <label htmlFor="title" className="form-label">
-                                        Title <span className="text-danger">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="title"
-                                        placeholder="Enter your title"
-                                    />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="url" className="form-label">URL</label>
-                                    <input
-                                        type="url"
-                                        className="form-control"
-                                        id="url"
-                                        placeholder="Enter your URL"
-                                    />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Start Date</label>
-                                    <div className="d-flex">
-                                        <input
-                                            type="month"
-                                            className="form-control"
-                                            id="url"
-                                            placeholder="Month"
-                                        />
+                        <form onSubmit={handleSubmitProjectPostMethod} className="">
+                            <div className="modal-body">
+                                {/* projects start */}
+                                <div className="row">
+                                    <div className="col-lg-12">
+                                        <div className="mb-3">
+                                            <label htmlFor="title" className="form-label">
+                                                Title <span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id="title"
+                                                name="title"  // Add name attribute here
+                                                placeholder="Enter your title"
+                                                value={projectsCreate.title}
+                                                onChange={handleInputProjects}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">End Date</label>
-                                    <div className="d-flex">
-                                        <input
-                                            type="month"
-                                            className="form-control"
-                                            id="url"
-                                            placeholder="Month"
-                                        />
+                                    <div className="col-lg-12">
+                                        <div className="mb-3">
+                                            <label htmlFor="url" className="form-label">URL</label>
+                                            <input
+                                                type="url"
+                                                className="form-control"
+                                                id="url"
+                                                name="url"  // Add name attribute here
+                                                placeholder="Enter your URL"
+                                                value={projectsCreate.url}
+                                                onChange={handleInputProjects}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                    <div className="col-lg-6">
+                                        <div className="mb-3">
+                                            <label className="form-label">Start Date</label>
+                                            <div className="d-flex">
+                                                <input
+                                                    type="date"
+                                                    className="form-control"
+                                                    id="start_date"
+                                                    name="start_date"  // Add name attribute here
+                                                    placeholder="Month"
+                                                    value={projectsCreate.start_date}
+                                                    onChange={handleInputProjects}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-6">
+                                        <div className="mb-3">
+                                            <label className="form-label">End Date</label>
+                                            <div className="d-flex">
+                                                <input
+                                                    type="date"
+                                                    className="form-control"
+                                                    id="end_date"
+                                                    name="end_date"  // Add name attribute here
+                                                    placeholder="Month"
+                                                    value={projectsCreate.end_date}
+                                                    onChange={handleInputProjects}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div className="mb-3">
-                                    <label htmlFor="details" className="form-label">Details of Projects</label>
-                                    <textarea
-                                        className="form-control"
-                                        id="details"
-                                        // rows="4"
-                                        // maxLength="1000"
-                                        placeholder="Enter your project detail"
-                                        style={{ minHeight: '100px' }}
-                                    ></textarea>
-                                    <div className="form-text">Max. 1000/1000 Characters</div>
+                                    <div className="col-lg-12">
+                                        <div className="mb-3">
+                                            <label htmlFor="details_of_project" className="form-label">Details of Projects</label>
+                                            <textarea
+                                                className="form-control"
+                                                id="details_of_project"
+                                                name="details_of_project"  // Add name attribute here
+                                                placeholder="Enter your project detail"
+                                                style={{ minHeight: '100px' }}
+                                                value={projectsCreate.details_of_project}
+                                                onChange={handleInputProjects}
+                                            ></textarea>
+                                            <div className="form-text">Max. 1000/1000 Characters</div>
+                                        </div>
+                                    </div>
+
                                 </div>
-                            </form>
-                            {/* projects end */}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
-                        </div>
+                                {/* projects end */}
+                            </div>
+                            <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
+                                {/*  */}
+                                <button type="button" onClick={() => handleDeleteProject(projectsCreate.id)} className="btn btn-outline-danger btn-sm" data-bs-dismiss="modal"><i className="bi bi-trash3"></i></button>
+                                <span>
+                                    <button type="button" onClick={handleClearForm} className="cancel-btn me-3">Cancel</button>
+                                    {updateBtn ? (
+                                        <button type="button" className="update-btn me-3" data-bs-dismiss="modal" onClick={() => updateProjects(projectsCreate.id)}>Update</button>
+                                    ) : (
+                                        " "
+                                    )}
+                                    <button type="submit" data-bs-dismiss="modal" className="save-btn">Save</button>
+                                </span>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -1783,47 +2024,56 @@ const Profiles = () => {
                                         <div className="mb-3">
                                             <label className="form-label me-3">Gender: </label>
                                             <div className="form-check form-check-inline">
-                                                <input className="form-check-input" 
-                                                    type="radio" 
-                                                    name="gender" 
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    name="gender"
                                                     id="Male"
-                                                    value="Male"
-                                                    checked={personalFormData.gender === 'Male'}
-                                                    onChange={handleInputPersonalDetails} />
+                                                    value={updatePersonDetais.Male}
+                                                    checked={postPersonDetais?.gender === 'Male'}
+                                                    onChange={handleInputPersonalDetails}
+                                                />
                                                 <label className="form-check-label" htmlFor="Male">Male</label>
                                             </div>
                                             <div className="form-check form-check-inline">
-                                                <input className="form-check-input"
-                                                    type="radio" 
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
                                                     name="gender"
                                                     id="Female"
-                                                    value="Female"
-                                                    checked={personalFormData.gender === 'Female'}
-                                                    onChange={handleInputPersonalDetails} />
+                                                    value={updatePersonDetais.Female}
+                                                    checked={postPersonDetais?.gender === 'Female'}
+                                                    onChange={handleInputPersonalDetails}
+                                                />
                                                 <label className="form-check-label" htmlFor="Female">Female</label>
                                             </div>
                                             <div className="form-check form-check-inline">
-                                                <input className="form-check-input" type="radio"
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
                                                     name="gender"
                                                     id="Others"
-                                                    value="Others"
-                                                    checked={personalFormData.gender === 'Others'}
-                                                    onChange={handleInputPersonalDetails} />
+                                                    value={updatePersonDetais.Others}
+                                                    checked={postPersonDetais?.gender === 'Others'}
+                                                    onChange={handleInputPersonalDetails}
+                                                />
                                                 <label className="form-check-label" htmlFor="Others">Others</label>
                                             </div>
                                         </div>
+
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="yearOfBirth" className="form-label">Date Of Birth</label>
                                         <input type="date" className='form-control'
-                                            id='yearOfBirth'
-                                            // value={personalFormData.date_of_birth}
+                                            id='data_of_birth'
+                                            name='data_of_birth'
+                                            value={updatePersonDetais.data_of_birth}
                                             onChange={handleInputPersonalDetails} />
                                     </div>
 
                                     <div className="col-md-6 mb-3">
-                                        <label htmlFor="category" className="form-label">Material Status</label>
-                                        <select className="form-select" id="category">
+                                        <label htmlFor="category" className="form-label">Marital status</label>
+                                        <select className="form-select" id="category" value={updatePersonDetais.marital_status} onChange={handleInputPersonalDetails}>
                                             <option value="">Select</option>
                                             <option value="OC">Single</option>
                                             <option value="General">Married</option>
@@ -1838,23 +2088,24 @@ const Profiles = () => {
                                         <label className="form-label">Have you taken a career break?</label>
                                         <div className="d-flex">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="careerBreak" id="yesCareerBreak"
-                                                    value="personalFormData.yes"
+                                                <input className="form-check-input" type="radio" name="Have_you_taken_a_career_break" id="Have_you_taken_a_career_break"
+                                                    // value="Yes"
+                                                    value={updatePersonDetais.Yes}
                                                     onChange={handleInputPersonalDetails} />
-                                                <label className="form-check-label" htmlFor="yesCareerBreak">Yes</label>
+                                                <label className="form-check-label" htmlFor="Have_you_taken_a_career_break">Yes</label>
                                             </div>
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="careerBreak" id="noCareerBreak"
-                                                    value="personalFormData.no"
+                                                <input className="form-check-input" type="radio" name="Have_you_taken_a_career_break" id="Have_you_taken_a_career_break"
+                                                    value={updatePersonDetais.No}
                                                     onChange={handleInputPersonalDetails} />
-                                                <label className="form-check-label" htmlFor="noCareerBreak">No</label>
+                                                <label className="form-check-label" htmlFor="Have_you_taken_a_career_break">No</label>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="residentStatus" className="form-label">Resident Status</label>
-                                        <select className="form-select" id="residentStatus" onChange={handleInputPersonalDetails}>
+                                        <select className="form-select" id="resident_status" value={updatePersonDetais.resident_status} onChange={handleInputPersonalDetails} name='resident_status'>
                                             <option>Select</option>
                                             {/* Add resident status options */}
                                             {countries.map((country) => (
@@ -1865,8 +2116,8 @@ const Profiles = () => {
 
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="workPermitUSA" className="form-label">Work Permit For USA</label>
-                                        <select className="form-select" id="workPermitUSA"
-                                            onChange={handleInputPersonalDetails}>
+                                        <select className="form-select" id="work_permit_for_USA" name='work_permit_for_USA'
+                                            value={updatePersonDetais.work_permit_for_USA} onChange={handleInputPersonalDetails}>
                                             <option>Select</option>
                                             <option value="Green Card holder">Green Card holder</option>
                                             <option value="Have L1 Visa">Have L1 Visa</option>
@@ -1880,7 +2131,7 @@ const Profiles = () => {
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="workPermitOther" className="form-label">Work Permit For Other Country</label>
-                                        <select className="form-select" id="workPermitOther" onChange={handleInputPersonalDetails}>
+                                        <select className="form-select" id="work_permit_for_other_country" value={updatePersonDetais.work_permit_for_other_country} onChange={handleInputPersonalDetails} name='work_permit_for_other_country'>
                                             <option>Select</option>
                                             {countries.map((country) => (
                                                 <option key={country.id} value={country.id}>{country.name}</option>
@@ -1891,7 +2142,7 @@ const Profiles = () => {
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="nationality" className="form-label">Nationality</label>
-                                        <select className="form-select" id="nationality" onChange={handleInputPersonalDetails}>
+                                        <select className="form-select" id="Nationality" value={updatePersonDetais.Nationality} onChange={handleInputPersonalDetails} name='Nationality'>
                                             <option>Select Nationality</option>
                                             {/* Add more nationality options */}
                                             {countries.map((country) => (
@@ -1901,9 +2152,17 @@ const Profiles = () => {
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <div className="mb-3 mt-4 form-check">
-                                            <input type="checkbox" className="form-check-input" id="speciallyAbled"
-                                                onChange={handleInputPersonalDetails} />
-                                            <label className="form-check-label" htmlFor="speciallyAbled">I am specially abled</label>
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                id="i_am_specially_abled"
+                                                name="i_am_specially_abled"
+                                                value={updatePersonDetais.i_am_specially_abled}
+                                                onChange={handleInputPersonalDetails}
+                                                checked={postPersonDetais?.i_am_specially_abled || false}  // Use optional chaining with a default value
+                                            />
+
+                                            <label className="form-check-label" htmlFor="i_am_specially_abled">I am specially abled</label>
                                         </div>
                                     </div>
 
