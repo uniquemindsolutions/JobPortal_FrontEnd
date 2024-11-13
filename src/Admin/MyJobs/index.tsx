@@ -28,7 +28,7 @@ const MyJobs = () => {
     const [citys, setCitys] = useState<City[]>([]);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/cities/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
         .then(response => response.json())
         .then(data => {
             console.log("Cities:", data); // Log to check the data
@@ -43,7 +43,7 @@ const MyJobs = () => {
     };
     const myJobsDetails = async () => {
         try {
-            const res = await axios.get<myJobs>('http://127.0.0.1:8000/submitnewjob/')
+            const res = await axios.get<myJobs>('https://uniquemindsolutions.com/usmjobportal/submitnewjob/')
             setMyJobs(res.data)
             console.log('api testiing ====', res);
         }

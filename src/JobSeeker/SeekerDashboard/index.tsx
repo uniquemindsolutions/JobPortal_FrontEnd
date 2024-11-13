@@ -4,20 +4,16 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import SavedJobs from '../SavedJobs';
 
-// import AppliedJobs from '../AppliedJobs';
-
-// interface MyData {
-//   id: number;
-//   applied_count: number;
-//   jobalert_count: number;
-//   message_count: number;
-//   shortlist_count: number;
-// }
 interface City {
   id: number;
   name: string;
 }
+interface CompanyDetails {
+  company_logo: string;
+  company_name: string;
+}
 const SeekerDashboard = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,12 +30,23 @@ const SeekerDashboard = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
-
+  const [CompanyDetails, setCompanyDetailsData] = useState<CompanyDetails | null>(null);
+  
   useEffect(() => {
+    const fetchCompanyDetails = async () => {
+      try {
+          const response = await fetch('http://127.0.0.1:8000/myprofile/');
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setCompanyDetailsData(Array.isArray(data) ? data[0] : data);
+      } catch (error) {
+          console.error('Error fetching Company data:', error);
+      }
+  };
+  fetchCompanyDetails();
     fetchData();
-
-
     const handleRecentJobs = async () => {
       setLoading(true);
       try {
@@ -200,7 +207,11 @@ const SeekerDashboard = () => {
                   <div className="col-md-2 text-end">
                     <div className="company-logo">
                       <a href="#">
-                        <img className='img-fluid p-1' src={item.company_logo ? item.company_logo : window.location.origin + '/images/techm-logo.jpg'} />
+                      <img
+                            src={CompanyDetails?.company_logo || `${window.location.origin}/images/default-logo.png`}
+                            alt="Company Logo"
+                            className="comp-logo"
+                        />
                       </a>
                     </div>
                   </div>

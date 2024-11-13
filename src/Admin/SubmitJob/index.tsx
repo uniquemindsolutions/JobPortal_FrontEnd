@@ -23,7 +23,7 @@ interface SubmitJob {
     industry: number;
     job_category: number;
     job_type: string;
-    city_location: number;
+    job_location: number;
     max_salary: string;
     min_salary: string;
     salary_type: string;
@@ -34,9 +34,9 @@ interface SubmitJob {
     about_company: string;
     work_mode: string;
     ssc: string;
-    intermediate: string;
-    ug_course: string;
-    pg_course: string;
+    intermediate: string | null;
+    ug_course: string | null;
+    pg_course: string | null;
 }
 
 interface JobCategory {
@@ -73,15 +73,15 @@ interface city_location {
 
 interface inter {
     id: number;
-    inter: string;
+    inter: string | null;
 }
 interface graduate {
     id: number;
-    ug_name: string;
+    ug_name: string | null;
 }
 interface postGraduate {
     id: number;
-    pg_name: string;
+    pg_name: string | null;
 }
 
 const modules = {
@@ -142,7 +142,7 @@ const SubmitJob = () => {
         industry: 0,
         job_category: 0,
         job_type: '',
-        city_location: 0,
+        job_location: 0,
         max_salary: '',
         min_salary: '',
         salary_type: '',
@@ -196,7 +196,7 @@ const SubmitJob = () => {
         console.log("Mode:", mode); // Log the current mode
         setIsEditing(mode === "1"); // Set editing state based on mode
         if (id) {
-            fetch(`http://127.0.0.1:8000/submitnewjob/${id}/`)
+            fetch(`https://uniquemindsolutions.com/usmjobportal/submitnewjob/${id}/`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Submit job details:", data);
@@ -219,7 +219,7 @@ const SubmitJob = () => {
                 .catch(error => console.error("Error fetching job details:", error));
         }
         // Fetch industries
-        fetch("http://127.0.0.1:8000/industry/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/industry/")
             .then(response => response.json())
             .then(data => {
                 console.log("Industries:", data); // Log to check the data
@@ -228,7 +228,7 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching industries:', error));
 
         // Fetch job categories
-        fetch("http://127.0.0.1:8000/jobcategory/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/jobcategory/")
             .then(response => response.json())
             .then(data => {
                 console.log("Job Categories:", data); // Log to check the data
@@ -237,7 +237,7 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching job categories:', error));
 
         // Fetch countries
-        fetch("http://127.0.0.1:8000/countries/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/countries/")
             .then(response => response.json())
             .then(data => {
                 console.log("Countries:", data); // Log to check the data
@@ -245,7 +245,7 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching countries:', error));
         if (mode === '1' || mode === '2') {
-            fetch("http://127.0.0.1:8000/states/")
+            fetch("https://uniquemindsolutions.com/usmjobportal/states/")
                 .then(response => response.json())
                 .then(data => {
                     console.log("States:", data); // Log to check the data
@@ -253,7 +253,7 @@ const SubmitJob = () => {
                 })
                 .catch(error => console.error('Error fetching states:', error));
             // Fetch cities
-            fetch("http://127.0.0.1:8000/cities/")
+            fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
                 .then(response => response.json())
                 .then(data => {
                     console.log("My Cities:", data); // Log to check the data
@@ -261,14 +261,14 @@ const SubmitJob = () => {
                 })
                 .catch(error => console.error('Error fetching cities:', error));
         }
-        fetch("http://127.0.0.1:8000/cities/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
             .then(response => response.json())
             .then(data => {
                 console.log("My Cities:", data); // Log to check the data
                 setCitys(data);
             })
             .catch(error => console.error('Error fetching cities:', error));
-        fetch("http://127.0.0.1:8000/education/intermediate/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/education/intermediate/")
             .then(response => response.json())
             .then(data => {
                 console.log("inter:", data); // Log to check the data
@@ -277,7 +277,7 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching inter:', error));
 
 
-        fetch("http://127.0.0.1:8000/education/UG/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/education/UG/")
             .then(response => response.json())
             .then(data => {
                 console.log("Education UG:", data); // Log to check the data
@@ -285,7 +285,7 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching Education UG:', error));
 
-        fetch('http://127.0.0.1:8000/education/PG/')
+        fetch('https://uniquemindsolutions.com/usmjobportal/education/PG/')
             .then(response => response.json())
             .then(data => {
                 console.log("Education PG:", data); // Log to check the data
@@ -381,12 +381,9 @@ const SubmitJob = () => {
             console.error("Form validation failed.");
             return; // or handle the error display accordingly
         }
-        const apiUrl = isEditing ? `http://127.0.0.1:8000/submitnewjob/${id}/` : `http://127.0.0.1:8000/submitnewjob/`;
+        const apiUrl = isEditing ? `https://uniquemindsolutions.com/usmjobportal/submitnewjob/${id}/` : `https://uniquemindsolutions.com/usmjobportal/submitnewjob/`;
         console.log(apiUrl, 'submited data=====')
         const submissionData = new FormData();
-
-
-
         if (fileUpload) {
             submissionData.append('upload_file', fileUpload);
 
@@ -406,16 +403,49 @@ const SubmitJob = () => {
 
 
 
-
+        
+      
         console.log(submissionData, "submissionData.....");
 
-
+        alert("Hi")
         Object.keys(formData).forEach(key => {
-            submissionData.append(key, (formData as any)[key]);
+            console.log("Formdata response.....", (formData as any)[key]);
+        
+            // Check for specific fields and handle the ID properly
+            if (key === "intermediate") {
+                const intermediateId = (formData as any)[key];
+                if (intermediateId === '' || intermediateId === null) {
+                    // Send an empty string if intermediate is empty or null
+                    submissionData.append(key, '');
+                } else {
+                    // Ensure sending the ID (convert to string only if it's not null or undefined)
+                    submissionData.append(key, intermediateId ? intermediateId.toString() : '');
+                }
+            } else if (key === "ug_course") {
+                const ugCourseId = (formData as any)[key];
+                if (ugCourseId === '' || ugCourseId === null) {
+                    // Send an empty string if it's empty or null
+                    submissionData.append(key, '');
+                } else {
+                    submissionData.append(key, ugCourseId ? ugCourseId.toString() : '');  // Convert ID to string if it's not null
+                }
+            } else if (key === "pg_course") {
+                const pgCourseId = (formData as any)[key];
+                if (pgCourseId === '' || pgCourseId === null) {
+                    // Send an empty string if it's empty or null
+                    submissionData.append(key, '');
+                } else {
+                    submissionData.append(key, pgCourseId ? pgCourseId.toString() : '');  // Convert ID to string if it's not null
+                }
+            } else {
+                // For other fields, simply append the value as is
+                submissionData.append(key, (formData as any)[key]);
+            }
         });
-
-
-
+        
+        
+       
+        
 
         // const payload = {
         //     "job_title": formData.job_title,
@@ -447,7 +477,7 @@ const SubmitJob = () => {
         try {
             if (methodType) {
                 // Update the job with a PUT request
-                // fetch(`http://127.0.0.1:8000/submitnewjob/${id}/`, {
+                // fetch(`https://uniquemindsolutions.com/usmjobportal/submitnewjob/${id}/`, {
                 //     method: 'PUT',
                 //     headers: {
                 //         'Content-Type': 'Mulitpart/form-data',
@@ -464,12 +494,11 @@ const SubmitJob = () => {
                 //     .catch((error) => console.error("Error updating job:", error));
 
                 try {
-                    const response = await axios.put(`http://127.0.0.1:8000/submitnewjob/${id}/`, submissionData, {
+                    const response = await axios.put(`https://uniquemindsolutions.com/usmjobportal/submitnewjob/${id}/`, submissionData, {
                         headers: {
                             'Content-Type': 'multipart/form-data', // Ensure the content type is set correctly
                         },
                     });
-
                     console.log('Job updated successfully:', response.data);
                 } catch (error) {
                     console.error('Error uploading file:', error);
@@ -478,7 +507,7 @@ const SubmitJob = () => {
 
             } else {
                 // Create a new job with a POST request
-                // const response = await fetch("http://127.0.0.1:8000/submit-jobs/", {
+                // const response = await fetch("https://uniquemindsolutions.com/usmjobportal/submit-jobs/", {
                 //     method: "POST",
                 //     body:submissionData,
                 //     // body: JSON.stringify(payload),
@@ -491,7 +520,7 @@ const SubmitJob = () => {
                 // });
 
                 try {
-                    const response = await axios.post('http://127.0.0.1:8000/submitnewjob/', submissionData, {
+                    const response = await axios.post('https://uniquemindsolutions.com/usmjobportal/submitnewjob/', submissionData, {
                         headers: {
                             'Content-Type': 'multipart/form-data', // Ensure the content type is set correctly
                         },
@@ -550,7 +579,7 @@ const SubmitJob = () => {
             ...formData, [name]: value
         });
         const countryId = e.target.options.selectedIndex;
-        fetch(`http://127.0.0.1:8000/states/?countryid=${countryId}`)
+        fetch(`https://uniquemindsolutions.com/usmjobportal/states/?countryid=${countryId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("States:", data); // Log to check the data
@@ -566,7 +595,7 @@ const SubmitJob = () => {
         });
         const stateId = e.target.options.selectedIndex;
         console.log(stateId);
-        fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
+        fetch(`https://uniquemindsolutions.com/usmjobportal/cities/?stateid=${stateId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("cities:", data); // Log to check the data
@@ -808,8 +837,8 @@ const SubmitJob = () => {
                         </div>
                         <div className="col-md-4 mb-3">
                             <label htmlFor="city_location" className="form-label">Job Location</label>
-                            <select className="form-select" name="city_location" id="city_location"
-                                value={formData.city_location || ""}
+                            <select className="form-select" name="job_location" id="job_location"
+                                value={formData.job_location || ""}
                                 onChange={handleInputChange}
                                 disabled={isEditing}>
                                 <option value="">Select</option>
@@ -871,7 +900,7 @@ const SubmitJob = () => {
                                 disabled={isEditing}>
                                 <option value="">Select</option>
                                 <option value="Active">Active</option>
-                                <option value="In Active">In Active</option>
+                                <option value="Inactive">In Active</option>
                                 <option value="Expired">Expired</option>
                             </select>
                         </div>

@@ -71,7 +71,7 @@ const MyProfile = () => {
     const [selectedCompanyType, setSelectedCompanyType] = useState<any>(null);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/myprofile/43/`)
+        fetch(`https://uniquemindsolutions.com/usmjobportal/myprofile/43/`)
             .then(response => response.json())
             .then(data => {
                 console.log("Submit myprofile:", data);
@@ -89,20 +89,20 @@ const MyProfile = () => {
                 }
             })
             .catch(error => console.error("Error fetching job details:", error));
-        fetch('http://127.0.0.1:8000/countries/')
+        fetch('https://uniquemindsolutions.com/usmjobportal/countries/')
             .then((response) => response.json())
             .then((data) => setCountries(data))
             .catch((error) => console.error("Error fetching countries:", error));
-        fetch('http://127.0.0.1:8000/states/')
+        fetch('https://uniquemindsolutions.com/usmjobportal/states/')
             .then((response) => response.json())
             .then((data) => setStates(data))
             .catch((error) => console.error("Error fetching states:", error));
-        fetch('http://127.0.0.1:8000/cities/')
+        fetch('https://uniquemindsolutions.com/usmjobportal/cities/')
             .then((response) => response.json())
             .then((data) => setCities(data))
             .catch((error) => console.error("Error fetching cities:", error));
 
-        fetch("http://127.0.0.1:8000/industry/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/industry/")
             .then(response => response.json())
             .then(data => {
                 console.log("Industries:", data); // Log to check the data
@@ -110,7 +110,7 @@ const MyProfile = () => {
             })
             .catch(error => console.error('Error fetching industries:', error));
 
-        fetch("http://127.0.0.1:8000/jobcategory/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/jobcategory/")
             .then(response => response.json())
             .then(data => {
                 console.log("Functional_Area:", data); // Log to check th data
@@ -176,7 +176,7 @@ const MyProfile = () => {
         try {
             if (methodType) {
                 // Update the job with a PUT request
-                const response = await fetch(`http://127.0.0.1:8000/myprofile/${id}/`, {
+                const response = await fetch(`https://uniquemindsolutions.com/usmjobportal/myprofile/${id}/`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ const MyProfile = () => {
                 alert("Profile updated successfully!");
             } else {
                 // Create a new job with a POST request
-                const response = await fetch('http://127.0.0.1:8000/myprofile/', {
+                const response = await fetch('https://uniquemindsolutions.com/usmjobportal/myprofile/', {
                     method: 'POST',
                     body: JSON.stringify(payload),
                     headers: {
@@ -248,7 +248,7 @@ const MyProfile = () => {
         const { name, value } = e.target;
         setProfileFormData({ ...profileFormData, [name]: value });
         const countryId = e.target.options.selectedIndex;
-        fetch(`http://127.0.0.1:8000/states/?countryid=${countryId}`)
+        fetch(`https://uniquemindsolutions.com/usmjobportal/states/?countryid=${countryId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("States:", data);
@@ -262,7 +262,7 @@ const MyProfile = () => {
         const { name, value } = e.target;
         setProfileFormData({ ...profileFormData, [name]: value });
         const stateId = e.target.options.selectedIndex;
-        fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
+        fetch(`https://uniquemindsolutions.com/usmjobportal/cities/?stateid=${stateId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("Cities:", data);
@@ -317,7 +317,7 @@ const MyProfile = () => {
                                 <input type="file" onChange={handleFileChange} disabled={!isEditing} />
                             </button> */}
                                 <label className="btn btn-outline-primary btn-sm">
-                                    <i className="fa fa-image"></i>Upload logo<input type="file" onChange={handleFileChange} disabled={!isEditing} style={{ display: 'none' }} name="image" />
+                                    <i className="fa fa-image"></i>Upload logo<input type="file" onChange={handleFileChange} disabled={isEditing} style={{ display: 'none' }} name="image" />
                                 </label>
                                 <button className="btn btn-outline-warning btn-sm mx"><i className="bi bi-x-lg"></i></button>
                             </div>
