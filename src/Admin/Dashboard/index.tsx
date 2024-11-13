@@ -47,14 +47,14 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 // Fetch total visitors
-                const visitorResponse = await axios.get('http://127.0.0.1:8000/totalvistors/');
+                const visitorResponse = await axios.get('https://uniquemindsolutions.com/usmjobportal/totalvistors/');
                 // Fetch profile views
-                const viewsResponse = await axios.get('http://127.0.0.1:8000/profileview/');
+                const viewsResponse = await axios.get('https://uniquemindsolutions.com/usmjobportal/profileview/');
                 // Fetch applied jobs
-                const appliedJobsResponse = await axios.get('http://127.0.0.1:8000/appliedjobs/');
+                const appliedJobsResponse = await axios.get('https://uniquemindsolutions.com/usmjobportal/appliedjobs/');
                 // Fetch shortlisted candidates
-                const shortlistedResponse = await axios.get('http://127.0.0.1:8000/shortlistedcandidates/');
-                const jobviewResponse = await axios.get('http://127.0.0.1:8000/jobviews/');
+                const shortlistedResponse = await axios.get('https://uniquemindsolutions.com/usmjobportal/shortlistedcandidates/');
+                const jobviewResponse = await axios.get('https://uniquemindsolutions.com/usmjobportal/jobviews/');
 
                 // Extract the data from the first item in each array
                 const visitorCount = visitorResponse.data[0]?.visitor_count || 'Error';
@@ -84,7 +84,7 @@ const Dashboard = () => {
         
 
         // posted get api
-        axios.get<PostedJob[]>('http://127.0.0.1:8000/submitnewjob/')
+        axios.get<PostedJob[]>('https://uniquemindsolutions.com/usmjobportal/submitnewjob/')
             .then(response => {
                 setPostedJobData(response.data)
             })
@@ -92,13 +92,13 @@ const Dashboard = () => {
                 setError(error = 'data fetching fail')
             ))
             
-            fetch("http://127.0.0.1:8000/cities/")
+            fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
             .then(response => response.json())
             .then(data => {
                 console.log("Cities:", data); // Log to check the data
                 setCitys(data); // Store the cities in state
             })
-            fetch("http://127.0.0.1:8000/jobviews/")
+            fetch("https://uniquemindsolutions.com/usmjobportal/jobviews/")
             .then(response => response.json())
             .then(data => {
                 console.log("JobViews:", data); // Log to check the data

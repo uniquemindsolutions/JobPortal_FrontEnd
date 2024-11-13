@@ -1,10 +1,11 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 interface EmailandPushNotificationsModel {
     daily_new_jobs: boolean;
     follow_up_credited: boolean;
-    follow_up_used: boolean;
+    follow_up_used: boolean;    
     promotional: boolean;
     chat_notifications: boolean;
 }
@@ -19,6 +20,7 @@ interface changepasswordModel {
 }
 
 const AccountSetting = () => {
+    const { id } = useParams();
     const [EmailandPushNotificationsData, setEmailandPushNotificationsData] = useState<EmailandPushNotificationsModel>({
         daily_new_jobs: false,
         follow_up_credited: false,
@@ -47,6 +49,44 @@ const AccountSetting = () => {
             [name]: value  // Use the name as the key and value for the input
         });
     };
+    useEffect(() => {
+        const fetchEmailData = async () => {
+                try {
+                    // Make API call using the dynamic `id`
+                    const emailResponse = await axios.get(`https://uniquemindsolutions.com/usmjobportal/user/Emailpushnotification/1/`);
+                    console.log("Email Response: ", emailResponse.data);
+            
+                    // Assuming the response has the same shape as the state, update the state with the response data
+                    setEmailandPushNotificationsData({
+                      daily_new_jobs: emailResponse.data.daily_new_jobs,
+                      follow_up_credited: emailResponse.data.follow_up_credited,
+                      follow_up_used: emailResponse.data.follow_up_used,
+                      promotional: emailResponse.data.promotional,
+                      chat_notifications: emailResponse.data.chat_notifications,
+                    });
+                  } catch (error) {
+                    console.error('Error fetching email data:', error);
+                  }
+            
+          };
+      
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('https://uniquemindsolutions.com/usmjobportal/accountsettings/1/');
+                console.log('Account API Response....', response.data);
+
+                // Assuming the API returns the structure you expect
+                setAcountData({
+                    hide_profile_from_recruiters: response.data.hide_profile_from_recruiters,
+                    deactivate_account: response.data.deactivate_account,
+                });
+            } catch (error) {
+                console.error('Error fetching account settings:', error);
+            }
+        };
+        fetchData();
+        fetchEmailData();
+    }, [id]);
 
 
     // Handle input changes for both account data and password change data
@@ -69,12 +109,12 @@ const AccountSetting = () => {
         e.preventDefault();
         try {
             // accountsettings API call
-            const proData = await axios.post('http://127.0.0.1:8000/accountsettings/', accountData);
+            const proData = await axios.post('https://uniquemindsolutions.com/usmjobportal/accountsettings/', accountData);
             console.log('Account API response:', proData.data);
-            const emaildata = await axios.post('http://127.0.0.1:8000/user/Emailpushnotification/',EmailandPushNotificationsData);
+            const emaildata = await axios.post('https://uniquemindsolutions.com/usmjobportal/user/Emailpushnotification/', EmailandPushNotificationsData);
             console.log('Eamil push notification data:', emaildata.data);
             // change-password API call
-            const proPass = await axios.put('http://127.0.0.1:8000/change-password/', changepasswordData);
+            const proPass = await axios.put('https://uniquemindsolutions.com/usmjobportal/change-password/', changepasswordData);
             console.log('Password API response:', proPass.data);
 
             setSuccessMsg('Account setting successfully changed');
@@ -84,7 +124,6 @@ const AccountSetting = () => {
             setErrorMsg('Error submitting form. Please try again.');
         }
     };
-
     return (
         <main>
             <h4 className="mt-4">Account Settings</h4>
