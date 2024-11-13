@@ -55,7 +55,6 @@ const PersonalDetails = () => {
         // handlePeronalGet();
         handleUpdatepersonalDetails(0);
 
-
         const fetchCountry = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8000/user/Countries/');
@@ -67,10 +66,13 @@ const PersonalDetails = () => {
             }
         };
         fetchCountry();
-        
+
     }, [])
 
-
+    const constryList = (id:any) => {
+        const country = countries.find((c:any)=>c.id === id)
+        return country? country.name :"N/A"
+    }
 
     // personal details start
     const presonGetMethod = async () => {
@@ -105,9 +107,7 @@ const PersonalDetails = () => {
     }
 
     const handleUpdatepersonalDetails = async (userId: any) => {
-
         try {
-
             const updatePersonalDetails = {
                 gender: updatePersonDetais.gender,
                 date_of_birth: updatePersonDetais.date_of_birth,
@@ -131,7 +131,10 @@ const PersonalDetails = () => {
     };
     // personal details end
 
-    
+ 
+
+
+
     return (
         <main>
             <div className="card-header fw-bold">
@@ -142,14 +145,14 @@ const PersonalDetails = () => {
                     {getPersonDetais && (
                         <>
                             <li className='lt-blue-c'>Gender: {getPersonDetais.gender}</li>
-                            <li>Date of Birth: <b>{getPersonDetais.data_of_birth}</b></li>
-                            <li>Marital Status: <b>{getPersonDetais.marital_status}</b></li>
-                            <li>Have you taken a career break?: <b>{getPersonDetais.Have_you_taken_a_career_break ? 'Yes' : 'No'}</b></li>
-                            <li>Work Permit for USA: <b>{getPersonDetais.work_permit_for_USA ? 'Yes' : 'No'}</b></li>
-                            <li>Nationality: <b>{getPersonDetais.Nationality}</b></li>
-                            <li>Specially abled: <b>{getPersonDetais.i_am_specially_abled ? 'Yes' : 'No'}</b></li>
-                            <li>Add Resident Status: <b>{getPersonDetais.resident_status}</b></li>
-                            <li>Add Work Permit for Other Country: <b>{getPersonDetais.work_permit_for_other_country}</b></li>
+                            <li><span className='text-secondary'>Date of Birth:</span>  {getPersonDetais.data_of_birth} </li>
+                            <li><span className='text-secondary'>Marital Status:</span>  {getPersonDetais.marital_status} </li>
+                            <li><span className='text-secondary'>Have you taken a career break?:</span>  {getPersonDetais.Have_you_taken_a_career_break ? 'Yes' : 'No'} </li>
+                            <li><span className='text-secondary'>Work Permit for USA:</span> {getPersonDetais.work_permit_for_USA ? 'Yes' : 'No'} </li>
+                            <li><span className='text-secondary'>Nationality:</span> {constryList(getPersonDetais.Nationality)} </li>
+                            <li><span className='text-secondary'>Specially abled:</span> {getPersonDetais.i_am_specially_abled ? 'Yes' : 'No'} </li>
+                            <li><span className='text-secondary'>Resident Status:</span> {constryList(getPersonDetais.resident_status)} </li>
+                            <li><span className='text-secondary'>Work Permit for Other Country:</span> {constryList(getPersonDetais.work_permit_for_other_country)} </li>
                         </>
                     )}
                 </ul>
@@ -289,7 +292,7 @@ const PersonalDetails = () => {
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="nationality" className="form-label">Nationality</label>
                                         <select className="form-select" id="Nationality" value={updatePersonDetais.Nationality} onChange={handleInputPersonalDetails} name='Nationality'>
-                                            <option>Select Nationality</option>
+                                            <option>Select</option>
                                             {/* Add more nationality options */}
                                             {countries.map((country) => (
                                                 <option key={country.id} value={country.id}>{country.name}</option>
