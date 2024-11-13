@@ -32,12 +32,11 @@ const Projects = () => {
     });
     const [updateBtn, setUpdateBtn] = useState(false);
 
-
     useEffect(() => {
-        projectGetMethod();
+        projectGetAllMethod();
     }, []);
 
-    const projectGetMethod = async () => {
+    const projectGetAllMethod = async () => {
         setLoading(true);
         try {
             const res_project_get = await axios.get(`http://127.0.0.1:8000/user/Projects/`);
@@ -78,18 +77,15 @@ const Projects = () => {
         setUpdateBtn(false)
     };
 
-    const handleEditProjects = async (id: number) => {
+    const handlePopulateEditProjects = async (id: number) => {
         setUpdateBtn(true)
         setLoading(true);
         try {
             const res_project_edit = await axios.get(`http://127.0.0.1:8000/user/Projects/${id}/`);
             const projectdataEdit = res_project_edit.data;
-            setEditProjectsData(projectdataEdit);
-            console.log("Projectdata", res_project_edit)
+
             if (Object.keys(projectdataEdit).length > 0) {
-
                 Object.entries(projectdataEdit).forEach(([key, value]) => {
-
                     setProjectsCreate((projectdata: any) => ({
                         ...projectdata,
                         [key]: value, // Dynamically update the key based on input name
@@ -172,10 +168,10 @@ const Projects = () => {
 
                 {Array.isArray(projectsData) ? (
                     projectsData.map((item: any) => (
-                        <ul key={item.id} className="list-unstyled">
+                        <ul key={item.id} className="list-unstyled profile-sec">
                             <li className="lt-blue-c">
                                 <span className='text-secondary'>Project Name:</span> {item.title}
-                                <button onClick={() => handleEditProjects(item.id)}
+                                <button onClick={() => handlePopulateEditProjects(item.id)}
                                     className="bi bi-pencil-square float-end btn py-0"
                                     data-bs-toggle="modal"
                                     data-bs-target="#addProjects"

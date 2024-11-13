@@ -102,6 +102,12 @@ const JobPreferences = () => {
         e.preventDefault();
         const { name, value } = e.target;
         setJobPreferences({ ...jobPreferences, [name]: value });
+
+        // const { name, value } = e.target;
+        // setJobPreferences((jobPreferences: any) => ({
+        //     ...jobPreferences,
+        //     [name]: value,
+        // }));
     }
 
     const handleSubmitJobPreferences = async (e: any) => {
@@ -122,7 +128,6 @@ const JobPreferences = () => {
             const res_JobPrefer = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/`);
             const res_JobPreferencesEdit = res_JobPrefer.data[0];
             // setJobPreferencesEdit(res_JobPreferencesEdit);
-            alert("Edit Job Preferences ===")
 
             if (Object.keys(res_JobPreferencesEdit).length > 0) {
                 Object.entries(res_JobPreferencesEdit).forEach(([key, value]) => {
@@ -140,7 +145,7 @@ const JobPreferences = () => {
             setLoading(false);
         }
     };
-    
+
     const updateJobProference = async (id: any) => {
         console.log("Updating jobPreferences with ID:", id);
         try {
@@ -161,7 +166,7 @@ const JobPreferences = () => {
             alert("Hi")
             // const put_data=put_response.;
             console.log("projectlist", getJobPreferences);
-           
+
             const dataobj = Array.isArray(getJobPreferences);
             if (dataobj) {
                 const updatedJobPrefence = getJobPreferences?.map(user =>
@@ -176,8 +181,6 @@ const JobPreferences = () => {
             alert("Failed to submit the job preferences");
         }
     }
-
-
 
     const getDepartmentName = (departmentId: number) => {
         const department = PreferredDepartmentFunction.find(dept => dept.id === departmentId);
@@ -197,7 +200,6 @@ const JobPreferences = () => {
     //Job Preferences end
     return (
         <main>
-
             <div className="card-header fw-bold">
                 <span><i className="bi bi-card-checklist text-secondary me-2"></i> Job Preferences </span>
                 <button onClick={handleInputEditJobPreferences} className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addJobPreferences"></button></div>
@@ -268,8 +270,8 @@ const JobPreferences = () => {
                                                     checked={jobPreferences?.job_type === 'Permanent'}
                                                     onChange={handleInputJobPreferences} />
                                                 <label className="form-check-label" htmlFor="permanent">Permanent</label>
-
                                             </div>
+
                                             <div className="form-check form-check-inline">
                                                 <input className="form-check-input"
                                                     type="radio"
@@ -280,6 +282,7 @@ const JobPreferences = () => {
                                                     onChange={handleInputJobPreferences} />
                                                 <label className="form-check-label" htmlFor="temporary">Temporary/Contract</label>
                                             </div>
+                                            
                                             <div className="form-check form-check-inline">
                                                 <input className="form-check-input"
                                                     type="radio"
