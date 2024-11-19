@@ -92,6 +92,23 @@ body {
   transition: 0.4s;
   box-shadow: 0 5px 9px #00000030;
 }
+.delete-btn {
+  padding: 6px 10px;
+  background: #ffffff;
+  border-radius: 7px;
+  border: solid 1px #fc7777;
+  font-size: 18px;
+  font-weight: 400;
+  color: #f84646;
+  transition: 0.4s;
+}
+.delete-btn:hover {
+  border: solid 1px #fc7777;
+  background-color: #fc7777;
+  color: #ffffff;
+  transition: 0.4s;
+  box-shadow: 0 5px 9px #00000030;
+}
 .modal-header {
   display: flex;
   flex-shrink: 0;

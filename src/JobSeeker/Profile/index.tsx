@@ -11,7 +11,6 @@ import Skills from './Skills';
 import JobPreferences from './JobPreferences';
 import WorkExperience from './WorkExperience';
 
-
 interface Country {
     id: number;
     name: string;
