@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 interface PersonDetails {
     length: number;
     gender: string;
-    data_of_birth: string;
+    date_of_birth: string;
     marital_status: string;
     category: string;
     Have_you_taken_a_career_break: string;
@@ -25,11 +25,11 @@ const PersonalDetails = () => {
     const [message, setMessage] = useState('');
     const [countries, setCountries] = useState<Country[]>([]);
 
-    const [getPersonDetais, setGetPersonDetais] = useState<PersonDetails | null>(null);
+    const [getPersonDetais, setGetPersonDetais] = useState<any>();
     const [postPersonDetais, setPostPersonDetais] = useState<PersonDetails>({
         length: 0,
         gender: '',
-        data_of_birth: '',
+        date_of_birth: '',
         marital_status: '',
         category: '',
         Have_you_taken_a_career_break: '',
@@ -53,7 +53,7 @@ const PersonalDetails = () => {
     useEffect(() => {
         presonGetMethod();
         // handlePeronalGet();
-        handleUpdatepersonalDetails(0);
+        // handlePopulatepersonalDetails(0);
 
         const fetchCountry = async () => {
             try {
@@ -69,9 +69,10 @@ const PersonalDetails = () => {
 
     }, [])
 
-    const constryList = (id:any) => {
-        const country = countries.find((c:any)=>c.id === id)
-        return country? country.name :"N/A"
+    // this is for country api list
+    const constryList = (id: any) => {
+        const country = countries.find((c: any) => c.id === id)
+        return country ? country.name : "N/A"
     }
 
     // personal details start
@@ -90,9 +91,11 @@ const PersonalDetails = () => {
     };
 
     const handleInputPersonalDetails = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        setPostPersonDetais({ ...postPersonDetais, [e.target.name]: e.target.value })
+        const { name, value } = e.target;
+        setPostPersonDetais((postPersonDetais: any) => (
+            { ...postPersonDetais, [name]: value, }
+        ));
     }
-
 
     const handlePersonalFormPostData = async (e: any) => {
         e.preventDefault();
@@ -106,9 +109,29 @@ const PersonalDetails = () => {
         }
     }
 
-    const handleUpdatepersonalDetails = async (userId: any) => {
+    const handlePopulatepersonalDetails = async (id: any) => {
         try {
-            const updatePersonalDetails = {
+            const res_personal_update = await axios.put(`http://127.0.0.1:8000/user/PersonDetails/1/`);
+            const personalD_update = res_personal_update.data;
+            // setUpdatePersonDetais(personal_list_update); // Assuming the API returns the updated data
+            console.log("personal data ===", personalD_update);
+
+            if (Object.keys(personalD_update).length > 0) {
+                Object.entries(personalD_update).forEach(([key, value]) => {
+                    setPostPersonDetais((postPersonDetais) => {
+                        return { ...getPersonDetais, [key]: value }
+                    })
+                })
+            }
+        } catch (error) {
+            setError("Error: data not found");
+            console.error(error);
+        }
+    };
+
+    const updatePersonalDetails = (id: any) => {
+        try {
+            const payloadPersonalDetails = {
                 gender: updatePersonDetais.gender,
                 date_of_birth: updatePersonDetais.date_of_birth,
                 Have_you_taken_a_career_break: updatePersonDetais.Have_you_taken_a_career_break,
@@ -119,19 +142,22 @@ const PersonalDetails = () => {
                 i_am_specially_abled: updatePersonDetais.i_am_specially_abled // Fix the boolean assignment
             };
 
-            const res_personal_update = await axios.put(`http://127.0.0.1:8000/user/PersonDetails/1/`, updatePersonalDetails);
+            const res_personal_edit = axios.put(`http://127.0.0.1:8000/user/PersonDetails/1/`, payloadPersonalDetails)
 
-            const personal_list_update = res_personal_update.data;
-            setUpdatePersonDetais(personal_list_update); // Assuming the API returns the updated data
-            console.log("personal data ===", personal_list_update.title);
+            const updatePronDetlObj = Array.isArray(getPersonDetais)
+            if (updatePronDetlObj) {
+                const updatePronDetls = getPersonDetais?.map(pro => pro.id === res_personal_edit ? res_personal_edit : pro)
+                setGetPersonDetais(updatePronDetls)
+            }
+
         } catch (error) {
-            setError("Error: data not found");
-            console.error(error);
+            setError("Personal detail not updated")
         }
-    };
+
+    }
     // personal details end
 
- 
+
 
 
 
@@ -139,13 +165,13 @@ const PersonalDetails = () => {
         <main>
             <div className="card-header fw-bold">
                 <span><i className="bi bi-person-vcard text-secondary me-2"></i> Personal Details </span>
-                <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addPersonalDetails"></button></div>
+                <button className="bi bi-pencil-square float-end btn  py-0" onClick={handlePopulatepersonalDetails} data-bs-toggle="modal" data-bs-target="#addPersonalDetails"></button></div>
             <div className="card-body">
                 <ul className='list-unstyled profile-sec'>
                     {getPersonDetais && (
                         <>
                             <li className='lt-blue-c'>Gender: {getPersonDetais.gender}</li>
-                            <li><span className='text-secondary'>Date of Birth:</span>  {getPersonDetais.data_of_birth} </li>
+                            <li><span className='text-secondary'>Date of Birth:</span>  {getPersonDetais.date_of_birth} </li>
                             <li><span className='text-secondary'>Marital Status:</span>  {getPersonDetais.marital_status} </li>
                             <li><span className='text-secondary'>Have you taken a career break?:</span>  {getPersonDetais.Have_you_taken_a_career_break ? 'Yes' : 'No'} </li>
                             <li><span className='text-secondary'>Work Permit for USA:</span> {getPersonDetais.work_permit_for_USA ? 'Yes' : 'No'} </li>
@@ -178,7 +204,7 @@ const PersonalDetails = () => {
                                                     type="radio"
                                                     name="gender"
                                                     id="Male"
-                                                    value={updatePersonDetais.Male}
+                                                    value="Male"
                                                     checked={postPersonDetais?.gender === 'Male'}
                                                     onChange={handleInputPersonalDetails}
                                                 />
@@ -190,7 +216,7 @@ const PersonalDetails = () => {
                                                     type="radio"
                                                     name="gender"
                                                     id="Female"
-                                                    value={updatePersonDetais.Female}
+                                                    value="Female"
                                                     checked={postPersonDetais?.gender === 'Female'}
                                                     onChange={handleInputPersonalDetails}
                                                 />
@@ -202,7 +228,7 @@ const PersonalDetails = () => {
                                                     type="radio"
                                                     name="gender"
                                                     id="Others"
-                                                    value={updatePersonDetais.Others}
+                                                    value="Others"
                                                     checked={postPersonDetais?.gender === 'Others'}
                                                     onChange={handleInputPersonalDetails}
                                                 />
@@ -212,24 +238,24 @@ const PersonalDetails = () => {
 
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label htmlFor="yearOfBirth" className="form-label">Date Of Birth</label>
+                                        <label htmlFor="date_of_birth" className="form-label">Date Of Birth</label>
                                         <input type="date" className='form-control'
-                                            id='data_of_birth'
-                                            name='data_of_birth'
-                                            value={updatePersonDetais.data_of_birth}
+                                            id="date_of_birth"
+                                            name="date_of_birth"
+                                            value={postPersonDetais.date_of_birth}
                                             onChange={handleInputPersonalDetails} />
                                     </div>
 
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="category" className="form-label">Marital status</label>
-                                        <select className="form-select" id="category" value={updatePersonDetais.marital_status} onChange={handleInputPersonalDetails}>
+                                        <select className="form-select" id="category" onChange={handleInputPersonalDetails}>
                                             <option value="">Select</option>
-                                            <option value="OC">Single</option>
-                                            <option value="General">Married</option>
-                                            <option value="Divorced">Divorced</option>
+                                            <option value="single">Single</option>
+                                            <option value="married">Married</option>
+                                            <option value="divorced">Divorced</option>
                                             <option value="Widowed">Widowed</option>
-                                            <option value="Separated">Separated</option>
-                                            <option value="partnered">In a Relationship/Partnered</option>
+                                            <option value="separated">Separated</option>
+                                            <option value="others">Others</option>
                                         </select>
                                     </div>
 
@@ -237,15 +263,22 @@ const PersonalDetails = () => {
                                         <label className="form-label">Have you taken a career break?</label>
                                         <div className="d-flex">
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="Have_you_taken_a_career_break" id="Have_you_taken_a_career_break"
-                                                    // value="Yes"
-                                                    value={updatePersonDetais.Yes}
+                                                <input className="form-check-input"
+                                                    type="radio"
+                                                    name="Have_you_taken_a_career_break"
+                                                    id="Have_you_taken_a_career_break"
+                                                    value="Yes"
+                                                    checked={postPersonDetais.Have_you_taken_a_career_break === "Yes"}
                                                     onChange={handleInputPersonalDetails} />
                                                 <label className="form-check-label" htmlFor="Have_you_taken_a_career_break">Yes</label>
                                             </div>
                                             <div className="form-check">
-                                                <input className="form-check-input" type="radio" name="Have_you_taken_a_career_break" id="Have_you_taken_a_career_break"
-                                                    value={updatePersonDetais.No}
+                                                <input className="form-check-input"
+                                                    type="radio"
+                                                    name="Have_you_taken_a_career_break"
+                                                    id="Have_you_taken_a_career_break"
+                                                    value="No"
+                                                    checked={postPersonDetais.Have_you_taken_a_career_break === "No"}
                                                     onChange={handleInputPersonalDetails} />
                                                 <label className="form-check-label" htmlFor="Have_you_taken_a_career_break">No</label>
                                             </div>
@@ -254,7 +287,7 @@ const PersonalDetails = () => {
 
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="residentStatus" className="form-label">Resident Status</label>
-                                        <select className="form-select" id="resident_status" value={updatePersonDetais.resident_status} onChange={handleInputPersonalDetails} name='resident_status'>
+                                        <select className="form-select" id="resident_status" value={postPersonDetais.resident_status} onChange={handleInputPersonalDetails} name='resident_status'>
                                             <option>Select</option>
                                             {/* Add resident status options */}
                                             {countries.map((country) => (
@@ -266,21 +299,21 @@ const PersonalDetails = () => {
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="workPermitUSA" className="form-label">Work Permit For USA</label>
                                         <select className="form-select" id="work_permit_for_USA" name='work_permit_for_USA'
-                                            value={updatePersonDetais.work_permit_for_USA} onChange={handleInputPersonalDetails}>
+                                            onChange={handleInputPersonalDetails}>
                                             <option>Select</option>
                                             <option value="Green Card holder">Green Card holder</option>
                                             <option value="Have L1 Visa">Have L1 Visa</option>
                                             <option value="US Citizen">US Citizen</option>
                                             <option value="TN Permit Holder">TN Permit Holder</option>
                                             <option value="Have H1 Visa">Have H1 Visa</option>
-                                            <option value="I  have Work Authorization">I  have Work Authorization</option>
+                                            <option value="I have Work Authorization">I  have Work Authorization</option>
                                             <option value="Authorized to work in the US">Authorized to work in the US</option>
                                             <option value="No US Work authorization">No US Work authorization</option>
                                         </select>
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="workPermitOther" className="form-label">Work Permit For Other Country</label>
-                                        <select className="form-select" id="work_permit_for_other_country" value={updatePersonDetais.work_permit_for_other_country} onChange={handleInputPersonalDetails} name='work_permit_for_other_country'>
+                                        <select className="form-select" id="work_permit_for_other_country" value={postPersonDetais.work_permit_for_other_country} onChange={handleInputPersonalDetails} name='work_permit_for_other_country'>
                                             <option>Select</option>
                                             {countries.map((country) => (
                                                 <option key={country.id} value={country.id}>{country.name}</option>
@@ -291,7 +324,7 @@ const PersonalDetails = () => {
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="nationality" className="form-label">Nationality</label>
-                                        <select className="form-select" id="Nationality" value={updatePersonDetais.Nationality} onChange={handleInputPersonalDetails} name='Nationality'>
+                                        <select className="form-select" id="Nationality" value={postPersonDetais.Nationality} onChange={handleInputPersonalDetails} name='Nationality'>
                                             <option>Select</option>
                                             {/* Add more nationality options */}
                                             {countries.map((country) => (
@@ -306,22 +339,21 @@ const PersonalDetails = () => {
                                                 className="form-check-input"
                                                 id="i_am_specially_abled"
                                                 name="i_am_specially_abled"
-                                                value={updatePersonDetais.i_am_specially_abled}
                                                 onChange={handleInputPersonalDetails}
-                                                checked={postPersonDetais?.i_am_specially_abled || false}  // Use optional chaining with a default value
+                                                checked={postPersonDetais?.i_am_specially_abled || false}  // Ensuring a boolean value
                                             />
 
                                             <label className="form-check-label" htmlFor="i_am_specially_abled">I am specially abled</label>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 {/* personal details end */}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                                <button type="button" className="cancel-btn" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" onClick={updatePersonalDetails} className="update-btn mx-3" data-bs-dismiss="modal">Update</button>
+                                <button type="submit" className="save-btn" data-bs-dismiss="modal">Save changes</button>
                             </div>
                         </form>
                     </div>

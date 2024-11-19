@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 interface Projects {
     id: any;
     title: string;
@@ -31,6 +34,7 @@ const Projects = () => {
         details_of_project: ''
     });
     const [updateBtn, setUpdateBtn] = useState(false);
+    const [saveBtn, setSaveBtn] = useState(true);
 
     useEffect(() => {
         projectGetAllMethod();
@@ -66,11 +70,17 @@ const Projects = () => {
         e.preventDefault();
         try {
             const response = await axios.post(`http://127.0.0.1:8000/user/Projects/`, projectsCreate);
-            // setProjectsCreate(projectsCreate)
-            console.log("API Response:", response.data); // Log response here
-            // Handle response, e.g., add project to state or show success message
+            
+            toast.success("Project Created sucessfully", {
+                position:"bottom-right",
+                theme:"colored"
+            });
         } catch (error) {
             console.error("API Error:", error); // Log any errors
+            toast.error("Project Not Created", {
+                position:"bottom-right",
+                theme:"colored"
+            });
         }
     };
     const projectpostnew = async () => {
@@ -79,6 +89,7 @@ const Projects = () => {
 
     const handlePopulateEditProjects = async (id: number) => {
         setUpdateBtn(true)
+        setSaveBtn(false)
         setLoading(true);
         try {
             const res_project_edit = await axios.get(`http://127.0.0.1:8000/user/Projects/${id}/`);
@@ -115,22 +126,25 @@ const Projects = () => {
             console.log("payLoadProjects ===:", payLoadProjects);
             const put_response = await axios.post(`http://127.0.0.1:8000/user/Projects/`, payLoadProjects);
             const result = put_response.data;
-            // alert("Hi")
-            // const put_data=put_response.;
-            console.log("projectlist", projectsData);
 
             const dataobj = Array.isArray(projectsData);
             if (dataobj) {
                 const updatedUsers = projectsData?.map(user =>
                     user.id === result.id ? result : user
                 );
-
                 console.log(updatedUsers, "updatedUsers");
                 setProjectsData(updatedUsers);
             };
+            toast.success("Project Updated sucessfully", {
+                position:"bottom-right",
+                theme:"colored"
+            });
         } catch (error) {
             console.error("Error submitting project:", error);
-            alert("Failed to submit the project");
+            toast.warning("Project not Updated", {
+                position:"bottom-right",
+                theme:"colored"
+            });
         }
     }
 
@@ -147,20 +161,28 @@ const Projects = () => {
 
     const handleDeleteProject = async (id: any) => {
         try {
-            alert("Item deleted");
+            alert("Are you sure you want to delete?");
             // Proceed with delete request if ID is valid
             await axios.delete(`http://127.0.0.1:8000/user/Projects/${id}/`);
             setProjectsData((prevItems: any) =>
                 Array.isArray(prevItems) ? prevItems.filter(item => item.id !== id) : []
             );
+            toast.success("Project Deleted sucessfully", {
+                position:"bottom-right",
+                theme:"colored"
+            });
         } catch (error) {
             console.error("Error deleting item:", error);
-            alert("Failed to delete the item");
+            toast.warning("Project not Deleted", {
+                position:"bottom-right",
+                theme:"colored"
+            });
         }
     };
     //project end
     return (
         <main>
+            <ToastContainer/>
             <div className="card-header fw-bold">
                 <span><i className="bi bi-clipboard-data text-secondary me-2"></i> Projects </span> <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addProjects"> +Add</button>
             </div>
@@ -183,7 +205,7 @@ const Projects = () => {
                                 </a>
                             </li>
                             <li>
-                                <span className='text-secondary'>Start Date:</span> <span>{item.start_date.split('T')[0]}</span> to <span className='text-secondary'>End Date</span> <span>{item.end_date.split('T')[0]}</span>
+                                <span className='text-secondary'>Start Date:</span> <span>{item.start_date}</span> to <span className='text-secondary'>End Date</span> <span>{item.end_date}</span>
                             </li>
                             <li>
                                 <span className='text-secondary'>Description: </span>{item.details_of_project || "No description available"}
@@ -206,7 +228,7 @@ const Projects = () => {
                             </a>
                         </li>
                         <li>
-                            Start Date: <span>{projectsData.start_date.split('T')[0]}</span> to End Date <span>{projectsData.end_date.split('T')[0]}</span>
+                            Start Date: <span>{projectsData.start_date}</span> to End Date <span>{projectsData.end_date}</span>
                         </li>
                         <li>
                             Description: {projectsData.details_of_project || "No description available"}
@@ -233,7 +255,7 @@ const Projects = () => {
                                     <div className="col-lg-12">
                                         <div className="mb-3">
                                             <label htmlFor="title" className="form-label">
-                                                Title <span className="text-danger">*</span>
+                                                Project Name <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -248,7 +270,7 @@ const Projects = () => {
                                     </div>
                                     <div className="col-lg-12">
                                         <div className="mb-3">
-                                            <label htmlFor="url" className="form-label">URL</label>
+                                            <label htmlFor="url" className="form-label">Project URL</label>
                                             <input
                                                 type="url"
                                                 className="form-control"
@@ -295,7 +317,7 @@ const Projects = () => {
 
                                     <div className="col-lg-12">
                                         <div className="mb-3">
-                                            <label htmlFor="details_of_project" className="form-label">Details of Projects</label>
+                                            <label htmlFor="details_of_project" className="form-label">Details of Project</label>
                                             <textarea
                                                 className="form-control"
                                                 id="details_of_project"
@@ -314,7 +336,7 @@ const Projects = () => {
                             </div>
                             <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
                                 {/*  */}
-                                <button type="button" onClick={() => handleDeleteProject(projectsCreate.id)} className="btn btn-outline-danger btn-sm" data-bs-dismiss="modal"><i className="bi bi-trash3"></i></button>
+                                <button type="button" onClick={() => handleDeleteProject(projectsCreate.id)} className="delete-btn" data-bs-dismiss="modal"><i className="bi bi-trash3"></i></button>
                                 <span>
                                     <button type="button" onClick={handleClearForm} className="cancel-btn me-3">Cancel</button>
                                     {updateBtn ? (
@@ -322,7 +344,8 @@ const Projects = () => {
                                     ) : (
                                         " "
                                     )}
-                                    <button type="submit" data-bs-dismiss="modal" className="save-btn">Save</button>
+                                    {saveBtn ? <button type="submit" data-bs-dismiss="modal" className="save-btn">Save</button> : ""}
+                                    
                                 </span>
                             </div>
                         </form>
