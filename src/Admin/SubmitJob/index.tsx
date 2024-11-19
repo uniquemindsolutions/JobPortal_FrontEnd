@@ -34,9 +34,9 @@ interface SubmitJob {
     about_company: string;
     work_mode: string;
     ssc: string;
-    intermediate: string | null;
-    ug_course: string | null;
-    pg_course: string | null;
+    intermediate: number | null;
+    ug_course: number | null;
+    pg_course: number | null;
 }
 
 interface JobCategory {
@@ -153,9 +153,9 @@ const SubmitJob = () => {
         about_company: '',
         work_mode: '',
         ssc: '',
-        intermediate: '',
-        ug_course: '',
-        pg_course: '',
+        intermediate: 0,
+        ug_course: 0,
+        pg_course: 0,
     });
     const validateForm = () => {
         const newErrors: any = {};
