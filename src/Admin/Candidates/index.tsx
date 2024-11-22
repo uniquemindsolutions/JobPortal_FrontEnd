@@ -1,12 +1,46 @@
 import React, { useState } from 'react'
 import Select from 'react-select';
 import './candidates.scss'
+import UserList from './UserList';
+import UserDetails from './UserDetails';
 
+const candidates = [
+    {
+        id: 1,
+        name: "Alexander Christopher",
+        role: "UI UX design Lead",
+        source: "Linkedin",
+        appliedDate: "5 days ago",
+        tags: ["UI", "UX"],
+        email: "alex.christopher@gmail.com",
+        phone: "+91 1234567890",
+        social: ["linkedin", "twitter", "github"],
+        image: "https://via.placeholder.com/50",
+    },
+    {
+        id: 2,
+        name: "Ramakrishna Pisarla",
+        role: "UI UX design Lead",
+        source: "Linkedin",
+        appliedDate: "5 days ago",
+        tags: ["UI", "UX", "Design"],
+        email: "ramakrishna.pesarla@gmail.com",
+        phone: "+91 9948118962",
+        social: ["linkedin", "facebook", "google"],
+        image: "https://via.placeholder.com/50",
+    },
+    // Add more candidates as needed
+];
 const Candidates = () => {
 
     const [query, setQuery] = useState('');
     const [location, setLocation] = useState('');
     const [selectedExperience, setSelectedExperience] = useState<any>(null);
+
+    const [selectedCandidate, setSelectedCandidate] = useState(candidates[1]);
+
+
+
 
     const experienceOptions = [
         { value: '0-1', label: '0-1 years' },
@@ -28,243 +62,184 @@ const Candidates = () => {
         console.log('Experience:', selectedExperience);
         console.log('Location:', location);
     };
+
+
+
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const users = [
+        { id: 1, name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
+        { id: 2, name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
+        { id: 1, name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
+        { id: 2, name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
+        { id: 1, name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
+        { id: 2, name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
+        // Add more users as needed
+    ];
+
+    const handleUserSelect = (user: any) => {
+        setSelectedUser(user);
+    };
     return (
         <main>
-            <div className="d-flex justify-content-between mt-4">
-                <div><h4 className='pt-3'>Candidate List</h4></div>
-                <div className="search-bar-container d-flex align-items-center">
-                    <input
-                        type="text"
-                        className="form-control search-input"
-                        placeholder="Ui Developer,"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
-                    <div className="divider" />
-                    <Select
-                        className="select-experience"
-                        options={experienceOptions}
-                        placeholder="Select experience"
-                        value={selectedExperience}
-                        onChange={setSelectedExperience}
-                    />
-                    <div className="divider" />
-                    <input
-                        type="text"
-                        className="form-control search-input"
-                        placeholder="Hyderabad, TS"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                    />
-                    <button className="btn btn-primary search-button" onClick={handleSearch}>
-                        <i className="bi bi-search me-2"></i> Search
-                    </button>
-                </div>
-                
-            </div>
-
-            <div className="profile-card">
-                <div className="d-flex align-items-center justify-content-between">
-                    {/* Profile Image and Info */}
-                    <div className="d-flex align-items-center">
-                        <div className="position-relative me-3">
-                            <img
-                                src="https://via.placeholder.com/80"
-                                alt="Profile"
-                                className="rounded-circle"
-                                style={{ width: '80px', height: '80px' }}
-                            />
-                            <span className="status-dot"></span>
-                        </div>
-                        <div>
-                            <h5 className="mb-0">Julia Ark</h5>
-                            <small className="text-muted">Graphic Designer</small>
-                            <div className="d-flex align-items-center">
-                                <span className="badge bg-light text-dark me-2">Digital</span>
-                                <span className="badge bg-light text-dark me-2">Design</span>
-                                <span className="badge bg-light text-dark me-2">UI</span>
-                                <span className="badge bg-warning text-dark">2+</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Salary and Location */}
-                    <div className="">
-                        <p className="mb-0 text-muted">Salary</p>
-                        <strong>$30k-$50k/yr</strong>
-                    </div>
-
-                    <div className="">
-                        <p className="mb-0 text-muted">Location</p>
-                        <strong>California, US</strong>
-                    </div>
-
-                    {/* Tags and Actions */}
-
-
-                    {/* Action Icons */}
-                    <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i> View Details
-                        </button>
-                        <button className="btn btn-light">
-                            <i className="bi bi-floppy"></i> Save
+            <div className="row d-flex justify-content-between mt-4">
+                <div className="col-lg-5"> <div><h4 className='pt-3'>Candidate List</h4></div></div>
+                <div className="col-lg-7">
+                    <div className="search-bar-container d-flex align-items-center">
+                        <input
+                            type="text"
+                            className="form-control search-input"
+                            placeholder="Ui Developer,"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                        <div className="divider" />
+                        <Select
+                            className="select-experience"
+                            options={experienceOptions}
+                            placeholder="Select experience"
+                            value={selectedExperience}
+                            onChange={setSelectedExperience}
+                        />
+                        <div className="divider" />
+                        <input
+                            type="text"
+                            className="form-control search-input"
+                            placeholder="Hyderabad, TS"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                        />
+                        <button className="search-button" onClick={handleSearch}>
+                            <i className="bi bi-search me-2"></i> Search
                         </button>
                     </div>
                 </div>
+
+
+
             </div>
-            <div className="profile-card">
-                <div className="d-flex align-items-center justify-content-between">
-                    {/* Profile Image and Info */}
-                    <div className="d-flex align-items-center">
-                        <div className="position-relative me-3">
-                            <img
-                                src="https://via.placeholder.com/80"
-                                alt="Profile"
-                                className="rounded-circle"
-                                style={{ width: '80px', height: '80px' }}
-                            />
-                            <span className="status-dot"></span>
-                        </div>
-                        <div>
-                            <h5 className="mb-0">Julia Ark</h5>
-                            <small className="text-muted">Graphic Designer</small>
-                            <div className="d-flex align-items-center">
-                                <span className="badge bg-light text-dark me-2">Digital</span>
-                                <span className="badge bg-light text-dark me-2">Design</span>
-                                <span className="badge bg-light text-dark me-2">UI</span>
-                                <span className="badge bg-warning text-dark">2+</span>
-                            </div>
-                        </div>
+
+
+            <div className="candidate-card p-0 mt-4">
+                <div className="row">
+                    {/* Sidebar */}
+                    <div className="col-md-4">
+                        <UserList users={users} onSelectUser={handleUserSelect} />
+
+                        {/* <ul className="list-group">
+                            {candidates.map((candidate) => (
+                                <li
+                                    key={candidate.id}
+                                    className={`list-group-item d-flex align-items-center ${selectedCandidate.id === candidate.id ? "active" : ""
+                                        }`}
+                                    onClick={() => setSelectedCandidate(candidate)}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input me-2"
+                                    />
+                                    <img
+                                        src={candidate.image}
+                                        alt={candidate.name}
+                                        className="rounded-circle me-3"
+                                        width="50"
+                                        height="50"
+                                    />
+                                    <div>
+                                        <h6 className="mb-0">{candidate.name}</h6>
+                                        <small>{candidate.role}</small>
+                                        <br />
+                                        <small>{`Applied ${candidate.appliedDate} from ${candidate.source}`}</small>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul> */}
                     </div>
 
-                    {/* Salary and Location */}
-                    <div className="">
-                        <p className="mb-0 text-muted">Salary</p>
-                        <strong>$30k-$50k/yr</strong>
-                    </div>
+                    {/* Details Section */}
+                    <div className="col-md-8">
+                        <UserDetails user={selectedUser} />
 
-                    <div className="">
-                        <p className="mb-0 text-muted">Location</p>
-                        <strong>California, US</strong>
-                    </div>
+                        {/* {selectedCandidate && (
+                            <>
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>{selectedCandidate.name}</h5>
+                                        <p>{selectedCandidate.role}</p>
+                                        <small>{`Applied ${selectedCandidate.appliedDate} from ${selectedCandidate.source}`}</small>
+                                    </div>
+                                    <div>
+                                        <button className="btn btn-primary me-2">Interview</button>
+                                        <button className="btn btn-danger">Reject</button>
+                                    </div>
+                                </div>
 
-                    {/* Tags and Actions */}
+                                <ul className="nav nav-tabs mt-3">
+                                    <li className="nav-item">
+                                        <a className="nav-link active" href="#">
+                                            Overview
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className="nav-link" href="#">
+                                            Activities
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className="nav-link" href="#">
+                                            Emails
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className="nav-link" href="#">
+                                            My Files
+                                        </a>
+                                    </li>
+                                </ul>
 
+                                <div className="mt-4">
+                                    <h6>General Information</h6>
+                                    <div>
+                                        <strong>Tags: </strong>
+                                        {selectedCandidate.tags.map((tag, idx) => (
+                                            <span key={idx} className="badge bg-primary me-2">
+                                                {tag} 
+                                            </span>
+                                        ))}
+                                        <button className="btn btn-link btn-sm">+ Add</button>
+                                    </div>
 
-                    {/* Action Icons */}
-                    <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i> View Details
-                        </button>
-                        <button className="btn btn-light">
-                            <i className="bi bi-floppy"></i> Save
-                        </button>
+                                    <div>
+                                        <strong>Email Address: </strong>
+                                        {selectedCandidate.email}
+                                    </div>
+
+                                    <div>
+                                        <strong>Phone Number: </strong>
+                                        {selectedCandidate.phone}
+                                    </div>
+
+                                    <div>
+                                        <strong>Sources: </strong>
+                                        {selectedCandidate.source}
+                                    </div>
+
+                                    <div className="mt-3">
+                                        <strong>Social Media: </strong>
+                                        {selectedCandidate.social.map((platform, idx) => (
+                                            <i
+                                                key={idx}
+                                                className={`bi bi-${platform} me-2`}
+                                                style={{ fontSize: "1.2rem" }}
+                                            ></i>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )} */}
                     </div>
                 </div>
             </div>
-            <div className="profile-card">
-                <div className="d-flex align-items-center justify-content-between">
-                    {/* Profile Image and Info */}
-                    <div className="d-flex align-items-center">
-                        <div className="position-relative me-3">
-                            <img
-                                src="https://via.placeholder.com/80"
-                                alt="Profile"
-                                className="rounded-circle"
-                                style={{ width: '80px', height: '80px' }}
-                            />
-                            <span className="status-dot"></span>
-                        </div>
-                        <div>
-                            <h5 className="mb-0">Julia Ark</h5>
-                            <small className="text-muted">Graphic Designer</small>
-                            <div className="d-flex align-items-center">
-                                <span className="badge bg-light text-dark me-2">Digital</span>
-                                <span className="badge bg-light text-dark me-2">Design</span>
-                                <span className="badge bg-light text-dark me-2">UI</span>
-                                <span className="badge bg-warning text-dark">2+</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Salary and Location */}
-                    <div className="">
-                        <p className="mb-0 text-muted">Salary</p>
-                        <strong>$30k-$50k/yr</strong>
-                    </div>
-
-                    <div className="">
-                        <p className="mb-0 text-muted">Location</p>
-                        <strong>California, US</strong>
-                    </div>
-
-                    {/* Tags and Actions */}
-
-
-                    {/* Action Icons */}
-                    <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i> View Details
-                        </button>
-                        <button className="btn btn-light">
-                            <i className="bi bi-floppy"></i> Save
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div className="profile-card">
-                <div className="d-flex align-items-center justify-content-between">
-                    {/* Profile Image and Info */}
-                    <div className="d-flex align-items-center">
-                        <div className="position-relative me-3">
-                            <img
-                                src="https://via.placeholder.com/80"
-                                alt="Profile"
-                                className="rounded-circle"
-                                style={{ width: '80px', height: '80px' }}
-                            />
-                            <span className="status-dot"></span>
-                        </div>
-                        <div>
-                            <h5 className="mb-0">Julia Ark</h5>
-                            <small className="text-muted">Graphic Designer</small>
-                            <div className="d-flex align-items-center">
-                                <span className="badge bg-light text-dark me-2">Digital</span>
-                                <span className="badge bg-light text-dark me-2">Design</span>
-                                <span className="badge bg-light text-dark me-2">UI</span>
-                                <span className="badge bg-warning text-dark">2+</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Salary and Location */}
-                    <div className="">
-                        <p className="mb-0 text-muted">Salary</p>
-                        <strong>$30k-$50k/yr</strong>
-                    </div>
-
-                    <div className="">
-                        <p className="mb-0 text-muted">Location</p>
-                        <strong>California, US</strong>
-                    </div>
-
-                    {/* Tags and Actions */}
-
-
-                    {/* Action Icons */}
-                    <div className="d-flex align-items-center">
-                        <button className="btn btn-light me-2">
-                            <i className="bi bi-eye"></i> View Details
-                        </button>
-                        <button className="btn btn-light">
-                            <i className="bi bi-floppy"></i> Save
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
         </main>
     )
 }

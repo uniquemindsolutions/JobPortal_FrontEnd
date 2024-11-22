@@ -33,14 +33,14 @@
 
 .nav-link:hover {
     background-color: #ffffff;
-    color: #10564f;
+    color: var(--lt-blue-c);
     border-radius: 8px;
-    border: solid 1px #10564f;
+    border: solid 1px var(--lt-blue-c);
 
 }
 
 .nav-link.active {
-    background-color: #10564f;
+    background-color: var(--lt-blue-c);
     color: white;
     border-radius: 8px;
 }
@@ -49,9 +49,9 @@
     overflow-y: auto;
 }
 .comp-logo-sec {
-    min-height: 200px;
-    background-color: #fdfafa;
-    box-shadow: 0 3px 6px #00000020;
+    min-height: 105px;
+    background-color: #ffffff;
+    box-shadow: 0 5px 11px rgb(0 0 0 / 8%);
 }
 .comp-logo {
     width: 200px;

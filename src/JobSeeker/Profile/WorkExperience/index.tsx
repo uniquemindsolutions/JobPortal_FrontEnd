@@ -192,7 +192,11 @@ const WorkExperience = () => {
                     <p>Loading...</p>
                 ) : (
                     workExpData.length > 0 ? (
-                        workExpData.map((item: any, index: number) => (
+                        workExpData.sort((a: any, b: any) => {
+                            if (a.job_title > b.job_title) return -1;
+                            if (a.job_title < b.job_title) return 1;
+                            return 0;
+                        }).map((item: any, index: number) => (
                             <ul className='list-unstyled profile-sec' key={index}>
                                 <li>
                                     <span className='text-secondary'>Job Title:</span> <span className='lt-blue-c'>{item.current_job_title}</span>

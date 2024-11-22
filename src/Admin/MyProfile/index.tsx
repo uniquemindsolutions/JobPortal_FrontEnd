@@ -4,7 +4,7 @@ import Select from 'react-select';
 
 interface MyProfile {
     id: number;
-    company_logo: File | null;
+    company_logo: string;
     company_name: string;
     employee_name: string;
     website: string;
@@ -37,7 +37,7 @@ interface Industry {
 const MyProfile = () => {
     const [profileFormData, setProfileFormData] = useState<MyProfile>({
         id: 0,
-        company_logo: null,
+        company_logo: '',
         company_name: '',
         employee_name: '',
         website: '',
@@ -71,7 +71,7 @@ const MyProfile = () => {
     const [selectedCompanyType, setSelectedCompanyType] = useState<any>(null);
 
     useEffect(() => {
-        fetch(`https://uniquemindsolutions.com/usmjobportal/myprofile/43/`)
+        fetch(`http://127.0.0.1:8000/myprofile/1/`)
             .then(response => response.json())
             .then(data => {
                 console.log("Submit myprofile:", data);
@@ -143,7 +143,7 @@ const MyProfile = () => {
         const file = e.target.files?.[0] || null; // Get the first selected file or null if none
         setProfileFormData({
             ...profileFormData,
-            company_logo: file, // Update the photo in the state
+            company_logo: '', // Update the photo in the state
         });
     };
 
@@ -179,7 +179,7 @@ const MyProfile = () => {
                 const response = await fetch(`https://uniquemindsolutions.com/usmjobportal/myprofile/${id}/`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'multipart/form-data',
                     },
                     body: JSON.stringify(payload), // Send updated form data
                 });
@@ -194,11 +194,11 @@ const MyProfile = () => {
                 alert("Profile updated successfully!");
             } else {
                 // Create a new job with a POST request
-                const response = await fetch('https://uniquemindsolutions.com/usmjobportal/myprofile/', {
+                const response = await fetch('http://127.0.0.1:8000/myprofile/', {
                     method: 'POST',
                     body: JSON.stringify(payload),
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'multipart/form-data',
                     }
                 })
                 if (!response.ok) {

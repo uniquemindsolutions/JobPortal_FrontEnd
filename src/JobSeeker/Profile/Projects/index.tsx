@@ -189,7 +189,11 @@ const Projects = () => {
             <div className="card-body">
 
                 {Array.isArray(projectsData) ? (
-                    projectsData.map((item: any) => (
+                    projectsData.sort((a: any, b: any) => {
+                        if (a.title > b.title) return -1;
+                        if (a.title < b.title) return 1;
+                        return 0;
+                    }).map((item: any) => (
                         <ul key={item.id} className="list-unstyled profile-sec">
                             <li className="lt-blue-c">
                                 <span className='text-secondary'>Project Name:</span> {item.title}

@@ -11,7 +11,7 @@ export interface myJobs {
     id: number;
     job_title: string;
     job_type: string;
-    created_date:string;
+    created_date: string;
     job_category: string;
     city: City;
     Applicants: number;
@@ -29,12 +29,12 @@ const MyJobs = () => {
 
     useEffect(() => {
         fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Cities:", data); // Log to check the data
-            setCitys(data); // Store the cities in state
-        })
-        .catch(error => console.error('Error fetching cities:', error));
+            .then(response => response.json())
+            .then(data => {
+                console.log("Cities:", data); // Log to check the data
+                setCitys(data); // Store the cities in state
+            })
+            .catch(error => console.error('Error fetching cities:', error));
         myJobsDetails();
     }, [])
     const getCityNameById = (id: number): string => {
@@ -97,7 +97,7 @@ const MyJobs = () => {
                         </thead>
                         <tbody className="border-0">
                             {Array.isArray(myJobs) && myJobs.length > 0 ? (
-                                myJobs.map((items, index) =>
+                                myJobs.sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime()).map((items, index) =>
                                     <tr key={index}>
                                         <td>
                                             <div className="fw-bold">{items.job_title}</div>
@@ -108,7 +108,7 @@ const MyJobs = () => {
                                         <td>130 Applications</td>
                                         <td><span className='status-active me-2'></span>{items.job_status}</td>
                                         <td className='text-end'>
-                                            <div className="dropdown"> 
+                                            <div className="dropdown">
                                                 <button type="button" className="btn border-0" data-bs-toggle="dropdown">
                                                     <i className="bi bi-three-dots-vertical"></i>
                                                 </button>

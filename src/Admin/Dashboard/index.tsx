@@ -18,9 +18,9 @@ export interface PostedJob {
     map_location: string;
     city: City;
 }
-interface JobView{
-    id:number;
-    job_title:string;
+interface JobView {
+    id: number;
+    job_title: string;
 }
 const Dashboard = () => {
     // const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -81,7 +81,7 @@ const Dashboard = () => {
             }
         };
         fetchData();
-        
+
 
         // posted get api
         axios.get<PostedJob[]>('https://uniquemindsolutions.com/usmjobportal/submitnewjob/')
@@ -91,29 +91,27 @@ const Dashboard = () => {
             .catch(error => (
                 setError(error = 'data fetching fail')
             ))
-            
-            fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
+
+        fetch("https://uniquemindsolutions.com/usmjobportal/cities/")
             .then(response => response.json())
             .then(data => {
                 console.log("Cities:", data); // Log to check the data
                 setCitys(data); // Store the cities in state
             })
-            fetch("https://uniquemindsolutions.com/usmjobportal/jobviews/")
+        fetch("https://uniquemindsolutions.com/usmjobportal/jobviews/")
             .then(response => response.json())
             .then(data => {
                 console.log("JobViews:", data); // Log to check the data
                 setJobview(data); // Store the cities in state
             })
             .catch(error => console.error('Error fetching jobview:', error));
-            // myJobsDetails();
+        // myJobsDetails();
     }, []);
 
     const getCityNameById = (id: number): string => {
         const city = citys.find((city: City) => city.id === id); // Ensure the type is specified
         return city ? city.name : "Unknown City"; // Return the city name or a default value
     };
-
-
 
     const statItems = [
         { icon: <FaUser />, value: stats.visitorCount, description: 'Total Visitor' },
@@ -122,7 +120,45 @@ const Dashboard = () => {
         { icon: <FaPen />, value: stats.appliedJobs, description: 'Applied Job' },
     ];
 
+    // days ago script start
+    function timeAgo(dateString: string): string {
+        const date: Date = new Date(dateString); // Explicitly declare as Date
+        const now: Date = new Date(); // Explicitly declare as Date
+        const secondsAgo: number = Math.floor((now.getTime() - date.getTime()) / 1000); // Use getTime()
 
+        if (secondsAgo < 60) {
+            return "just now";
+        } else if (secondsAgo < 3600) {
+            const minutes = Math.floor(secondsAgo / 60);
+            return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+        } else if (secondsAgo < 86400) {
+            const hours = Math.floor(secondsAgo / 3600);
+            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+        } else if (secondsAgo < 604800) {
+            const days = Math.floor(secondsAgo / 86400);
+            return `${days} day${days > 1 ? "s" : ""} ago`;
+        } else if (secondsAgo < 2592000) {
+            const weeks = Math.floor(secondsAgo / 604800);
+            return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+        } else if (secondsAgo < 31536000) {
+            const months = Math.floor(secondsAgo / 2592000);
+            return `${months} month${months > 1 ? "s" : ""} ago`;
+        } else {
+            const years = Math.floor(secondsAgo / 31536000);
+            return `${years} year${years > 1 ? "s" : ""} ago`;
+        }
+    }
+
+    const dates = [
+        "2024-11-18T10:30:00",
+        "2024-10-20T14:00:00",
+        "2023-11-18T08:15:00",
+    ];
+
+    dates.forEach((date) => {
+        console.log(`${date} -> ${timeAgo(date)}`);
+    });
+    // days ago script end
 
     return (
         <>
@@ -145,7 +181,7 @@ const Dashboard = () => {
                             <label htmlFor="jobSelect" className="me-2">Jobs:</label>
                             <select id="jobSelect" className="form-select w-auto">
                                 <option value="">Select Industry </option>
-                                
+
                                 {/* <option>Web & Mobile Prototype Designer</option>
                                 <option>Web Developer</option>
                                 <option>python Developer</option>
@@ -175,29 +211,18 @@ const Dashboard = () => {
                     <div className="card shadow-sm p-4">
                         <h5 className="mb-3">Posted Job</h5>
                         <ul className="list-unstyled border-top">
-                            {postedJobData.map((item:any, index) => (
+                            {postedJobData.sort((a: any, b: any) => {
+                                if (a.job_title > b.job_title) return -1;
+                                if (a.job_title < b.job_title) return 1;
+                                return 0;
+                            }).map((item: any, index) => (
                                 <li key={index} className="d-flex justify-content-between align-items-center my-3">
                                     <div>
                                         <h6 className="mb-0 text-primary">{item.job_title}</h6>
-                                        <small className="text-muted"><span>{item.job_type}</span>, <span>{getCityNameById(item.city)}</span></small>
+                                        <small className="text-muted"><span>{timeAgo(item.created_date.split('T')[0])}, {item.job_type}</span>, <span>{getCityNameById(item.city)}</span></small>
                                     </div>
-                                    {/* <div className="dropdown">
-                                        <button className="btn btn-link text-muted"
-                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i className="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <ul className="dropdown-menu">
-                                            <li>
-                                                <a className="dropdown-item" href="#">View Job</a>
-                                            </li>
-                                             <li>
-                                                <a className="dropdown-item text-danger" href="#">Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div> */}
                                 </li>
                             ))
-
                             }
                         </ul>
                     </div>
