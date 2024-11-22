@@ -70,8 +70,8 @@ const ChangePassword = () => {
                     </div>
 
                     <div className="text-center mt-4">
-                        <button className='btn me-4'>Cancel</button>
-                        <button className='save-btns'>Save</button>
+                        <button className='cancel-btn me-4'>Cancel</button>
+                        <button className='save-btn'>Save</button>
                     </div>
                 </div>
             </div>

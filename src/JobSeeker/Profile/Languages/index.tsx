@@ -13,28 +13,45 @@ const Languages = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
-    const [languange, SetLanguage] = useState<Language[]>([]);;
-    const [Language_Page, SetLanguagePage] = useState({
+    const [getLanguage, setGetLanguage] = useState<any>([]);
+    const [postLanguage, setPostLanguage] = useState<Language_Page>({
         languange: '',
         proficiency: ''
     });
 
-    useEffect(()=>{
-        Languange()
-    },[]);
+    useEffect(() => {
+        getMethLanguange();
+    }, []);
 
-    const Languange = async () => {
+    const getMethLanguange = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/user/Languange/');
-            SetLanguage(response.data);  // Set the fetched users to state
+            const response = await axios.get('http://127.0.0.1:8000/user/Languange/1/');
+            console.log(response.data); // Debug API response
+            setGetLanguage(response.data);
         } catch (err) {
-            setError('Failed to fetch Languange');
+            setError('Failed to fetch Language');
         } finally {
-            setLoading(false);  // Stop loading
+            setLoading(false);
         }
     };
 
-    
+    const handleInputCheckbox = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setPostLanguage({ ...postLanguage, [name]: value });
+    }
+
+    const postMethLanguamge = async () => {
+        try {
+            const res_lang = await axios.post(`http://127.0.0.1:8000/user/Languange/`);
+            const langData = res_lang.data;
+            setPostLanguage(langData)
+        } catch (error) {
+            setError("Error: Language not posted");
+        }
+    }
+
+
     return (
         <main>
             <div className="card-header fw-bold">
@@ -43,34 +60,82 @@ const Languages = () => {
             </div>
             <div className="card-body">
                 <ul className='list-unstyled profile-sec'>
-                    <li className='lt-blue-c '>
-                        <p className='mb-2'>English <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addLanguage"></button></p>
-                        <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                            <input type="checkbox" className="btn-check" id="btncheck1" />
-                            <label className="btn btn-outline-primary" htmlFor="btncheck1">Read</label>
+                    {Array.isArray(getLanguage) && getLanguage.length > 0 ? (
+                        getLanguage.map((lang: any, index: number) => (
+                            <li className='lt-blue-c' key={index}>
+                                <p className='mb-2 mt-3'>
+                                    {lang.Languange_name}
+                                    <button
+                                        className="bi bi-pencil-square float-end btn py-0"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addLanguage">
+                                    </button>
+                                </p>
+                                <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input
+                                        type="checkbox"
+                                        name="Languange_name"
+                                        value={lang.proficiency}
+                                        className="btn-check"
+                                        id={`btncheck1-${index}`}
+                                    />
+                                    <label
+                                        className="btn btn-outline-primary"
+                                        htmlFor={`btncheck1-${index}`}>
+                                        Read
+                                    </label>
 
-                            <input type="checkbox" className="btn-check" id="btncheck2" />
-                            <label className="btn btn-outline-primary" htmlFor="btncheck2">Write</label>
+                                    <input
+                                        type="checkbox"
+                                        name="Languange_name"
+                                        value={lang.proficiency}
+                                        className="btn-check"
+                                        id={`btncheck2-${index}`}
+                                    />
+                                    <label
+                                        className="btn btn-outline-primary"
+                                        htmlFor={`btncheck2-${index}`}>
+                                        Write
+                                    </label>
 
-                            <input type="checkbox" className="btn-check" id="btncheck3" />
-                            <label className="btn btn-outline-primary" htmlFor="btncheck3">Speak</label>
-                        </div>
-                    </li>
-                    <li className='mt-3'>
-                        <p className='mb-2'>Telugu</p>
-                        <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                            <input type="checkbox" className="btn-check" id="btncheck22" />
-                            <label className="btn btn-outline-primary" htmlFor="btncheck22">Read</label>
-
-                            <input type="checkbox" className="btn-check" id="btncheck33" />
-                            <label className="btn btn-outline-primary" htmlFor="btncheck33">Write</label>
-
-                            <input type="checkbox" className="btn-check" id="btncheck44" />
-                            <label className="btn btn-outline-primary" htmlFor="btncheck44">Speak</label>
-                        </div>
-                    </li>
+                                    <input
+                                        type="checkbox"
+                                        name="Languange_name"
+                                        value={lang.proficiency}
+                                        className="btn-check"
+                                        id={`btncheck3-${index}`}
+                                    />
+                                    <label
+                                        className="btn btn-outline-primary"
+                                        htmlFor={`btncheck3-${index}`}>
+                                        Speak
+                                    </label>
+                                </div>
+                            </li>
+                        ))
+                    ) : (
+                        <p>No data found</p>
+                    )}
 
                 </ul>
+
+                {/* <ul className='list-unstyled profile-sec'>
+                    {getLanguage ? getLanguage.length > 0 && getLanguage.map((lang: any, index: number) => (
+                        <li className='lt-blue-c' key={index}>
+                            <p className='mb-2 mt-3'>{lang.Languange_name} <button className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addLanguage"></button></p>
+                            <div className="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                <input type="checkbox" name='Languange_name' value={lang.proficiency} className="btn-check" id="btncheck1" />
+                                <label className="btn btn-outline-primary" htmlFor="btncheck1">Read</label>
+
+                                <input type="checkbox" name='Languange_name' value={lang.proficiency} className="btn-check" id="btncheck2" />
+                                <label className="btn btn-outline-primary" htmlFor="btncheck2">Write</label>
+
+                                <input type="checkbox" name='Languange_name' value={lang.proficiency} className="btn-check" id="btncheck3" />
+                                <label className="btn btn-outline-primary" htmlFor="btncheck3">Speak</label>
+                            </div>
+                        </li>
+                    )) : ("No data found")}
+                </ul> */}
             </div>
 
             <div className="modal fade" id="addLanguage" aria-labelledby="addLanguage" aria-hidden="true">
@@ -80,26 +145,26 @@ const Languages = () => {
                             <h5 className="modal-title" id="addLanguage">Language</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
-                            {/* language start */}
-                            <form>
+                        <form onSubmit={postMethLanguamge}>
+                            <div className="modal-body">
+                                {/* language start */}
                                 <div className="row">
                                     <div className="col-md-6">
                                         <label htmlFor="">Language </label>
-                                        <select className='form-control'>
-                                            {languange.map((language) => (
+                                        <select className='form-control' name='Languange_name' onChange={handleInputCheckbox}>
+                                            {/* {languange.map((language) => (
                                                 <option key={language.id} value={language.id}>{language.Languange_name}</option>
-                                            ))}
-                                            {/* <option value="">English</option>
-                                                <option value="">Hindi</option> */}
+                                            ))} */}
+                                            <option value="English">English</option>
+                                            <option value="Hindi">Hindi</option>
                                         </select>
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="">Proficiency  </label>
-                                        <select className='form-control'>
-                                            <option value="">Expert</option>
-                                            <option value="">Beginner</option>
-                                            <option value="">Proficient</option>
+                                        <select className='form-control' name='Languange_name' onChange={handleInputCheckbox}>
+                                            <option value="Beginner">Beginner</option>
+                                            <option value="Proficient">Proficient</option>
+                                            <option value="Expert">Expert</option>
                                         </select>
                                     </div>
 
@@ -116,13 +181,13 @@ const Languages = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                            {/* language end */}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
-                        </div>
+                                {/* language end */}
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="cancel-btn me-3">Clear</button>
+                                <button type="submit" className="save-btn" data-bs-dismiss="modal">Save</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

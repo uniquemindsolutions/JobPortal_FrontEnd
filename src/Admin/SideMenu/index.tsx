@@ -44,7 +44,7 @@ const SideMenu = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/myprofile/'); // Replace with your API URL
+                const response = await fetch('https://uniquemindsolutions.com/usmjobportal/myprofile/'); // Replace with your API URL
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

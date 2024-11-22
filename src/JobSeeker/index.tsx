@@ -1,19 +1,94 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom';
 import './JobSeekerAdmin.scss'
+import axios from 'axios';
+
+interface City {
+    id: number;
+    name: string;
+}
 
 const JobSeekerAdmin = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [activeLink, setActiveLink] = useState<string>('')
+    const [activeLink, setActiveLink] = useState<string>('');
+    const [cities, setCities] = useState<City[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+    const [jobTitle, setJobTitle] = useState<string>("N/A");
+    const [companyName, setCompanyName] = useState<string>("N/A");
+    const [totalExp, setTotalExp] = useState<string>("N/A");
+    const [getUserprofile, setGetUserprofile] = useState<any>([]);
+    const [currentLocan, setCurrentLocan] = useState<City[]>([])
+
+    useEffect(() => {
+        GetUserProfile();
+        GetUserExp();
+        currentLocation();
+        fetchCities();
+    }, [])
 
     // Toggle sidebar visibility
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const handleLinkActive = (link:string)=>{
+    const handleLinkActive = (link: string) => {
         setActiveLink(link)
     }
+    const GetUserProfile = async () => {
+        setLoading(true)
+        try {
+            const res_userDetls = await axios.get('http://127.0.0.1:8000/user/Userprofile/1/');
+            const userDetailData = res_userDetls.data;
+            setGetUserprofile(userDetailData)
+        } catch (error) {
+            setError("Erro: User Profile data not found")
+        }
+    }
+
+    const GetUserExp = async () => {
+        try {
+            const res_userExp = await axios.get('http://127.0.0.1:8000/user/Workexperience/');
+            const userExp_data = res_userExp.data;
+            setJobTitle(userExp_data[0].current_job_title)
+            setCompanyName(userExp_data[0].company_name)
+            setTotalExp(userExp_data[0].end_date)
+        } catch (error) {
+            setError("Erro: User Profile data not found")
+        }
+    }
+
+    const fetchCities = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/user/Cities/');
+            setCities(response.data);  // Set the fetched users to state
+        } catch (err) {
+            setError('Failed to fetch Cities');
+        } finally {
+            setLoading(false);  // Stop loading
+        }
+    };
+
+    const currentLocation = async () => {
+        try {
+            const curLoc = await axios.get("http://127.0.0.1:8000/user/Userprofile/");
+            const currLocData = curLoc.data;
+            setCurrentLocan(currLocData)
+
+        } catch (error) {
+            setError("Erro: User Profile data not found")
+        }
+    }
+
+    const currLocations = (id: number | null | undefined) => {
+        if (!id || !Array.isArray(cities)) return "Unknown"; // Handle cases where id is invalid or cities is not an array
+
+        const city = cities.find((c) => c.id === id); // Find the city by id
+        return city ? city.name : "Unknown"; // Return the city name if found, otherwise return "Unknown"
+    };
+
+
 
     return (
         <main>
@@ -36,17 +111,17 @@ const JobSeekerAdmin = () => {
                                         className="rounded-circle"
                                     />
                                 </div>
-                                <h5 className="profile-name mt-2">Shekhar Vadla</h5>
-                                <p className="profile-title mb-2">UI Developer</p>
+                                <h5 className="profile-name mt-2">{getUserprofile.first_name} {getUserprofile.last_name}</h5>
+                                <p className="profile-title mb-2"><i className="bi bi-briefcase"></i> {jobTitle}</p>
                                 <p className="profile-location">
-                                    <i className="bi bi-geo-alt"></i> Hyderabad / Secunderabad, Telangana
+                                    <i className="bi bi-geo-alt"></i> {currLocations(getUserprofile?.current_location)}
                                 </p>
                             </div>
                             <div className="card-body">
-                                <div className='mb-2'><i className="bi bi-building"></i> versatile commerce</div>
-                                <div className='mb-2'><i className="bi bi-calendar"></i> Exp: 8 Years 2 Month</div>
-                                <div className='mb-2'><i className="bi bi-telephone"></i> +919989953568 </div>
-                                <div className='mb-2'><i className="bi bi-envelope"></i> shekharvadla@gmail.com</div>
+                                <div className='mb-2'><i className="bi bi-building"></i> {companyName}</div>
+                                <div className='mb-2'><i className="bi bi-calendar"></i> Exp: {totalExp.split('T')[0]}</div>
+                                <div className='mb-2'><i className="bi bi-telephone"></i> {getUserprofile.phone_number} </div>
+                                <div className='mb-2'><i className="bi bi-envelope"></i> {getUserprofile.email}</div>
 
                                 {/* <div className="profile-completion mt-4">
                                     <h6>100% Profile Complete</h6>
@@ -76,23 +151,23 @@ const JobSeekerAdmin = () => {
 
                     <ul className="list-unstyled components">
                         <li>
-                            <Link to="seeker-dashboard" className={`menuLink ${activeLink === 'seeker-dashboard' ? 'active' : ''}`} onClick={()=> handleLinkActive('seeker-dashboard')}>
-                            <i className="bi bi-speedometer2 me-2"></i> Dashboard
+                            <Link to="seeker-dashboard" className={`menuLink ${activeLink === 'seeker-dashboard' ? 'active' : ''}`} onClick={() => handleLinkActive('seeker-dashboard')}>
+                                <i className="bi bi-speedometer2 me-2"></i> Dashboard
                             </Link>
                         </li>
                         <li>
-                            <Link to="/applied-jobs" className={`menuLink ${activeLink === 'applied-jobs' ? 'active' : ''}`} onClick={()=>handleLinkActive('applied-jobs')}>
-                            <i className="bi bi-calendar2-check me-2"></i> Applied Jobs
+                            <Link to="/applied-jobs" className={`menuLink ${activeLink === 'applied-jobs' ? 'active' : ''}`} onClick={() => handleLinkActive('applied-jobs')}>
+                                <i className="bi bi-calendar2-check me-2"></i> Applied Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="saved-jobs" className={`menuLink ${activeLink === 'saved-jobs' ? 'active' : ''}`} onClick={()=>handleLinkActive('saved-jobs')}>
-                            <i className="bi bi-save me-2"></i> Saved Jobs
+                            <Link to="saved-jobs" className={`menuLink ${activeLink === 'saved-jobs' ? 'active' : ''}`} onClick={() => handleLinkActive('saved-jobs')}>
+                                <i className="bi bi-save me-2"></i> Saved Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="#" className={`menuLink ${activeLink === '' ? 'active' : ''}`} onClick={()=>handleLinkActive('')}>
-                            <i className="bi bi-person-lines-fill me-2"></i> My Interviews
+                            <Link to="#" className={`menuLink ${activeLink === '' ? 'active' : ''}`} onClick={() => handleLinkActive('')}>
+                                <i className="bi bi-person-lines-fill me-2"></i> My Interviews
                             </Link>
                         </li>
 

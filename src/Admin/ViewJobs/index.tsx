@@ -65,7 +65,7 @@ const ViewJobs = () => {
     useEffect(() => {
         const viewJobDetails = async () => {
             try {
-                const res = await axios.get<viewJobDetails>(`http://127.0.0.1:8000/submitnewjob/${id}`)
+                const res = await axios.get<viewJobDetails>(`https://uniquemindsolutions.com/usmjobportal/submitnewjob/${id}`)
                 console.log("API response:", res.data); 
                 setViewJob(res.data)
             }
