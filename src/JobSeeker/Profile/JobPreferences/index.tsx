@@ -45,7 +45,7 @@ const JobPreferences = () => {
     const [PreferredJobTitle, setPreferredJobTitle] = useState<PreferredJobTitle[]>([]);
 
     useEffect(() => {
-        jobPreferencesGet();
+        getMethodJobPreferences();
 
         const PreferredJobTitle = async () => {
             try {
@@ -84,9 +84,12 @@ const JobPreferences = () => {
         fetchCities();
     }, [])
 
-    //Job Preferences start
+    const handleInputJobPreferences = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setPostJobPreferences({ ...postJobPreferences, [name]: value });
+    }
 
-    const jobPreferencesGet = async () => {
+    const getMethodJobPreferences = async () => {
         setLoading(true);
         try {
             const res_jobPreferences = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/1/`)
@@ -98,15 +101,11 @@ const JobPreferences = () => {
         }
     }
 
-    const handleInputJobPreferences = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setPostJobPreferences({ ...postJobPreferences, [name]: value });
-    }
-
-    const handleSubmitJobPreferences = async (e: React.FormEvent<HTMLFormElement>) => {
+    const postMethodJobPreferences = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/user/JobPreferences/1/`, postJobPreferences);
+            const response = await axios.post(`http://127.0.0.1:8000/user/JobPreferences/`, postJobPreferences);
             const JobPre = response.data;
             setPostJobPreferences(JobPre)
             console.log("JobPreferences ===:", response.data); // Log response here
@@ -116,10 +115,13 @@ const JobPreferences = () => {
         }
     }
 
-    const handlePopulateJobPre = async (id: number) => {
+    
+
+
+    const PopulateJobPreferences = async (id: number) => {
         setLoading(true);
         try {
-            const res_JobPrefer = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/${id}/`);
+            const res_JobPrefer = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/1/`);
             const res_JobPreferencesEdit = res_JobPrefer.data; // Assuming response is a single object
 
             if (res_JobPreferencesEdit) {
@@ -138,7 +140,6 @@ const JobPreferences = () => {
         console.log("Updating jobPreferences with ID:", id);
         try {
             const payLoadJobPrefer = {
-                // id: postJobPreferences.id,
                 job_type: postJobPreferences.job_type,
                 employee_type: postJobPreferences.employee_type,
                 prefreed_workplace: postJobPreferences.prefreed_workplace,
@@ -146,30 +147,40 @@ const JobPreferences = () => {
                 preferred_department_function: postJobPreferences.preferred_department_function,
                 preferred_job_title: postJobPreferences.preferred_job_title,
                 preferred_location: postJobPreferences.preferred_location,
-            }
+            };
 
-            console.log("payLoadJobPrefer ===:", payLoadJobPrefer);
-            const put_response = await axios.post(`http://127.0.0.1:8000user/get-jobPreferences/1/`, payLoadJobPrefer);
+            const upDateJobPrep = new FormData();
+            Object.keys(payLoadJobPrefer).forEach(key => {
+                upDateJobPrep.append(key, (payLoadJobPrefer as any)[key])
+            })
+
+            const put_response = await axios.post(
+                `http://127.0.0.1:8000/user/get-jobpreference/`, upDateJobPrep
+            );
+
             const result = put_response.data;
-
-            // const put_data=put_response.;
             console.log("projectlist", getJobPreferences);
 
-            const dataobj = Array.isArray(getJobPreferences);
-            if (dataobj) {
-                const updatedJobPrefence = getJobPreferences?.map(user =>
+            if (Array.isArray(getJobPreferences)) {
+                const updatedJobPrefence = getJobPreferences.map(user =>
                     user.id === result.id ? result : user
                 );
 
                 console.log(updatedJobPrefence, "updatedJobPrefence");
-                setGetJobPreferences(getJobPreferences);
-            };
-            alert("Updated Job Preferences")
+                setGetJobPreferences(updatedJobPrefence);
+            }
+
+            alert("Updated Job Preferences");
         } catch (error) {
-            console.error("Error submitting job prefer:", error);
+            if (axios.isAxiosError(error)) {
+                console.error("Axios error:", error.response?.data || error.message);
+            } else {
+                console.error("Unexpected error:", error);
+            }
             alert("Failed to submit the job preferences");
         }
-    }
+    };
+
 
     const getDepartmentName = (departmentId: number) => {
         const department = PreferredDepartmentFunction.find(dept => dept.id === departmentId);
@@ -191,7 +202,7 @@ const JobPreferences = () => {
         <main>
             <div className="card-header fw-bold">
                 <span><i className="bi bi-card-checklist text-secondary me-2"></i> Job Preferences </span>
-                <button onClick={() => handlePopulateJobPre(getJobPreferences.id)} className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addJobPreferences"></button></div>
+                <button onClick={() => PopulateJobPreferences(getJobPreferences.id)} className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addJobPreferences"></button></div>
 
             <div className="card-body">
                 {getJobPreferences && (
@@ -201,10 +212,10 @@ const JobPreferences = () => {
                         </li>
                         <li><span className="text-secondary">Preferred Job Title:</span> {PreferJobTitle(getJobPreferences.preferred_job_title)}</li>
                         <li><span className="text-secondary">Preferred Location:</span> {cityList(getJobPreferences.preferred_location)}</li>
-                        <li><span className="text-secondary">Job Type:</span> {getJobPreferences.job_type}</li>
-                        <li><span className="text-secondary">Employment Type:</span> {getJobPreferences.employee_type}</li>
-                        <li><span className="text-secondary">Preferred Workplace:</span> {getJobPreferences.prefreed_workplace}</li>
-                        <li><span className="text-secondary">What are you currently looking for?:</span> {getJobPreferences.what_are_you_currently_looking_for}</li>
+                        <li><span className="text-secondary">Job Type:</span> {postJobPreferences.job_type}</li>
+                        <li><span className="text-secondary">Employment Type:</span> {postJobPreferences.employee_type}</li>
+                        <li><span className="text-secondary">Preferred Workplace:</span> {postJobPreferences.prefreed_workplace}</li>
+                        <li><span className="text-secondary">What are you currently looking for?:</span> {postJobPreferences.what_are_you_currently_looking_for}</li>
                     </ul>
                 )}
 
@@ -218,7 +229,7 @@ const JobPreferences = () => {
                             <h5 className="modal-title" id="addJobPreferencesLabel">Job Preferences</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form className="job-preference-form" onSubmit={handleSubmitJobPreferences}>
+                        <form className="job-preference-form" onSubmit={postMethodJobPreferences}>
                             <div className="modal-body">
 
                                 <div className="row">
@@ -229,8 +240,7 @@ const JobPreferences = () => {
                                                 className="form-select"
                                                 name="preferred_department_function"
                                                 value={postJobPreferences?.preferred_department_function || ''} // Ensure no uncontrolled inputs
-                                                onChange={handleInputJobPreferences}
-                                            >
+                                                onChange={handleInputJobPreferences}>
                                                 <option value="">Select</option>
                                                 {PreferredDepartmentFunction.map((jobPrep) => (
                                                     <option key={jobPrep.id} value={jobPrep.id}>

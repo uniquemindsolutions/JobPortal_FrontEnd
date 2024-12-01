@@ -157,10 +157,6 @@ const PersonalDetails = () => {
     }
     // personal details end
 
-
-
-
-
     return (
         <main>
             <div className="card-header fw-bold">

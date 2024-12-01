@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './sideMenu.scss'
 
 interface ProfileData {
@@ -27,10 +27,13 @@ const SideMenu = () => {
     //     isSidebarVisible: boolean;
     // }
 
-    const [activeLink, setActiveLink] = useState('dashboard');
+    // const [activeLink, setActiveLink] = useState('dashboard');
     const [profileImage, setProfileImage] = useState<string | null>(null)
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
-    const handleLinkClick = (link: string) => {
+    const location = useLocation();
+    const [activeLink, setActiveLink] = useState(location.pathname.slice(1));
+
+    const handleLinkClick = (link:any) => {
         setActiveLink(link);
     };
 
@@ -44,7 +47,7 @@ const SideMenu = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await fetch('https://uniquemindsolutions.com/usmjobportal/myprofile/'); // Replace with your API URL
+                const response = await fetch('http://127.0.0.1:8000/myprofile/'); // Replace with your API URL
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

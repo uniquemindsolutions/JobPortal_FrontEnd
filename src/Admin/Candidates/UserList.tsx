@@ -14,7 +14,7 @@ const UserList = ({ users, onSelectUser }: any) => {
                         <img src={user.profilePic} alt={user.name} className="user-img" />
                         <div>
                             <h6 className='lt-blue-c'>{user.name}</h6>
-                            <p>{user.role}</p>
+                            <p><small><i className="bi bi-briefcase text-secondary"></i> {user.role}, <i className="bi bi-geo-alt text-secondary"></i> {user.location}</small></p>
                         </div>
                     </div>
                 </button>

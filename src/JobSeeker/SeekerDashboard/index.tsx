@@ -39,6 +39,7 @@ const SeekerDashboard = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
+  // const [applied setApplied] = useState();
   const [citys, setCitys] = useState<City[]>([]);
   const [saveJobs, setSaveJob] = useState([])
   const [dashboardfeilds, SetDashboardFeilds] = useState({
@@ -272,7 +273,11 @@ const SeekerDashboard = () => {
           ) : error ? (
             <p>{error}</p>
           ) : recentJobs.length > 0 ? (
-            recentJobs.map((job: JobItem, index: number) => (
+            recentJobs.sort((a: any, b: any) => {
+              if (a.job_title > b.job_title) return -1;
+              if (a.job_title < b.job_title) return 1;
+              return 0;
+          }).map((job: JobItem, index: number) => (
               <div className="card job-card mt-4" key={index}>
                 <div className="row">
                   <div className="col-md-2 text-end">
@@ -311,7 +316,7 @@ const SeekerDashboard = () => {
                   <div className="col-md-7 pt-1">
                     <span className="job-meta">Posted: <strong>{job.created_date.split('T')[0]}</strong></span>
                     <span className="job-meta">Openings: <strong>{job.number_of_positions}</strong></span>
-                    <span className="job-meta">Applicants: <strong>82</strong></span>
+                    <span className="job-meta">Applicants: <strong>{dashboardfeilds.applied_count}</strong></span>
                   </div>
                   <div className="col-md-5">
                     <div className="text-end">
