@@ -15,17 +15,19 @@ const JobSeekerAdmin = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
-    const [jobTitle, setJobTitle] = useState<string>("N/A");
+    const [jobTitle, setJobTitle] = useState<any>("N/A");
     const [companyName, setCompanyName] = useState<string>("N/A");
     const [totalExp, setTotalExp] = useState<string>("N/A");
+    const [preview, setPreview] = useState<string | null>(null);
     const [getUserprofile, setGetUserprofile] = useState<any>([]);
     const [currentLocan, setCurrentLocan] = useState<City[]>([])
 
     useEffect(() => {
         GetUserProfile();
-        GetUserExp();
+        // GetUserExp();
         currentLocation();
         fetchCities();
+        GetFunctionalArea();
     }, [])
 
     // Toggle sidebar visibility
@@ -41,23 +43,31 @@ const JobSeekerAdmin = () => {
         try {
             const res_userDetls = await axios.get('http://127.0.0.1:8000/user/Userprofile/1/');
             const userDetailData = res_userDetls.data;
-            setGetUserprofile(userDetailData)
+            setGetUserprofile(userDetailData);
+            setPreview(userDetailData.profile_photo);
+
+            // if (Array.isArray(getUserprofile)) {
+            //     const updatedJobPrefence = getUserprofile.map(user =>
+            //         user.id === userDetailData.id ? userDetailData : user
+            //     );
+            //     setGetUserprofile(getUserprofile)
+            // }
         } catch (error) {
             setError("Erro: User Profile data not found")
         }
     }
 
-    const GetUserExp = async () => {
-        try {
-            const res_userExp = await axios.get('http://127.0.0.1:8000/user/Workexperience/');
-            const userExp_data = res_userExp.data;
-            setJobTitle(userExp_data[0].current_job_title)
-            setCompanyName(userExp_data[0].company_name)
-            setTotalExp(userExp_data[0].end_date)
-        } catch (error) {
-            setError("Erro: User Profile data not found")
-        }
-    }
+    // const GetUserExp = async () => {
+    //     try {
+    //         const res_userExp = await axios.get('http://127.0.0.1:8000/user/Workexperience/');
+    //         const userExp_data = res_userExp.data;
+    //         setJobTitle(userExp_data[0].current_job_title)
+    //         setCompanyName(userExp_data[0].company_name)
+    //         setTotalExp(userExp_data[0].end_date)
+    //     } catch (error) {
+    //         setError("Erro: User Profile data not found")
+    //     }
+    // }
 
     const fetchCities = async () => {
         try {
@@ -88,7 +98,21 @@ const JobSeekerAdmin = () => {
         return city ? city.name : "Unknown"; // Return the city name if found, otherwise return "Unknown"
     };
 
+    const GetFunctionalArea = async () => {
+        try {
+            const res_funcArea = await axios.get('http://127.0.0.1:8000/user/PreferredJobTitle/')
+            const funcAreaData = res_funcArea.data;
+            setJobTitle(funcAreaData)
+        } catch (error) {
+            setError('Error: Job titles not found')
+        }
+    }
 
+    const jobTitleList = (id: any) => {
+        if (!id || !Array.isArray(jobTitle)) return
+        const jobTitles = jobTitle.find((job: any) => job.id === id);
+        return jobTitles ? jobTitles.preferredjobtitle : ''
+    }
 
     return (
         <main>
@@ -105,21 +129,25 @@ const JobSeekerAdmin = () => {
                             <div className="card-header text-center">
                                 <Link to={'profile'}> <i className="bi bi-pencil text-white" style={{ position: 'absolute', right: '10px' }}></i></Link>
                                 <div className="profile-image">
-                                    <img
+                                    {/* <img
                                         src="https://via.placeholder.com/80" // Profile picture placeholder
                                         alt="Profile"
                                         className="rounded-circle"
-                                    />
+                                    /> */}
+                                    {preview ? <img className='profile-pic' src={getUserprofile.profile_photo} alt="Profile pic" /> :
+                                        <img className='profile-pic' src={window.location.origin + '/images/avtar-pic.avif'} alt="Profile pic" />
+                                    }
                                 </div>
+
                                 <h5 className="profile-name mt-2">{getUserprofile.first_name} {getUserprofile.last_name}</h5>
-                                <p className="profile-title mb-2"><i className="bi bi-briefcase"></i> {jobTitle}</p>
+                                <p className="profile-title mb-2"> {jobTitleList(getUserprofile.functional_area)}</p>
                                 <p className="profile-location">
                                     <i className="bi bi-geo-alt"></i> {currLocations(getUserprofile?.current_location)}
                                 </p>
                             </div>
                             <div className="card-body">
-                                <div className='mb-2'><i className="bi bi-building"></i> {companyName}</div>
-                                <div className='mb-2'><i className="bi bi-calendar"></i> Exp: {totalExp.split('T')[0]}</div>
+                                <div className='mb-2'><i className="bi bi-building"></i> {getUserprofile.current_company_name}</div>
+                                <div className='mb-2'><i className="bi bi-briefcase"></i> Exp: {getUserprofile.total_experience} Years, {getUserprofile.total_months}</div>
                                 <div className='mb-2'><i className="bi bi-telephone"></i> {getUserprofile.phone_number} </div>
                                 <div className='mb-2'><i className="bi bi-envelope"></i> {getUserprofile.email}</div>
 

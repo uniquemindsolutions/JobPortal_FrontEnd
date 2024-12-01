@@ -53,7 +53,7 @@ const AccountSetting = () => {
         const fetchEmailData = async () => {
                 try {
                     // Make API call using the dynamic `id`
-                    const emailResponse = await axios.get(`https://uniquemindsolutions.com/usmjobportal/user/Emailpushnotification/1/`);
+                    const emailResponse = await axios.get(`http://127.0.0.1:8000/user/Emailpushnotification/1/`);
                     console.log("Email Response: ", emailResponse.data);
             
                     // Assuming the response has the same shape as the state, update the state with the response data
@@ -72,7 +72,7 @@ const AccountSetting = () => {
       
         const fetchData = async () => {
             try {
-                const response = await axios.get('https://uniquemindsolutions.com/usmjobportal/accountsettings/1/');
+                const response = await axios.get('http://127.0.0.1:8000/accountsettings/1/');
                 console.log('Account API Response....', response.data);
 
                 // Assuming the API returns the structure you expect
@@ -109,12 +109,12 @@ const AccountSetting = () => {
         e.preventDefault();
         try {
             // accountsettings API call
-            const proData = await axios.post('https://uniquemindsolutions.com/usmjobportal/accountsettings/', accountData);
+            const proData = await axios.post('http://127.0.0.1:8000/accountsettings/', accountData);
             console.log('Account API response:', proData.data);
-            const emaildata = await axios.post('https://uniquemindsolutions.com/usmjobportal/user/Emailpushnotification/', EmailandPushNotificationsData);
+            const emaildata = await axios.post('http://127.0.0.1:8000/user/Emailpushnotification/', EmailandPushNotificationsData);
             console.log('Eamil push notification data:', emaildata.data);
             // change-password API call
-            const proPass = await axios.put('https://uniquemindsolutions.com/usmjobportal/change-password/', changepasswordData);
+            const proPass = await axios.put('http://127.0.0.1:8000/change-password/', changepasswordData);
             console.log('Password API response:', proPass.data);
 
             setSuccessMsg('Account setting successfully changed');

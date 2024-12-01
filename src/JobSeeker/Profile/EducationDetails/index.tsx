@@ -52,7 +52,7 @@ const EducationDetails = () => {
 
     useEffect(() => {
         GetEducationDetails();
-        
+
         const Specialization = async () => {
             try {
                 const response = await axios.get('http://127.0.0.1:8000/user/Specialization/');
@@ -124,19 +124,20 @@ const EducationDetails = () => {
         e.preventDefault(); // Prevents page reload on form submit
 
         try {
+
             // Make POST request to the API endpoint
             const response = await axios.post("http://127.0.0.1:8000/user/EducationDetails/", postEducationDetails,)
             const post_res = response.data
             SetPostEducationDetails(post_res)
             setMessage("EducationDetails Created sucessfully");
             console.log(response.data);
+            // const toggle = true;
             toast.success("Education Details Created sucessfully", {
-                position:"bottom-right",
-                theme:"colored"
+                position: "bottom-right",
+                theme: "colored"
             });
-        } catch (err) {
+        } catch (error) {
             setError('Failed to create EducationDetails');
-            console.error(err);
         }
     };
 
@@ -180,15 +181,16 @@ const EducationDetails = () => {
                 const eduUpdate = getEducation?.map(edu => edu.id === updateEdu.id ? updateEdu : edu)
                 setGetEducation(eduUpdate)
             }
+
             toast.success("Education Details Updated sucessfully", {
-                position:"bottom-right",
-                theme:"colored"
+                position: "bottom-right",
+                theme: "colored",
+                // toggle:true,
             });
         } catch (error) {
-            console.error("Error submitting education details", error);
             toast.error("Failed to submit the education details", {
-                position:"bottom-right",
-                theme:"colored"
+                position: "bottom-right",
+                theme: "colored"
             });
         }
     }
@@ -213,8 +215,8 @@ const EducationDetails = () => {
                 Array.isArray(eduDel) ? eduDel.filter((item: any) => item.id !== id) : []
             );
             toast.warning("Education Details Deleted sucessfully", {
-                position:"bottom-right",
-                theme:"colored"
+                position: "bottom-right",
+                theme: "colored"
             });
 
         } catch (error) {
@@ -239,7 +241,7 @@ const EducationDetails = () => {
 
     return (
         <main>
-            <ToastContainer/>
+            <ToastContainer />
             <div className="card-header fw-bold">
                 <span><i className="bi bi-book text-secondary me-2"></i> Education Details </span>  <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addEducation"> +Add</button></div>
             <div className="card-body">
@@ -399,10 +401,10 @@ const EducationDetails = () => {
                                     {updateBtn ?
                                         <button type="button" onClick={() => updateEduDetails(postEducationDetails.id)} className="update-btn me-3" data-bs-dismiss="modal">Update</button> : ""
                                     }
-                                    {saveBtn ? 
-                                        <button type="submit" className="save-btn" data-bs-dismiss="modal">Save</button>: ""
+                                    {saveBtn ?
+                                        <button type="submit" className="save-btn" data-bs-dismiss="modal">Save</button> : ""
                                     }
-                                     {/* <button onClick={notify}>Notify!</button> */}
+                                    {/* <button onClick={notify}>Notify!</button> */}
                                 </span>
                             </div>
                         </form>

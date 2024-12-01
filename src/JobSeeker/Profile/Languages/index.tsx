@@ -43,7 +43,7 @@ const Languages = () => {
 
     const postMethLanguamge = async () => {
         try {
-            const res_lang = await axios.post(`http://127.0.0.1:8000/user/Languange/`);
+            const res_lang = await axios.post(`http://127.0.0.1:8000/user/Languange//`);
             const langData = res_lang.data;
             setPostLanguage(langData)
         } catch (error) {

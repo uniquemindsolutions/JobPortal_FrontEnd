@@ -4,6 +4,12 @@ import React, { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// import DatePicker from '../../../Helpers/Datepicker/Datepicker';
+
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+
 interface Workexperience {
     current_job_title: string;
     company_name: string;
@@ -15,12 +21,14 @@ interface Workexperience {
     current_salary: string;
     description: string;
 }
-const WorkExperience = () => {
+const WorkExperience = ({date}:any) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
     const [updateBtn, setUpdateBtn] = useState(false);
     const [saveBtn, setSaveBtn] = useState(true);
+    const [startDate, setStartDate] = useState<any>(new Date());
+    const [endDate, setEndDate] = useState<any>(new Date());
 
     const [workExpData, setWorkExpData] = useState<any>([]);
     const [WorkexperiencePost, setWorkexperiencePost] = useState<any>({
@@ -297,22 +305,40 @@ const WorkExperience = () => {
                                             <div className="mb-3 row">
                                                 <div className="col">
                                                     <label htmlFor="start_date" className="form-label">Start Date</label>
-                                                    <input type='date'
+                                                    {/* <input type='date'
                                                         className="form-control"
                                                         id="start_date"
                                                         name='start_date'
                                                         value={WorkexperiencePost.start_date}
                                                         onChange={handleInputWorkExpForm} />
+                                                         */}
+                                                       
+                                                    <DatePicker
+                                                        className='form-control'
+                                                        selected={startDate}
+                                                        onChange={(date) => setStartDate(date)}
+                                                        name="start_date"
+                                                        showYearDropdown
+                                                    />
                                                 </div>
 
                                                 <div className="col">
                                                     <label htmlFor="end_date" className="form-label">End Date</label>
-                                                    <input type='date'
+                                                    {/* <input type='date'
                                                         className="form-control"
                                                         id="end_date"
                                                         name='end_date'
                                                         value={WorkexperiencePost.end_date}
-                                                        onChange={handleInputWorkExpForm} />
+                                                        onChange={handleInputWorkExpForm} /> */}
+                                                    
+                                                         <DatePicker
+                                                        className='form-control'
+                                                        selected={endDate}
+                                                        onChange={(date) => setEndDate(date)}
+                                                        name="end_date"
+                                                        showYearDropdown
+                                                        maxDate={new Date()}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>

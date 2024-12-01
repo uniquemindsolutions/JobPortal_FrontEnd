@@ -38,10 +38,7 @@ const Candidates = () => {
     const [selectedExperience, setSelectedExperience] = useState<any>(null);
 
     const [selectedCandidate, setSelectedCandidate] = useState(candidates[1]);
-
-
-
-
+    
     const experienceOptions = [
         { value: '0-1', label: '0-1 years' },
         { value: '1+', label: '1+ years' },
@@ -63,17 +60,15 @@ const Candidates = () => {
         console.log('Location:', location);
     };
 
-
-
     const [selectedUser, setSelectedUser] = useState(null);
 
     const users = [
-        { id: 1, name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
-        { id: 2, name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
-        { id: 1, name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
-        { id: 2, name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
-        { id: 1, name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
-        { id: 2, name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
+        { id: 1, location:'Hyderabad', name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
+        { id: 2, location:'Hyderabad', name: 'Joshua Matthew', role: 'Python developer', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
+        { id: 1, location:'Hyderabad', name: 'Alexander Christopher', role: 'Java Developer', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
+        { id: 2, location:'Hyderabad', name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
+        { id: 1, location:'Hyderabad', name: 'Alexander Christopher', role: 'UI UX design Lead', email: 'alexander@gmail.com', phone: '+1234567890', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/1.jpg', appliedFrom: 'Linkedin' },
+        { id: 2, location:'Hyderabad', name: 'Joshua Matthew', role: 'UI UX design Lead', email: 'joshua@gmail.com', phone: '+1234567891', source: 'Linkedin', profilePic: 'https://randomuser.me/api/portraits/men/2.jpg', appliedFrom: 'Linkedin' },
         // Add more users as needed
     ];
 
@@ -84,7 +79,7 @@ const Candidates = () => {
         <main>
             <div className="row d-flex justify-content-between mt-4">
                 <div className="col-lg-5"> <div><h4 className='pt-3'>Candidate List</h4></div></div>
-                <div className="col-lg-7">
+                <div className="col-lg-7 search-bar">
                     <div className="search-bar-container d-flex align-items-center">
                         <input
                             type="text"
@@ -114,12 +109,8 @@ const Candidates = () => {
                         </button>
                     </div>
                 </div>
-
-
-
             </div>
-
-
+            
             <div className="candidate-card p-0 mt-4">
                 <div className="row">
                     {/* Sidebar */}

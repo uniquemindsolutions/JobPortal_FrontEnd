@@ -89,20 +89,20 @@ const MyProfile = () => {
                 }
             })
             .catch(error => console.error("Error fetching job details:", error));
-        fetch('https://uniquemindsolutions.com/usmjobportal/countries/')
+        fetch('http://127.0.0.1:8000/countries/')
             .then((response) => response.json())
             .then((data) => setCountries(data))
             .catch((error) => console.error("Error fetching countries:", error));
-        fetch('https://uniquemindsolutions.com/usmjobportal/states/')
+        fetch('http://127.0.0.1:8000/states/')
             .then((response) => response.json())
             .then((data) => setStates(data))
             .catch((error) => console.error("Error fetching states:", error));
-        fetch('https://uniquemindsolutions.com/usmjobportal/cities/')
+        fetch('http://127.0.0.1:8000/cities/')
             .then((response) => response.json())
             .then((data) => setCities(data))
             .catch((error) => console.error("Error fetching cities:", error));
 
-        fetch("https://uniquemindsolutions.com/usmjobportal/industry/")
+        fetch("http://127.0.0.1:8000/industry/")
             .then(response => response.json())
             .then(data => {
                 console.log("Industries:", data); // Log to check the data
@@ -110,7 +110,7 @@ const MyProfile = () => {
             })
             .catch(error => console.error('Error fetching industries:', error));
 
-        fetch("https://uniquemindsolutions.com/usmjobportal/jobcategory/")
+        fetch("http://127.0.0.1:8000/jobcategory/")
             .then(response => response.json())
             .then(data => {
                 console.log("Functional_Area:", data); // Log to check th data
@@ -176,7 +176,7 @@ const MyProfile = () => {
         try {
             if (methodType) {
                 // Update the job with a PUT request
-                const response = await fetch(`https://uniquemindsolutions.com/usmjobportal/myprofile/${id}/`, {
+                const response = await fetch(`http://127.0.0.1:8000/myprofile/${id}/`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -248,7 +248,7 @@ const MyProfile = () => {
         const { name, value } = e.target;
         setProfileFormData({ ...profileFormData, [name]: value });
         const countryId = e.target.options.selectedIndex;
-        fetch(`https://uniquemindsolutions.com/usmjobportal/states/?countryid=${countryId}`)
+        fetch(`http://127.0.0.1:8000/states/?countryid=${countryId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("States:", data);
@@ -262,7 +262,7 @@ const MyProfile = () => {
         const { name, value } = e.target;
         setProfileFormData({ ...profileFormData, [name]: value });
         const stateId = e.target.options.selectedIndex;
-        fetch(`https://uniquemindsolutions.com/usmjobportal/cities/?stateid=${stateId}`)
+        fetch(`http://127.0.0.1:8000/cities/?stateid=${stateId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("Cities:", data);

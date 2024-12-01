@@ -113,9 +113,11 @@
 
     .profile-image {
       img {
-        width: 80px;
+        max-width:60px;
         height: 80px;
-        border: 2px solid #fff;
+        border-radius: 100px;
+        // border: 2px solid #fff;
+        box-shadow: 0 4px 12px rgba(52, 66, 105, 0.5);
       }
     }
 
