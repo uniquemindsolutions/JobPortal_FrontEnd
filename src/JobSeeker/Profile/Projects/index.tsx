@@ -139,6 +139,7 @@ const Projects = () => {
                 position:"bottom-right",
                 theme:"colored"
             });
+            
         } catch (error) {
             console.error("Error submitting project:", error);
             toast.warning("Project not Updated", {

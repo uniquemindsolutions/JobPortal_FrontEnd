@@ -33,7 +33,7 @@ const Profiles = () => {
     const [desingList, setDesingList] = useState<any>([])
     const [getYears, setGetYears] = useState<any>([])
     const [getUserProfile, setGetUserProfile] = useState<any>([])
-    const [postUserProfile, setPostUserProfile] = useState({
+    const [postUserProfile, setPostUserProfile] = useState<any>({
         id: 0,
         first_name: '',
         last_name: '',
@@ -45,7 +45,7 @@ const Profiles = () => {
         current_location: '',
         preferred_locations: '',
         functional_area: 0,
-        profile_photo: '',
+        profile_photo: null,
         resume: '',
         current_company_name: '',
     });
@@ -54,12 +54,12 @@ const Profiles = () => {
         fetchCities();
         DesignationsList();
         getYearss();
-        handlePopulateEditProjects(1);
+        handlePopulateEditProfile(1);
     }, [])
 
     const handleInputFormUserpro = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
         const { name, value } = e.target;
-        setPostUserProfile(postUserProfile => ({
+        setPostUserProfile((postUserProfile: any) => ({
             ...postUserProfile,
             [name]: value,
         }));
@@ -78,7 +78,6 @@ const Profiles = () => {
             setError("Personal data not found")
         }
     }
-
 
     const PostHandleUserProfile = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -104,10 +103,7 @@ const Profiles = () => {
                 return;
             }
 
-            // setLoading(true);
-            // const formData = new FormData();
             data.append('profile_photo', profilePhoto); // Append the file
-
 
             const response = await axios.post('http://127.0.0.1:8000/user/Userprofile/', data, {
                 headers: {
@@ -124,31 +120,37 @@ const Profiles = () => {
             setLoading(false);
         }
     };
+
     const ProfileUpdateProference = async (id: any) => {
         console.log("Updating jobPreferences with ID:", id);
         try {
             const payLoadProfilePrefer = {
-                id: postUserProfile.id,
-                first_name: postUserProfile.first_name,
-                last_name: postUserProfile.last_name,
-                email: postUserProfile.email,
-                phone_number: postUserProfile.phone_number,
-                current_company_name: postUserProfile.current_company_name,
-                total_experience: postUserProfile.total_experience,
-                total_months: postUserProfile.total_months,
-                notice_period: postUserProfile.notice_period,
-                current_location: postUserProfile.current_location,
-                preferred_locations: postUserProfile.preferred_locations,
-                functional_area: postUserProfile.functional_area,
-                profile_photo: postUserProfile.profile_photo,
-        
+                ...postUserProfile
+                // id: postUserProfile.id,
+                // first_name: postUserProfile.first_name,
+                // last_name: postUserProfile.last_name,
+                // email: postUserProfile.email,
+                // phone_number: postUserProfile.phone_number,
+                // current_company_name: postUserProfile.current_company_name,
+                // total_experience: postUserProfile.total_experience,
+                // total_months: postUserProfile.total_months,
+                // notice_period: postUserProfile.notice_period,
+                // current_location: postUserProfile.current_location,
+                // preferred_locations: postUserProfile.preferred_locations,
+                // functional_area: postUserProfile.functional_area,
+                // profile_photo: postUserProfile.profile_photo,
+
             };
-            
+
             const submissionData = new FormData();
             Object.keys(payLoadProfilePrefer).forEach(key => {
                 submissionData.append(key, (payLoadProfilePrefer as any)[key]);
             });
+            // alert(profilePhoto)
+            // console.log(profilePhoto, 'test Photo ====');
+
             if (profilePhoto) {
+                alert(profilePhoto)
                 submissionData.append('profile_photo', profilePhoto)
             }
             if (resume) {
@@ -159,9 +161,12 @@ const Profiles = () => {
 
             // data.append('profile_photo', profilePhoto); // Append the file
 
-            const put_response = await axios.post(
-                `http://127.0.0.1:8000/user/getuserprofile/`, submissionData
-            );
+            const put_response = await axios.post('http://127.0.0.1:8000/user/getuserprofile/', submissionData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
 
             const result = put_response.data;
             console.log("Project list 111 ===", result);
@@ -176,7 +181,7 @@ const Profiles = () => {
                 console.log(updatedJobPrefence, "updatedJobPrefence");
                 setGetUserProfile(updatedJobPrefence);
             }
-            
+
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error("Axios error:", error.response?.data || error.message);
@@ -186,25 +191,15 @@ const Profiles = () => {
             alert("Failed to submit the job preferences");
         }
     };
-    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { name, files } = e.target;
-    //     if (files && files[0]) {
-    //         const file = files[0];
-
-    //         if (name === "resume") {
-    //             setResume(file);
-    //         } else if (name === "profile_photo") {
-    //             setProfilePhoto(file);
-    //             setPreview(URL.createObjectURL(file)); // Generate preview URL for profile photo
-    //         }
-    //     }
-    // };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]; // Get the selected file
         if (file) {
             setProfilePhoto(file); // Save the file
             setPreview(URL.createObjectURL(file)); // Generate and set a preview URL
+        } else {
+            // setProfilePhoto('')
+
         }
     };
     const handleFileResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,8 +220,7 @@ const Profiles = () => {
         }
     };
 
-
-    const handlePopulateEditProjects = async (id: number) => {
+    const handlePopulateEditProfile = async (id: number) => {
         // setUpdateBtn(true)
         // setSaveBtn(false)
         setLoading(true);
@@ -307,7 +301,7 @@ const Profiles = () => {
             <div className=" mt-4">
                 <h5>Profile</h5>
                 <div className="custom-card form-control-sec">
-                    <button onClick={() => handlePopulateEditProjects(1)}
+                    <button onClick={() => handlePopulateEditProfile(1)}
                         className="bi bi-pencil-square btn float-end position-absolute end-0"
                         data-bs-toggle="modal"
                         data-bs-target="#addProfile"
@@ -433,7 +427,7 @@ const Profiles = () => {
             <div className="modal fade" id="addProfile" aria-labelledby="addProfileLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
-                        <form onSubmit={PostHandleUserProfile}>
+                        <form onSubmit={PostHandleUserProfile} encType="multipart/form-data">
                             <div className="modal-header bg-light">
                                 <h5 className="modal-title" id="addProfileLabel">Profile Details</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -452,7 +446,7 @@ const Profiles = () => {
                                                 name="profile_photo"
                                                 accept="image/*" // Restrict to image files
                                                 onChange={handleFileChange}
-                                                onClick={() => handlePopulateEditProjects}
+                                                onClick={() => handlePopulateEditProfile}
                                             />
                                         </div>
 
