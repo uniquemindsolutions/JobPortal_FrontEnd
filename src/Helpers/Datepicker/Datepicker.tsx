@@ -19,6 +19,25 @@ const Datepicker: React.FC<ReusableDatePickerProps> = ({ selectedDate, onChange,
     const handleEndDateChange = (date: Date | null) => {
         setEndDate(date);
     };
+
+    // const handleDatePickerChange = (date: any) => {
+    //     setStartDate(date);
+    //     const formattedDate = date.toISOString(); // Convert to ISO format
+    //     setWorkexperiencePost((prevState: any) => ({
+    //         ...prevState,
+    //         start_date: formattedDate,
+    //     }));
+    // };
+
+    // const handleEndDateChange = (date: any) => {
+    //     setEndDate(date);
+    //     const formattedDate = date.toISOString(); // Convert to ISO format
+    //     setWorkexperiencePost((prevState: any) => ({
+    //         ...prevState,
+    //         end_date: formattedDate,
+    //     }));
+    // };
+
     return (
         <main>
 

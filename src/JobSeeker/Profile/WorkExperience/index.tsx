@@ -21,7 +21,7 @@ interface Workexperience {
     current_salary: string;
     description: string;
 }
-const WorkExperience = ({date}:any) => {
+const WorkExperience = ({ date }: any) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
@@ -71,7 +71,7 @@ const WorkExperience = ({date}:any) => {
             setWorkexperiencePost(workExpData);
         } catch (error) {
             console.log(error)
-   
+
         }
     }
 
@@ -83,10 +83,27 @@ const WorkExperience = ({date}:any) => {
             [name]: value,
         }));
     }
+    // const handleDatePickerChange = (date: any) => {
+    //     setStartDate(date);
+    //     const formattedDate = date.toISOString(); // Convert to ISO format
+    //     setWorkexperiencePost((prevState: any) => ({
+    //         ...prevState,
+    //         start_date: formattedDate,
+    //     }));
+    // };
+
+    // const handleEndDateChange = (date: any) => {
+    //     setEndDate(date);
+    //     const formattedDate = date.toISOString(); // Convert to ISO format
+    //     setWorkexperiencePost((prevState: any) => ({
+    //         ...prevState,
+    //         end_date: formattedDate,
+    //     }));
+    // };
 
     const handlePopulateWorkExp = async (id: number) => {
-        setSaveBtn(false)      
-        setUpdateBtn(true)  
+        setSaveBtn(false)
+        setUpdateBtn(true)
         setLoading(false);
         try {
             const res_workExp = await axios.get(`http://127.0.0.1:8000/user/Workexperience/${id}/`)
@@ -136,11 +153,11 @@ const WorkExperience = ({date}:any) => {
                 )
                 setWorkExpData(updateWorkExp)
             }
-            
+
 
         } catch (error) {
             setError("Work experiance not updated")
-           
+
         }
     }
 
@@ -167,10 +184,10 @@ const WorkExperience = ({date}:any) => {
                 Array.isArray(preData) ? preData.filter(item => item.id !== id) : []
             );
 
-            
+
         } catch (error) {
             setError("Work experience not deleted")
-            
+
         }
     }
 
@@ -220,7 +237,7 @@ const WorkExperience = ({date}:any) => {
                                 <li><span className='text-secondary'>Is Current Company:</span> {item.is_current_company ? "Yes" : "No"}</li>
                                 <li><span className='text-secondary'>Workplace:</span> {item.workplace}</li>
                                 <li><span className='text-secondary'>Employment Type:</span> {item.employment_type}</li>
-                                <li><span className='text-secondary'>Current Salary:</span>{item.currency_type} {item.current_salary}</li>
+                                <li><span className='text-secondary'>Current Salary:</span> {item.currency_type} {item.current_salary}</li>
                                 <li><span className='text-secondary'>Description:</span> {item.description}</li>
                             </ul>
                         ))
@@ -228,9 +245,7 @@ const WorkExperience = ({date}:any) => {
                         <p>No data found</p>
                     )
                 )}
-
             </div>
-
 
             <div className="modal fade" id="addWorkExperiance" aria-labelledby="addWorkExperianceLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg">
@@ -253,7 +268,7 @@ const WorkExperience = ({date}:any) => {
                                                     name='current_job_title'
                                                     placeholder="Recent job title"
                                                     value={WorkexperiencePost.current_job_title}
-                                                    onChange={handleInputWorkExpForm} />
+                                                    onChange={handleInputWorkExpForm} required />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
@@ -266,7 +281,7 @@ const WorkExperience = ({date}:any) => {
                                                     placeholder="Most recent company"
                                                     name='company_name'
                                                     value={WorkexperiencePost.company_name}
-                                                    onChange={handleInputWorkExpForm} />
+                                                    onChange={handleInputWorkExpForm} required />
                                             </div>
                                         </div>
 
@@ -305,40 +320,43 @@ const WorkExperience = ({date}:any) => {
                                             <div className="mb-3 row">
                                                 <div className="col">
                                                     <label htmlFor="start_date" className="form-label">Start Date</label>
-                                                    {/* <input type='date'
+                                                    <input type='date'
                                                         className="form-control"
                                                         id="start_date"
                                                         name='start_date'
                                                         value={WorkexperiencePost.start_date}
                                                         onChange={handleInputWorkExpForm} />
-                                                         */}
-                                                       
-                                                    <DatePicker
-                                                        className='form-control'
+                                                        
+                                                         
+                                                    {/* <DatePicker
+                                                        showIcon
                                                         selected={startDate}
-                                                        onChange={(date) => setStartDate(date)}
-                                                        name="start_date"
-                                                        showYearDropdown
-                                                    />
+                                                        onChange={handleDatePickerChange}
+                                                        icon="bi bi-calendar4 pt-3 ms-2"
+                                                        className='form-control ps-5'
+                                                        dateFormat='dd/mm/yyyy'
+                                                        required
+                                                    /> */}
                                                 </div>
 
                                                 <div className="col">
                                                     <label htmlFor="end_date" className="form-label">End Date</label>
-                                                    {/* <input type='date'
+                                                    <input type='date'
                                                         className="form-control"
                                                         id="end_date"
                                                         name='end_date'
                                                         value={WorkexperiencePost.end_date}
-                                                        onChange={handleInputWorkExpForm} /> */}
-                                                    
-                                                         <DatePicker
-                                                        className='form-control'
+                                                        onChange={handleInputWorkExpForm}/>
+                                                        
+                                                    {/* <DatePicker
+                                                        showIcon
                                                         selected={endDate}
-                                                        onChange={(date) => setEndDate(date)}
-                                                        name="end_date"
-                                                        showYearDropdown
-                                                        maxDate={new Date()}
-                                                    />
+                                                        onChange={handleEndDateChange}
+                                                        icon="bi bi-calendar4 pt-3 ms-2"
+                                                        className='form-control ps-5'
+                                                        dateFormat='dd/mm/yyyy'
+                                                        required
+                                                    /> */}
                                                 </div>
                                             </div>
                                         </div>
@@ -395,7 +413,7 @@ const WorkExperience = ({date}:any) => {
                                             <div className="mb-3 row">
                                                 <div className="col">
                                                     <label htmlFor="current_salary" className="form-label">Current Salary (LPA) *</label>
-                                                    <select className="form-select" id="current_salary" name='current_salary' value={WorkexperiencePost.currency_type} onChange={handleInputWorkExpForm}>
+                                                    <select className="form-select" id="current_salary" name="currency_type" value={WorkexperiencePost.currency_type} onChange={handleInputWorkExpForm}>
                                                         <option selected>Select</option>
                                                         {/* Other currency options */}
                                                         <option value="INR">Indian Rupee (INR)</option>
@@ -437,9 +455,9 @@ const WorkExperience = ({date}:any) => {
                                 <span>
                                     <button type="button" className="cancel-btn me-3" onClick={handleClearForm}>Cancel</button>
                                     {updateBtn ? <button type="button" onClick={() => workExpUpdated(WorkexperiencePost.id)} className="update-btn mx-3" data-bs-dismiss="modal">Update</button> : ""}
-                                    
+
                                     {saveBtn ? <button type="submit" data-bs-dismiss="modal" className="save-btn">Save</button> : ""}
-                                    
+
                                 </span>
                             </div>
                         </form>

@@ -124,18 +124,17 @@ const EducationDetails = () => {
         e.preventDefault(); // Prevents page reload on form submit
 
         try {
-
             // Make POST request to the API endpoint
             const response = await axios.post("http://127.0.0.1:8000/user/EducationDetails/", postEducationDetails,)
             const post_res = response.data
             SetPostEducationDetails(post_res)
             setMessage("EducationDetails Created sucessfully");
             console.log(response.data);
-            // const toggle = true;
-            toast.success("Education Details Created sucessfully", {
-                position: "bottom-right",
-                theme: "colored"
-            });
+
+            // toast.success("Education Details Created sucessfully", {
+            //     position: "bottom-right",
+            //     theme: "colored"
+            // });
         } catch (error) {
             setError('Failed to create EducationDetails');
         }
@@ -182,16 +181,16 @@ const EducationDetails = () => {
                 setGetEducation(eduUpdate)
             }
 
-            toast.success("Education Details Updated sucessfully", {
-                position: "bottom-right",
-                theme: "colored",
-                // toggle:true,
-            });
+            // toast.success("Education Details Updated sucessfully", {
+            //     position: "bottom-right",
+            //     theme: "colored",
+            // });
         } catch (error) {
-            toast.error("Failed to submit the education details", {
-                position: "bottom-right",
-                theme: "colored"
-            });
+            setError("Error: Education details not updated")
+            // toast.error("Failed to submit the education details", {
+            //     position: "bottom-right",
+            //     theme: "colored"
+            // });
         }
     }
 
@@ -262,10 +261,10 @@ const EducationDetails = () => {
                                     onClick={() => handlePopuplateEduDetails(education.id)}
                                 ></button>
                             </li>
-                            <li><span className='text-secondary'>Specialization</span> {SpzList(education.specialization)}</li>
-                            <li><span className='text-secondary'>Passing year</span> {education.passing_year} {education.education_type}</li>
-                            <li><span className='text-secondary'>Grading system</span> {education.grading_system}</li>
-                            <li><span className='text-secondary'>Marks percentage</span> {education.marks}</li>
+                            <li><span className='text-secondary'>Specialization: </span> {SpzList(education.specialization)}</li>
+                            <li><span className='text-secondary'>Passing year: </span> {education.passing_year} {education.education_type}</li>
+                            <li><span className='text-secondary'>Grading system: </span> {education.grading_system}</li>
+                            <li><span className='text-secondary'>Marks percentage: </span> {education.marks}</li>
                         </ul>
                     ))
                 ) : (
@@ -301,7 +300,7 @@ const EducationDetails = () => {
                                     </div>
                                     <div className="col-md-6">
                                         <div className="mb-3">
-                                            <label htmlFor="specialization" className="form-label">Specialization *</label>
+                                            <label htmlFor="specialization" className="form-label">Specialization  </label>
                                             <select className="form-select" id="specialization" name='specialization' value={postEducationDetails.specialization} onChange={handleInputEduForm}>
                                                 <option selected>Select</option>
                                                 {/* Options for specializations */}
@@ -349,7 +348,7 @@ const EducationDetails = () => {
                                     </div>
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="passingYear" className="form-label">Passing Year *</label>
+                                            <label htmlFor="passingYear" className="form-label">Passing Year </label>
                                             <input type="date" className='form-control' id="passing_year" name="passing_year" onChange={handleInputEduForm} />
                                         </div>
                                     </div>
