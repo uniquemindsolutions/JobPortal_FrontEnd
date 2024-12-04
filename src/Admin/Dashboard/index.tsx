@@ -91,14 +91,14 @@ const Dashboard = () => {
             .catch(error => (
                 setError(error = 'data fetching fail')
             ))
-
-        fetch("http://127.0.0.1:8000/cities/")
+            
+            fetch("http://127.0.0.1:8000/cities/")
             .then(response => response.json())
             .then(data => {
                 console.log("Cities:", data); // Log to check the data
                 setCitys(data); // Store the cities in state
             })
-        fetch("http://127.0.0.1:8000/jobviews/")
+            fetch("http://127.0.0.1:8000/jobviews/")
             .then(response => response.json())
             .then(data => {
                 console.log("JobViews:", data); // Log to check the data

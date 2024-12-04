@@ -29,12 +29,12 @@ const MyJobs = () => {
 
     useEffect(() => {
         fetch("http://127.0.0.1:8000/cities/")
-            .then(response => response.json())
-            .then(data => {
-                console.log("Cities:", data); // Log to check the data
-                setCitys(data); // Store the cities in state
-            })
-            .catch(error => console.error('Error fetching cities:', error));
+        .then(response => response.json())
+        .then(data => {
+            console.log("Cities:", data); // Log to check the data
+            setCitys(data); // Store the cities in state
+        })
+        .catch(error => console.error('Error fetching cities:', error));
         myJobsDetails();
     }, [])
     const getCityNameById = (id: number): string => {

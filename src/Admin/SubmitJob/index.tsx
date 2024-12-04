@@ -277,6 +277,8 @@ const SubmitJob = () => {
             .catch(error => console.error('Error fetching inter:', error));
 
         fetch("http://127.0.0.1:8000/education/UG/")
+
+        fetch("http://127.0.0.1:8000/education/UG/")
             .then(response => response.json())
             .then(data => {
                 console.log("Education UG:", data); // Log to check the data

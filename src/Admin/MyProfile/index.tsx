@@ -71,7 +71,7 @@ const MyProfile = () => {
     const [selectedCompanyType, setSelectedCompanyType] = useState<any>(null);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/myprofile/1/`)
+        fetch(`http://127.0.0.1:8000/myprofile/43/`)
             .then(response => response.json())
             .then(data => {
                 console.log("Submit myprofile:", data);
