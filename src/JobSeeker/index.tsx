@@ -41,7 +41,7 @@ const JobSeekerAdmin = () => {
     const GetUserProfile = async () => {
         setLoading(true)
         try {
-            const res_userDetls = await axios.get('http://127.0.0.1:8000/user/Userprofile/1/');
+            const res_userDetls = await axios.get('http://127.0.0.1:8000/user/Userprofile/4/');
             const userDetailData = res_userDetls.data;
             setGetUserprofile(userDetailData);
             setPreview(userDetailData.profile_photo);
@@ -118,7 +118,7 @@ const JobSeekerAdmin = () => {
         <main>
             <div className="d-flex" id="wrapper">
                 {/* Sidebar */}
-                <nav id="sidebar" className={`sidebar ${isSidebarOpen ? 'active' : ''}`}>
+                <nav id="sidebar" className={`sidebar scroll-cust ${isSidebarOpen ? 'active' : ''}`}>
                     <div className="sidebar-header">
                         <div className="close-icon d-md-none" onClick={toggleSidebar}>
                             <i className="fas fa-times"></i>
@@ -179,26 +179,41 @@ const JobSeekerAdmin = () => {
 
                     <ul className="list-unstyled components">
                         <li>
-                            <Link to="seeker-dashboard" className={`menuLink ${activeLink === 'seeker-dashboard' ? 'active' : ''}`} onClick={() => handleLinkActive('seeker-dashboard')}>
+                            <Link
+                                to="/seeker-dashboard"
+                                className={`menuLink ${activeLink === '/seeker-dashboard' ? 'active' : ''}`}
+                                onClick={() => handleLinkActive('/seeker-dashboard')}
+                            >
                                 <i className="bi bi-speedometer2 me-2"></i> Dashboard
                             </Link>
                         </li>
                         <li>
-                            <Link to="/applied-jobs" className={`menuLink ${activeLink === 'applied-jobs' ? 'active' : ''}`} onClick={() => handleLinkActive('applied-jobs')}>
+                            <Link
+                                to="/applied-jobs"
+                                className={`menuLink ${activeLink === '/applied-jobs' ? 'active' : ''}`}
+                                onClick={() => handleLinkActive('/applied-jobs')}
+                            >
                                 <i className="bi bi-calendar2-check me-2"></i> Applied Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="saved-jobs" className={`menuLink ${activeLink === 'saved-jobs' ? 'active' : ''}`} onClick={() => handleLinkActive('saved-jobs')}>
+                            <Link
+                                to="/saved-jobs"
+                                className={`menuLink ${activeLink === '/saved-jobs' ? 'active' : ''}`}
+                                onClick={() => handleLinkActive('/saved-jobs')}
+                            >
                                 <i className="bi bi-save me-2"></i> Saved Jobs
                             </Link>
                         </li>
                         <li>
-                            <Link to="#" className={`menuLink ${activeLink === '' ? 'active' : ''}`} onClick={() => handleLinkActive('')}>
+                            <Link
+                                to="/my-interviews"
+                                className={`menuLink ${activeLink === '/my-interviews' ? 'active' : ''}`}
+                                onClick={() => handleLinkActive('/my-interviews')}
+                            >
                                 <i className="bi bi-person-lines-fill me-2"></i> My Interviews
                             </Link>
                         </li>
-
                     </ul>
                 </nav>
 

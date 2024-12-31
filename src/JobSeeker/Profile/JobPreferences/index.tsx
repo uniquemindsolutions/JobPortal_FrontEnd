@@ -33,8 +33,8 @@ const JobPreferences = () => {
     const [message, setMessage] = useState('');
     const [saveBtn, setSaveBtn] = useState(false)
 
-    const [getJobPreferences, setGetJobPreferences] = useState<any>({});
-    const [postJobPreferences, setPostJobPreferences] = useState<JobPreferenceModel>({
+    const [getJobPreferences, setGetJobPreferences] = useState<any>([]);
+    const [postJobPreferences, setPostJobPreferences] = useState<any>({
         preferred_department_function: 0,
         preferred_job_title: "",
         preferred_location: "",
@@ -44,167 +44,95 @@ const JobPreferences = () => {
         preferred_workplace: "",
         what_are_you_currently_looking_for: "",
     });
-    const [jobPreferences, setJobPreferences] = useState<JobPreferenceModel[]>([]);
-    const [editingId, setEditingId] = useState<number | null>(null); // Track ID for updates
-
-    const JobPreferencesApiUrl = "http://127.0.0.1:8000/user/JobPreferences/";
-
+ 
     const [cities, setCities] = useState<City[]>([]);
     const [preferredDepartment, setPreferredDepartment] = useState<PreferredDepart[]>([]);
     const [PreferredJobTitle, setPreferredJobTitle] = useState<PreferredJobTitle[]>([]);
 
     useEffect(() => {
         getMethodJobPreferences();
-
-        const PreferredJobTitle = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/user/PreferredJobTitle/');
-                setPreferredJobTitle(response.data);  // Set the fetched users to state
-            } catch (err) {
-                setError('Failed to fetch PreferredJobTitle');
-            } finally {
-                setLoading(false);  // Stop loading
-            }
-        };
-        PreferredJobTitle();
-
-
-        const fetchCities = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/user/Cities/');
-                setCities(response.data);  // Set the fetched users to state
-            } catch (err) {
-                setError('Failed to fetch Cities');
-            } finally {
-                setLoading(false);  // Stop loading
-            }
-        };
+        getPreferredJobTitle();
         getPrefererdDepartList();
         fetchCities();
     }, [])
-
+    
     const handleInputJobPreferences = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setPostJobPreferences({ ...postJobPreferences, [name]: value });
+        setPostJobPreferences((prevFormData: any) => ({ ...prevFormData, [name]: value }));
     }
 
     const getMethodJobPreferences = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(JobPreferencesApiUrl);
-            setJobPreferences(response.data);
+            const response = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/1/`);
+            setGetJobPreferences(response.data);
         } catch (error) {
             console.error("Error fetching job preferences:", error);
         }
-    }
+    }   
 
     const postMethodJobPreferences = async (e: any) => {
         e.preventDefault();
         try {
-            const response = await axios.post(JobPreferencesApiUrl, postJobPreferences);
-            setJobPreferences([...jobPreferences, response.data]);
-            setPostJobPreferences({
-                ...postJobPreferences
-            });
+            const response = await axios.post("http://127.0.0.1:8000/user/JobPreferences/", postJobPreferences);
+            const res_data = response.data;
+    
+            // Update the postJobPreferences state with the response data
+            setPostJobPreferences(res_data);
+    
+            // Update the getJobPreferences to reflect the new data
+            setGetJobPreferences((prevPreferences: any) => ({
+                ...prevPreferences,
+                ...res_data,
+            }));
+    
+            console.log("Job Preferences Created:", res_data);
         } catch (error) {
             console.error("Error creating job preference:", error);
         }
-
-        // try {
-        //     setLoading(true);
-        //     const postJobPrepApi = await axios.post('http://127.0.0.1:8000/user/JobPreferences/', postJobPreferences);
-        //     const jobPrepData = postJobPrepApi.data;
-        //     setPostJobPreferences(jobPrepData);
-        // }
-        // catch (error) {
-        //     console.error("API Error:");
-        // }
     };
 
-
-    const PopulateJobPreferences = async (id: number) => {
-        setLoading(true);
-        try {
-            const res_JobPrefer = await axios.get(`http://127.0.0.1:8000/user/JobPreferences/1/`);
-            const res_JobPrefPopulate = res_JobPrefer.data; // Assuming response is a single object
-
-            if (Object.keys(res_JobPrefPopulate).length > 0) {
-                Object.entries(res_JobPrefPopulate).forEach(([keys, value]) => {
-                    setPostJobPreferences((JobPrefPopulateData: any) => (
-                        { ...JobPrefPopulateData, [keys]: value }
-                    ))
-                })
-            }
-
-            // if (res_JobPrefPopulate) {
-            //     setPostJobPreferences(res_JobPrefPopulate); // Update the entire object
-            // } else {
-            //     console.error("JobPreferences data is empty");
-            // }
-        } catch (error) {
-            setError("JobPreferences data not found");
-        } finally {
-            setLoading(false);
-        }
+    const handleEditJobPreferences = () => {
+        setPostJobPreferences(getJobPreferences);
     };
-
-    const updateJobProference = async (id: any) => {
-        if (!editingId) return; // Ensure there's an ID to update
+    
+    const updateJobPreferences = async (e: React.FormEvent) => {
+        e.preventDefault();
         try {
-            
-
-            const response = await axios.put(`${JobPreferencesApiUrl}${editingId}/`, postJobPreferences);
-            setJobPreferences((prev) =>
-                prev.map((item) => (item.id === editingId ? response.data : item))
+            const response = await axios.put(
+                `http://127.0.0.1:8000/user/JobPreferences/1/`, // Replace `1` with dynamic ID if needed
+                postJobPreferences
             );
-            setEditingId(null);
-            setPostJobPreferences({
-                ...postJobPreferences
-            });
-
-            const upDateJobPrep = new FormData();
-            Object.keys(postJobPreferences).forEach(key => {
-                upDateJobPrep.append(key, (postJobPreferences as any)[key])
-            })
+            const updatedData = response.data;
+    
+            // Update the state with the updated data
+            setGetJobPreferences(updatedData);
+    
+            console.log("Job Preferences Updated:", updatedData);
         } catch (error) {
-            console.error("Error updating job preference:", error);
+            console.error("Error updating job preferences:", error);
         }
+    };
 
-
-        // console.log("Updating jobPreferences with ID:", id);
-        // try {
-        //     const payLoadJobPrefer = {
-        //         ...postJobPreferences, id: 1,
-        //     };
-        //     console.log(id, "ID...");
-        //     const upDateJobPrep = new FormData();
-        //     Object.keys(payLoadJobPrefer).forEach(key => {
-        //         upDateJobPrep.append(key, (payLoadJobPrefer as any)[key])
-        //     })
-
-        //     const put_response = await axios.post(
-        //         `http://127.0.0.1:8000/user/get-jobpreference/`, payLoadJobPrefer
-        //     );
-
-        //     const result = put_response.data;
-        //     console.log("projectlist", getJobPreferences);
-
-        //     if (Array.isArray(getJobPreferences)) {
-        //         const updatedJobPrefence = getJobPreferences.map(user =>
-        //             user.id === result.id ? result : user
-        //         );
-
-        //         console.log(updatedJobPrefence, "updatedJobPrefence");
-        //         setGetJobPreferences(updatedJobPrefence);
-        //     }
-        // } catch (error) {
-        //     if (axios.isAxiosError(error)) {
-        //         console.error("Axios error:", error.response?.data || error.message);
-        //     } else {
-        //         console.error("Unexpected error:", error);
-        //     }
-        //     alert("Failed to submit the job preferences");
-        // }
+    const fetchCities = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/user/Cities/');
+            setCities(response.data);  // Set the fetched users to state
+        } catch (err) {
+            setError('Failed to fetch Cities');
+        } finally {
+            setLoading(false);  // Stop loading
+        }
+    };
+    const getPreferredJobTitle = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/user/PreferredJobTitle/');
+            setPreferredJobTitle(response.data);  // Set the fetched users to state
+        } catch (err) {
+            setError('Failed to fetch PreferredJobTitle');
+        } finally {
+            setLoading(false);  // Stop loading
+        }
     };
 
     const getPrefererdDepartList = async () => {
@@ -238,21 +166,36 @@ const JobPreferences = () => {
         <main>
             <div className="card-header fw-bold">
                 <span><i className="bi bi-card-checklist text-secondary me-2"></i> Job Preferences </span>
-                <button onClick={() => PopulateJobPreferences} className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addJobPreferences"></button>
+                <button onClick={handleEditJobPreferences} className="bi bi-pencil-square float-end btn  py-0" data-bs-toggle="modal" data-bs-target="#addJobPreferences"></button>
             </div>
 
             <div className="card-body">
-                <ul className="list-unstyled profile-sec">
-                    <li className="lt-blue-c">
-                        Preferred Department: {getDepartmentName(postJobPreferences.preferred_department_function)}
-                    </li>
-                    <li><span className="text-secondary">Preferred Job Title:</span> {PreferJobTitle(postJobPreferences.preferred_job_title)}</li>
-                    <li><span className="text-secondary">Preferred Location:</span> {cityList(postJobPreferences.preferred_location)}</li>
-                    <li><span className="text-secondary">Job Type:</span> {postJobPreferences.job_type}</li>
-                    <li><span className="text-secondary">Employment Type:</span> {postJobPreferences.employee_type}</li>
-                    <li><span className="text-secondary">Preferred Workplace:</span> {postJobPreferences.prefreed_workplace}</li>
-                    <li><span className="text-secondary">What are you currently looking for?:</span> {postJobPreferences.what_are_you_currently_looking_for}</li>
-                </ul>
+            <ul className="list-unstyled profile-sec">
+    <li className="lt-blue-c">
+        Preferred Department: {getDepartmentName(getJobPreferences?.preferred_department_function)}
+    </li>
+    <li>
+        <span className="text-secondary">Preferred Job Title:</span>{" "}
+        {PreferJobTitle(getJobPreferences?.preferred_job_title)}
+    </li>
+    <li>
+        <span className="text-secondary">Preferred Location:</span>{" "}
+        {cityList(getJobPreferences?.preferred_location)}
+    </li>
+    <li>
+        <span className="text-secondary">Job Type:</span> {getJobPreferences?.job_type}
+    </li>
+    <li>
+        <span className="text-secondary">Employment Type:</span> {getJobPreferences?.employee_type}
+    </li>
+    <li>
+        <span className="text-secondary">Preferred Workplace:</span> {getJobPreferences?.prefreed_workplace}
+    </li>
+    <li>
+        <span className="text-secondary">What are you currently looking for?:</span>{" "}
+        {getJobPreferences?.what_are_you_currently_looking_for}
+    </li>
+</ul>
             </div>
 
             <div className="modal fade" id="addJobPreferences" aria-labelledby="addJobPreferencesLabel" aria-hidden="true">
@@ -262,13 +205,13 @@ const JobPreferences = () => {
                             <h5 className="modal-title" id="addJobPreferencesLabel">Job Preferences</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form className="job-preference-form" onSubmit={() => postMethodJobPreferences}>
+                        <form className="job-preference-form" onSubmit={postMethodJobPreferences}>
                             <div className="modal-body">
 
                                 <div className="row">
                                     <div className="col-md-6">
                                         <div className="mb-3">
-                                            <label htmlFor="department" className="form-label">Preferred Department/Function {postJobPreferences?.preferred_department_function}</label>
+                                            <label htmlFor="department" className="form-label">Preferred Department/Function </label>
                                             <select
                                                 className="form-select"
                                                 name="preferred_department_function"
@@ -298,7 +241,7 @@ const JobPreferences = () => {
                                     </div>
 
                                     <div className="col-lg-12 mb-3">
-                                        <label className="form-label">Job Type {postJobPreferences.job_type}</label>
+                                        <label className="form-label">Job Type </label>
                                         <div>
                                             <div className="form-check form-check-inline">
                                                 <input
@@ -318,8 +261,8 @@ const JobPreferences = () => {
                                                     type="radio"
                                                     id="temporary"
                                                     name="job_type"
-                                                    value="Temporary/Contract"
-                                                    checked={postJobPreferences.job_type === 'Temporary/Contract'}
+                                                    value="Temporary_Contract"
+                                                    checked={postJobPreferences.job_type === 'Temporary_Contract'}
                                                     onChange={handleInputJobPreferences} />
                                                 <label className="form-check-label" htmlFor="temporary">Temporary/Contract</label>
                                             </div>
@@ -329,8 +272,8 @@ const JobPreferences = () => {
                                                     type="radio"
                                                     id="bothJobType"
                                                     name="job_type"
-                                                    value="both"
-                                                    checked={postJobPreferences.job_type === 'both'}
+                                                    value="Both"
+                                                    checked={postJobPreferences.job_type === 'Both'}
                                                     onChange={handleInputJobPreferences} />
                                                 <label className="form-check-label" htmlFor="bothJobType">Both</label>
                                             </div>
@@ -387,8 +330,8 @@ const JobPreferences = () => {
                                                     type="radio"
                                                     id="office"
                                                     name="prefreed_workplace"
-                                                    value="In-Office"
-                                                    checked={postJobPreferences.prefreed_workplace === 'In-Office'}
+                                                    value="In_Office"
+                                                    checked={postJobPreferences.prefreed_workplace === 'In_Office'}
                                                     onChange={handleInputJobPreferences} />
                                                 <label className="form-check-label" htmlFor="office">In-Office</label>
                                             </div>
@@ -432,7 +375,7 @@ const JobPreferences = () => {
                                             name="what_are_you_currently_looking_for" onChange={handleInputJobPreferences}>
                                             <option selected>Select</option>
                                             <option value='Job'>Job</option>
-                                            <option value='Intership'>Internship</option>
+                                            <option value='Internship'>Internship</option>
                                         </select>
                                     </div>
                                 </div>
@@ -440,10 +383,11 @@ const JobPreferences = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="cancel-btn" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" onClick={updateJobProference} className="update-btn" data-bs-dismiss="modal">Update</button>
-                                {
+                                <button type="button" onClick={updateJobPreferences} className="update-btn" data-bs-dismiss="modal">Update</button>
+                                <button type="submit" className="save-btn" data-bs-dismiss="modal">Save</button>
+                                {/* {
                                     saveBtn ? <button type="submit" className="save-btn" data-bs-dismiss="modal">Save</button> : ''
-                                }
+                                } */}
 
                             </div>
                         </form>

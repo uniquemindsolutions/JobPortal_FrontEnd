@@ -51,7 +51,7 @@ const PersonalDetails = () => {
     });
 
     useEffect(() => {
-        presonGetMethod();
+        getMethodPersonalDetials();
         // handlePeronalGet();
         // handlePopulatepersonalDetails(0);
 
@@ -76,10 +76,10 @@ const PersonalDetails = () => {
     }
 
     // personal details start
-    const presonGetMethod = async () => {
+    const getMethodPersonalDetials = async () => {
         setLoading(true);
         try {
-            const res_personal_get = await axios.get("http://127.0.0.1:8000/user/PersonDetails/1/");
+            const res_personal_get = await axios.get("http://127.0.0.1:8000/user/PersonDetails/5/");
             const personal_list: PersonDetails = res_personal_get.data;
             setGetPersonDetais(personal_list);
             console.log("personal data list ===", personal_list);
@@ -164,8 +164,8 @@ const PersonalDetails = () => {
                 <button className="bi bi-pencil-square float-end btn  py-0" onClick={handlePopulatepersonalDetails} data-bs-toggle="modal" data-bs-target="#addPersonalDetails"></button></div>
             <div className="card-body">
                 <ul className='list-unstyled profile-sec'>
-                    {getPersonDetais && (
-                        <>
+                     {getPersonDetais ? getPersonDetais && (
+                        <ul className='list-unstyled profile-sec'>
                             <li className='lt-blue-c'>Gender: {getPersonDetais.gender}</li>
                             <li><span className='text-secondary'>Date of Birth:</span>  {getPersonDetais.date_of_birth} </li>
                             <li><span className='text-secondary'>Marital Status:</span>  {getPersonDetais.marital_status} </li>
@@ -175,8 +175,8 @@ const PersonalDetails = () => {
                             <li><span className='text-secondary'>Specially abled:</span> {getPersonDetais.i_am_specially_abled ? 'Yes' : 'No'} </li>
                             <li><span className='text-secondary'>Resident Status:</span> {constryList(getPersonDetais.resident_status)} </li>
                             <li><span className='text-secondary'>Work Permit for Other Country:</span> {constryList(getPersonDetais.work_permit_for_other_country)} </li>
-                        </>
-                    )}
+                        </ul>
+                    ):("No data found")}
                 </ul>
             </div>
 

@@ -67,7 +67,7 @@ function App() {
           <Route>
             <Route path='' element={<JobSeekerAdmin/>}>
               <Route path='seeker-dashboard' element={<SeekerDashboard/>}/>
-              <Route path='/view-job-details/:id' element={<ViewJobDetails/>}/>
+              <Route path='/view-job-details/:jobId' element={<ViewJobDetails/>}/>
               <Route path='profile' element={<Profiles/>}/>
               <Route path='applied-jobs' element={<AppliedJobs/>}/>
               <Route path='saved-jobs' element={<SavedJobs saveJobsData={[]} />}/>

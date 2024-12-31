@@ -92,6 +92,10 @@ const SideMenu = () => {
                             onClick={() => handleLinkClick('myprofile')}><i className="bi bi-person"></i> My Profile</Link>
                     </li>
                     <li className="">
+                        <Link to="submit-job" className={`nav-link ${activeLink === 'submit-job' ? 'active' : ''}`}
+                            onClick={() => handleLinkClick('submit-job')}><i className="bi bi-send-check"></i> Submit Job </Link>
+                    </li>
+                    <li className="">
                         <Link to="my-jobs" className={`nav-link ${activeLink === 'my-jobs' ? 'active' : ''}`}
                             onClick={() => handleLinkClick('my-jobs')}><i className="bi bi-person-vcard"></i> My Jobs </Link>
                     </li>
@@ -99,10 +103,7 @@ const SideMenu = () => {
                         <Link to="messages" className={`nav-link ${activeLink === 'messages' ? 'active' : ''}`}
                         onClick={() => handleLinkClick('messages')}><i className="bi bi-chat-left-text"></i> Messages </Link>
                     </li> */}
-                    <li className="">
-                        <Link to="submit-job" className={`nav-link ${activeLink === 'submit-job' ? 'active' : ''}`}
-                            onClick={() => handleLinkClick('submit-job')}><i className="bi bi-send-check"></i> Submit Job </Link>
-                    </li>
+                   
                     {/* <li className="">
                         <Link to="posted-job" className={`nav-link ${activeLink === 'posted-job' ? 'active' : ''}`}
                         onClick={() => handleLinkClick('posted-job')}><i className="bi bi-send-check"></i> Posted Jobs </Link>

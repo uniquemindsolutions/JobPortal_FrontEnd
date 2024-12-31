@@ -68,7 +68,7 @@ const Profiles = () => {
     const GetHandleUserProfile = async () => {
         setLoading(true);
         try {
-            const res_profileDetals = await axios.get("http://127.0.0.1:8000/user/Userprofile/1/")
+            const res_profileDetals = await axios.get("http://127.0.0.1:8000/user/Userprofile/4/")
             const profile_list = res_profileDetals.data
             setGetUserProfile(profile_list)
             setPreview(profile_list.profile_photo); // Generate preview URL for profile photo
@@ -199,7 +199,6 @@ const Profiles = () => {
             setPreview(URL.createObjectURL(file)); // Generate and set a preview URL
         } else {
             // setProfilePhoto('')
-
         }
     };
     const handleFileResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -226,7 +225,7 @@ const Profiles = () => {
         setLoading(true);
 
         try {
-            const res_project_edit = await axios.get(`http://127.0.0.1:8000/user/Userprofile/1/`);
+            const res_project_edit = await axios.get(`http://127.0.0.1:8000/user/Userprofile/4/`);
             const projectdataEdit = res_project_edit.data;
 
             if (Object.keys(projectdataEdit).length > 0) {
@@ -259,7 +258,6 @@ const Profiles = () => {
             setLoading(false); // Ensure loading is reset
         }
     };
-
 
     const desigJobsList = (id: any) => {
         const Desig = desingList.find((dis: any) => dis.id === id)
@@ -562,16 +560,16 @@ const Profiles = () => {
                                                 <select className="form-select mt-2" name='total_months' value={postUserProfile.total_months} onChange={handleInputFormUserpro}>
                                                     <option>Select</option>
                                                     <option value="1 month">1 Month</option>
-                                                    <option value="2 month">2 Months</option>
-                                                    <option value="3 month">3 Months</option>
-                                                    <option value="4 month">4 Months</option>
-                                                    <option value="5 month">5 Months</option>
-                                                    <option value="6 month">6 Months</option>
-                                                    <option value="7 month">7 Months</option>
-                                                    <option value="8 month">8 Months</option>
-                                                    <option value="9 month">9 Months</option>
-                                                    <option value="10 month">10 Months</option>
-                                                    <option value="11 month">11 Months</option>
+                                                    <option value="2 months">2 Months</option>
+                                                    <option value="3 months">3 Months</option>
+                                                    <option value="4 months">4 Months</option>
+                                                    <option value="5 months">5 Months</option>
+                                                    <option value="6 months">6 Months</option>
+                                                    <option value="7 months">7 Months</option>
+                                                    <option value="8 months">8 Months</option>
+                                                    <option value="9 months">9 Months</option>
+                                                    <option value="10 months">10 Months</option>
+                                                    <option value="11 months">11 Months</option>
                                                 </select>
                                             </div>
                                         </div>

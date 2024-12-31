@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './sekerDashboard.scss'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SavedJobs from '../SavedJobs';
+import ViewJobDetails from './ViewJobDetails';
 
 interface City {
   id: number;
@@ -12,9 +13,9 @@ interface CompanyDetails {
   company_logo: string;
   company_name: string;
 }
-interface Industry{
-  id:number;
-  industry:string;
+interface Industry {
+  id: number;
+  industry: string;
 }
 interface JobItem {
   id: string;
@@ -31,15 +32,16 @@ interface JobItem {
 }
 
 const SeekerDashboard = () => {
-  const [industries, setIndustries] = useState<Industry[]>([]); 
+
+  const [industries, setIndustries] = useState<Industry[]>([]);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedWorkModes, setSelectedWorkModes] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [recentJobs, setRecentJobs] = useState<any[]>([]);
-  // const [applied setApplied] = useState();
+  const [recentJobs, setRecentJobs] = useState<any>([]);
+  const [previewImage, setPreviewImage] = useState<any>([]); // Default dummy image
   const [citys, setCitys] = useState<City[]>([]);
   const [saveJobs, setSaveJob] = useState([])
   const [dashboardfeilds, SetDashboardFeilds] = useState({
@@ -60,6 +62,7 @@ const SeekerDashboard = () => {
         : [...prevSelected, industry]
     );
   };
+
   // Toggle work mode selection
   const handleWorkModeChange = (work_mode: string) => {
     setSelectedWorkModes(prev =>
@@ -79,6 +82,7 @@ const SeekerDashboard = () => {
   };
 
   useEffect(() => {
+
     const fetchIndustries = async () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/industry/')
@@ -91,6 +95,7 @@ const SeekerDashboard = () => {
       }
     }
     fetchIndustries();
+
     const fetchJobsAndCities = async () => {
       fetchData();
       setLoading(true);
@@ -117,8 +122,13 @@ const SeekerDashboard = () => {
         const queryString = queryParams.join('&');
         console.log("Query String:", queryString);
         // Fetch the jobs based on selected filters
-        const response = await axios.get(`http://127.0.0.1:8000/submitnewjob/?${queryString}`);
+        const response = await axios.get(`http://127.0.0.1:8000/submitnewjob/?${queryString}/`);
         setRecentJobs(response.data); // Update job list
+        console.log("Respose",response.data)
+        const companyLogoUrl = response.data[0].company_logo || '/images/default-logo.png';
+        // const companyLogoUrl = response.data.map((log:any)=> log.company_logo || '/images/default-logo.png')
+        setPreviewImage(companyLogoUrl);
+        console.log("response.data.company_logo ===", companyLogoUrl)
 
         // Fetch the list of cities
         const cityResponse = await fetch("http://127.0.0.1:8000/cities/");
@@ -133,8 +143,11 @@ const SeekerDashboard = () => {
       }
     };
     // Call the function to fetch jobs and cities when filters change
+
+
     fetchJobsAndCities();
   }, [selectedIndustries, selectedLocations, selectedWorkModes]); // Dependency array with selected filters
+
   const getCityNameById = (id: number) => {
     const city = citys.find((city: City) => city.id === id)
     return city ? city.name : 'Unknown City';
@@ -180,9 +193,8 @@ const SeekerDashboard = () => {
     try {
       const res_saveJobs = await axios.get("http://127.0.0.1:8000/user/submit-job/")
       const savejobsData = res_saveJobs.data;
-      setSaveJob(savejobsData)
-
-      console.log("save jobs details ====", savejobsData)
+      setSaveJob(savejobsData);
+      console.log("Save jobs details ====", savejobsData);
     } catch (error) {
       setError('No data found')
     } finally {
@@ -190,16 +202,56 @@ const SeekerDashboard = () => {
     }
   }
   const getJobCountForWorkMode = (workMode: string) => {
-    return recentJobs.filter(job => job.work_mode === workMode).length;
+    return recentJobs.filter((job:any) => job.work_mode === workMode).length;
   };
   const getJobCountForLocation = (joblocation: number): number => {
-    return recentJobs.filter(job => job.job_location === joblocation).length;
+    return recentJobs.filter((job:any) => job.job_location === joblocation).length;
   };
 
   const getJobCountForIndustry = (industry: number): number => {
-    return recentJobs.filter(job => job.industry === industry).length;
-
+    return recentJobs.filter((job:any) => job.industry === industry).length;
   };
+
+  // days ago script start
+  function timeAgo(dateString: string): string {
+    const date: Date = new Date(dateString); // Explicitly declare as Date
+    const now: Date = new Date(); // Explicitly declare as Date
+    const secondsAgo: number = Math.floor((now.getTime() - date.getTime()) / 1000); // Use getTime()
+
+    if (secondsAgo < 60) {
+      return "just now";
+    } else if (secondsAgo < 3600) {
+      const minutes = Math.floor(secondsAgo / 60);
+      return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    } else if (secondsAgo < 86400) {
+      const hours = Math.floor(secondsAgo / 3600);
+      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    } else if (secondsAgo < 604800) {
+      const days = Math.floor(secondsAgo / 86400);
+      return `${days} day${days > 1 ? "s" : ""} ago`;
+    } else if (secondsAgo < 2592000) {
+      const weeks = Math.floor(secondsAgo / 604800);
+      return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+    } else if (secondsAgo < 31536000) {
+      const months = Math.floor(secondsAgo / 2592000);
+      return `${months} month${months > 1 ? "s" : ""} ago`;
+    } else {
+      const years = Math.floor(secondsAgo / 31536000);
+      return `${years} year${years > 1 ? "s" : ""} ago`;
+    }
+  }
+
+  const dates = [
+    "2024-11-18T10:30:00",
+    "2024-10-20T14:00:00",
+    "2023-11-18T08:15:00",
+  ];
+
+  dates.forEach((date) => {
+    console.log(`${date} -> ${timeAgo(date)}`);
+  });
+  // days ago script end
+
   return (
     <main>
       <h4 className='mt-4'>Dashboard</h4>
@@ -268,6 +320,7 @@ const SeekerDashboard = () => {
       <div className="row mt-4">
         <div className="col-lg-8">
           <h5>Recent Jobs</h5>
+
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
@@ -277,51 +330,80 @@ const SeekerDashboard = () => {
               if (a.job_title > b.job_title) return -1;
               if (a.job_title < b.job_title) return 1;
               return 0;
-          }).map((job: JobItem, index: number) => (
+            }).map((job: JobItem, index: number) => (
               <div className="card job-card mt-4" key={index}>
                 <div className="row">
                   <div className="col-md-2 text-end">
                     <div className="company-logo">
                       <a href="#">
-                        <img
-                          src={CompanyDetails?.company_logo || `${window.location.origin}/images/default-logo.png`}
+                        {/* <img src={comapnyLogo} alt="Company Logo" className="img-fluid" /> */}
+                        {/* {compayLogoName && compayLogoName.company_name} */}
+                        {/* <img
+                          src={compayLogoName.company_logo}
                           alt="Company Logo"
-                          className="comp-logo"
+                          onError={(e) => {
+                            e.currentTarget.src = '/images/default-logo.png'; // Fallback for broken images
+                          }}
+                          className="img-fluid"
+                        /> */}
+
+                        {/* <img
+                          src={previewImage}
+                          alt="Company Logo"
+                          onError={(e) => {
+                            e.currentTarget.src = '/images/default-logo.png'; // Fallback if preview fails
+                          }}
+                          className='img-fluid'
+                        /> */}
+                        <img
+                            className="img-fluid"
+                            src={ previewImage}
+                            alt="Company Logo"
                         />
+                        {/* {recentJobs.map((job:any, index:any) => (
+                          <div key={index} className="job-card">
+                            <img
+                              className="img-fluid"
+                              src={previewImage[index] || '/images/default-logo.png'}
+                              alt={`Company logo for ${job.company_name}`}
+                            />                            
+                          </div>
+                        ))} */}
+
                       </a>
                     </div>
                   </div>
                   <div className="col-md-10">
-                    <h5 className="job-title">{job.job_title}</h5>
+                    <h6 className="job-title">{job.job_title}</h6>
                     <div className="d-md-flex">
                       <div className="company-details">
                         {job.company_name}
                       </div>
                       <div className="job-info ms-auto mt-0">
                         <span className="experience">
-                          <i className="bi bi-duffle"></i> {job.min_experience} - {job.max_experience} Years
+                          <i className="bi bi-duffle"></i>{job.min_experience} - {job.max_experience} Years
                         </span>
                         <span className="salary">
-                          <i className="bi bi-currency-rupee"></i> {job.min_salary} - {job.max_salary} L.P.A
+                          <i className="bi bi-currency-rupee"></i>{job.min_salary} - {job.max_salary} L.P.A
                         </span>
                         <span className="location">
-                          <i className="bi bi-geo-alt"></i> {getCityNameById(job.job_location)}
+                          <i className="bi bi-geo-alt"></i>{getCityNameById(job.job_location)}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="row mt-2">
-                  <div className="col-md-7 pt-1">
-                    <span className="job-meta">Posted: <strong>{job.created_date.split('T')[0]}</strong></span>
-                    <span className="job-meta">Openings: <strong>{job.number_of_positions}</strong></span>
-                    <span className="job-meta">Applicants: <strong>{dashboardfeilds.applied_count}</strong></span>
+                <div className="row mt-1">
+                  <div className="col-md-7 pt-2">
+                    <span className="job-meta">Posted: <span className='text-dark'>{timeAgo(job.created_date.split('T')[0])}</span> </span>
+                    <span className="job-meta">Openings: <span className='text-dark'>{job.number_of_positions}</span></span>
+                    <span className="job-meta">Applicants: <span className='text-dark'>{dashboardfeilds.applied_count}</span></span>
                   </div>
                   <div className="col-md-5">
                     <div className="text-end">
                       <button onClick={handleSaveJobs} className="btn btn-outline-primary btn-save me-3">Save</button>
-                      <Link to={`/view-job-details/${job.id}`} className="btn btn-primary btn-apply">Apply Now</Link>
+                      <Link to={`/view-job-details/${job.id}`} className="btn btn-primary btn-apply">Apply Now </Link>
                     </div>
                   </div>
                 </div>
@@ -332,7 +414,7 @@ const SeekerDashboard = () => {
             <p>No jobs found.</p>
           )}
 
-
+          {/* <ViewJobDetails viewJobDataProp={recentJobs} />; */}
 
         </div>
 
@@ -343,7 +425,7 @@ const SeekerDashboard = () => {
             <div className='border-bottom my-2'></div>
             <div className="filter-card-fields">
               <div className="form-check mb-2">
-                <input
+                <input 
                   className="form-check-input"
                   type="checkbox"
                   id="office"
@@ -396,7 +478,7 @@ const SeekerDashboard = () => {
 
             <h6 className='mt-4'>Department</h6>
             <div className='border-bottom my-2'></div>
-            <div>
+            <div className='filter-sec scroll-cust'>
               {industries.length > 0 ? (
                 industries.map((Industry, index) => (
                   <div key={Industry.id} className="form-check mb-2">
@@ -455,7 +537,7 @@ const SeekerDashboard = () => {
 
             <h6 className='mt-4'>Location</h6>
             <div className='border-bottom my-2'></div>
-            <div>
+            <div className='filter-sec scroll-cust'>
               {citys.length > 0 ? (
                 citys.map((city, index) => (
                   <div key={city.id} className="form-check mb-2">
