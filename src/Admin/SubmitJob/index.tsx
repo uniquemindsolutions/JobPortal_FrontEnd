@@ -9,6 +9,8 @@ import { colors } from 'react-select/dist/declarations/src/theme';
 
 
 interface SubmitJob {
+    company_name: string;
+    company_logo: null;
     job_title: string;
     number_of_positions: string;
     created_date: string;
@@ -119,7 +121,7 @@ const SubmitJob = () => {
     const [fileUploadlogo, setFilelogo] = useState<any | null>(null);
     const [link, setLink] = useState<string>();
     // const [error, setError] = useState('');
-
+    const [previewImage, setPreviewImage] = useState('/images/default-logo.png');
 
     const [errors, setErrors] = useState({
         job_title: '',
@@ -128,6 +130,8 @@ const SubmitJob = () => {
         fetchError: '' // Add an error field for fetching job data
     });
     const [formData, setFormData] = useState<SubmitJob>({
+        company_name: '',
+        company_logo: null,
         job_title: '',
         number_of_positions: '',
         created_date: '',
@@ -157,6 +161,29 @@ const SubmitJob = () => {
         ug_course: 0,
         pg_course: 0,
     });
+
+
+    const handleCompanyLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, files } = e.target;
+
+        if (name === 'company_logo' && files && files[0]) {
+            const file = files[0];
+
+            // Update formData
+            setFormData((prev: any) => ({
+                ...prev,
+                company_logo: file,
+            }));
+
+            // Update preview image
+            const reader = new FileReader();
+            reader.onload = () => {
+                setPreviewImage(reader.result as string); // Convert file to base64 for preview
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const validateForm = () => {
         const newErrors: any = {};
 
@@ -387,31 +414,18 @@ const SubmitJob = () => {
         const submissionData = new FormData();
         if (fileUpload) {
             submissionData.append('upload_file', fileUpload);
-
-
         } else {
             console.log(submissionData, "newfile", fileUpload);
         }
-
-
         if (fileUploadlogo) {
             submissionData.append('company_logo', fileUploadlogo);
-
-
         } else {
             console.log(submissionData, "newfile", fileUploadlogo);
         }
-
-
-
         
-      
-        console.log(submissionData, "submissionData.....");
-
-        alert("Hi")
         Object.keys(formData).forEach(key => {
             console.log("Formdata response.....", (formData as any)[key]);
-        
+
             // Check for specific fields and handle the ID properly
             if (key === "intermediate") {
                 const intermediateId = (formData as any)[key];
@@ -443,10 +457,10 @@ const SubmitJob = () => {
                 submissionData.append(key, (formData as any)[key]);
             }
         });
-        
-        
-       
-        
+
+
+
+
 
         // const payload = {
         //     "job_title": formData.job_title,
@@ -604,6 +618,10 @@ const SubmitJob = () => {
             })
             .catch(error => console.error('Error fetching states:', error));
     };
+
+    const ClearSubmitJobsInput = ()=>{
+        return {...formData}
+    }
     return (
         <main>
             <h4 className="mt-4">Submit a Job</h4>
@@ -611,8 +629,32 @@ const SubmitJob = () => {
                 <div className="custom-card">
                     <h4 className='text-primary'>Job Details</h4>
                     <div className="row">
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="company_name" className="form-label">Company Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="company_name"
+                                value={formData.company_name || ""}  // Handle empty case
+                                onChange={handleInputChange}
+                                disabled={isEditing}
+                                placeholder="UI Developer"
+                                required
+                            />
+                        </div>
+                        <div className="col-md-4 mb-3">
+                            <label htmlFor="company_logo" className="form-label">Company Logo</label>
+                          <input
+                                type="file"
+                                className="form-control"
+                                id="company_logo"
+                                name="company_logo"
+                                accept="image/*"
+                                onChange={handleCompanyLogoChange}
+                            />
+                        </div>
                         {/* Job Title */}
-                        <div className="col-md-6 mb-3">
+                        <div className="col-md-4 mb-3">
                             <label htmlFor="job_title" className="form-label">Job Title*</label>
                             {/* {formData.upload_file} */}
                             <input
@@ -627,37 +669,7 @@ const SubmitJob = () => {
                             />
                             {errors.job_title && <span className="text-danger">{errors.job_title}</span>}
                         </div>
-                        {/* Number of Positions */}
                         <div className="col-md-3 mb-3">
-                            <label htmlFor="number_of_positions" className="form-label">Number of Positions*</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                name="number_of_positions"
-                                value={formData.number_of_positions || ""}  // Handle empty case
-                                onChange={handleInputChange}
-                                disabled={isEditing}
-                                placeholder="e.g., 5"
-                                required
-                            />
-                            {errors.number_of_positions && <span className="text-danger">{errors.number_of_positions}</span>}
-                        </div>
-
-                        <div className="col-md-3 mb-3">
-                            <label htmlFor="created_date" className="form-label">Date</label>
-                            <input
-                                type="date"
-                                id='created_date'
-                                className="form-control"
-                                name="created_date"
-                                value={formData.created_date ? formData.created_date.split('T')[0] : ""}
-                                onChange={handleInputChange}
-                                disabled={isEditing}
-                                required
-                            />
-                        </div>
-                         {/* Industry */}
-                         <div className="col-md-5 mb-3">
                             <label htmlFor="industry" className="form-label">Industry*</label>
                             <select
                                 className="form-select"
@@ -682,7 +694,7 @@ const SubmitJob = () => {
                             {errors.industry && <span className="text-danger">{errors.industry}</span>}
                         </div>
                         {/* Job Category */}
-                        <div className="col-md-5 mb-3">
+                        <div className="col-md-3 mb-3">
                             <label htmlFor="job_category" className="form-label">Job Category</label>
                             <select className="form-select" value={formData.job_category || ""} id="job_category" name="job_category"
                                 onChange={handleInputChange}
@@ -700,7 +712,38 @@ const SubmitJob = () => {
                                 )}
                             </select>
                         </div>
-                        <div className="col-md-2 mb-3">
+                        {/* Number of Positions */}
+                        <div className="col-md-3 mb-3">
+                            <label htmlFor="number_of_positions" className="form-label">Number of Positions*</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                name="number_of_positions"
+                                value={formData.number_of_positions || ""}  // Handle empty case
+                                onChange={handleInputChange}
+                                disabled={isEditing}
+                                placeholder="e.g., 5"
+                                required
+                            />
+                            {errors.number_of_positions && <span className="text-danger">{errors.number_of_positions}</span>}
+                        </div>
+
+                        <div className="col-md-3 mb-3">
+                            <label htmlFor="created_date" className="form-label">Create Date</label>
+                            <input
+                                type="date"
+                                id='created_date'
+                                className="form-control"
+                                name="created_date"
+                                value={formData.created_date ? formData.created_date.split('T')[0] : ""}
+                                onChange={handleInputChange}
+                                disabled={isEditing}
+                                required
+                            />
+                        </div>
+                        {/* Industry */}
+
+                        <div className="col-md-3 mb-3">
                             <label htmlFor="JobType" className="form-label">Job Type</label>
                             <select
                                 className="form-select"
@@ -739,13 +782,7 @@ const SubmitJob = () => {
                                 disabled={isEditing}
                             />
                         </div>
-                       
-
-                       
-
-                        
-
-                        <div className="col-md-4 col-lg-3 mb-3">
+                         <div className="col-md-4 col-lg-3 mb-3">
                             <label htmlFor="work_mode" className="form-label">Work Mode</label>
                             <select className="form-select" name="work_mode" id="work_mode" disabled={isEditing}
                                 value={formData.work_mode || ""}  // Handle empty case
@@ -771,7 +808,7 @@ const SubmitJob = () => {
                         </div>
                         {/* Min Salary */}
                         <div className="col-md-4 col-lg-3 mb-3">
-                            <label htmlFor="min_salary" className="form-label">Min Salary(Lacs)</label>
+                            <label htmlFor="min_salary" className="form-label">Min Salary(LPA)</label>
                             <input
                                 type="number"
                                 value={formData.min_salary || ""}
@@ -786,7 +823,7 @@ const SubmitJob = () => {
 
                         {/* Max Salary */}
                         <div className="col-md-4 col-lg-3 mb-3">
-                            <label htmlFor="max_salary" className="form-label">Max Salary(Lacs)</label>
+                            <label htmlFor="max_salary" className="form-label">Max Salary(LPA)</label>
                             <input
                                 type="number"
                                 className="form-control"
@@ -798,8 +835,8 @@ const SubmitJob = () => {
                                 placeholder="Max Salary"
                             />
                         </div>
-                         {/* Job Description */}
-                         <div className="col-md-12 mb-3">
+                        {/* Job Description */}
+                        <div className="col-md-12 mb-3">
                             <label htmlFor="job_description" className="form-label">Job Description</label>
                             <ReactQuill
                                 theme="snow"
@@ -861,7 +898,7 @@ const SubmitJob = () => {
                             </select>
                         </div>
                         {/* Upload File */}
-                        <div className="col-md-10 mb-3">
+                        <div className="col-md-9 mb-3">
                             <label htmlFor="upload_file" className="form-label">File Attachment</label>
                             <input
                                 className="form-control"
@@ -871,14 +908,7 @@ const SubmitJob = () => {
                                 onChange={handleFileChange}
                                 disabled={isEditing}
                             />
-                            {/* <input
-                                type="hiden"
-                                value={formData.upload_file_path}
-                                id="upload_file_path"
-                                name="upload_file_path"
-                                /> */}
-
-                            {link && (
+                             {link && (
                                 <div>
                                     <a
                                         href={link}
@@ -893,7 +923,7 @@ const SubmitJob = () => {
                             )}
 
                         </div>
-                        <div className="col-md-2 mb-3">
+                        <div className="col-md-3 mb-3">
                             <label htmlFor="job_status" className="form-label">Job Status </label>
                             <select className="form-select" name="job_status" id="job_status"
                                 value={formData.job_status}
@@ -1026,7 +1056,7 @@ const SubmitJob = () => {
                     >
                         Submit Job
                     </button>
-                    <button type="submit" className="btn ms-4">Cancel</button>
+                    <button onClick={ClearSubmitJobsInput} className="btn ms-4">Cancel</button>
                 </div>
             </form>
         </main >

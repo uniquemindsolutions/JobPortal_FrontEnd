@@ -219,7 +219,7 @@ const Dashboard = () => {
                                 <li key={index} className="d-flex justify-content-between align-items-center my-3">
                                     <div>
                                         <h6 className="mb-0 text-primary">{item.job_title}</h6>
-                                        <small className="text-muted"><span>{timeAgo(item.created_date.split('T')[0])}, {item.job_type}</span>, <span>{getCityNameById(item.city)}</span></small>
+                                        <small className="text-muted"><span>{timeAgo(item.created_date)}, {item.job_type}</span>, <span>{getCityNameById(item.city)}</span></small>
                                     </div>
                                 </li>
                             ))

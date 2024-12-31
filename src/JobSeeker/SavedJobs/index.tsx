@@ -46,7 +46,7 @@ const SavedJobs: React.FC<SavedJobsProps> = ({ saveJobsData }) => {
                           <i className="bi bi-geo-alt"></i> {item.location || 'Location not specified'}
                         </span>
                         <span className="posted-date">
-                          <i className="bi bi-calendar-check"></i> {item.created_date.split('T')[0]}
+                          <i className="bi bi-calendar-check"></i> {item.created_date}
                         </span>
                       </div>
                     </div>

@@ -42,13 +42,21 @@ const WorkExperience = ({ date }: any) => {
         current_salary: '',
         description: ''
     });
-    const [workExpEdit, setWorkExpEdit] = useState<any>([])
 
     useEffect(() => {
-        workExpGet();
+        getMethodWorkExp();
     }, [])
 
-    const workExpGet = async () => {
+    const handleInputWorkExpForm = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setWorkexperiencePost((workexperiencePost: any) => ({
+            ...workexperiencePost,
+            [name]: value,
+        }));
+    }
+
+    const getMethodWorkExp = async () => {
         setLoading(true)
         try {
             const res_workExp = await axios.get('http://127.0.0.1:8000/user/Workexperience/')
@@ -63,43 +71,29 @@ const WorkExperience = ({ date }: any) => {
     }
 
     const handleSubmitWorkExpPost = async (e: any) => {
-        setSaveBtn(true)
         e.preventDefault();
+        setSaveBtn(true)
         try {
-            const res_workExp = await axios.post(`http://127.0.0.1:8000/user/Workexperience/`, WorkexperiencePost);
-            const workExpData = res_workExp.data;
-            setWorkexperiencePost(workExpData);
+            await axios.post(`http://127.0.0.1:8000/user/Workexperience/`, WorkexperiencePost);
+            getMethodWorkExp();
         } catch (error) {
             console.log(error)
-
         }
     }
 
-    const handleInputWorkExpForm = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
-        e.preventDefault();
-        const { name, value } = e.target;
-        setWorkexperiencePost((workexperiencePost: any) => ({
-            ...workexperiencePost,
-            [name]: value,
-        }));
-    }
-    // const handleDatePickerChange = (date: any) => {
-    //     setStartDate(date);
-    //     const formattedDate = date.toISOString(); // Convert to ISO format
-    //     setWorkexperiencePost((prevState: any) => ({
-    //         ...prevState,
-    //         start_date: formattedDate,
-    //     }));
-    // };
-
-    // const handleEndDateChange = (date: any) => {
-    //     setEndDate(date);
-    //     const formattedDate = date.toISOString(); // Convert to ISO format
-    //     setWorkexperiencePost((prevState: any) => ({
-    //         ...prevState,
-    //         end_date: formattedDate,
-    //     }));
-    // };
+    const emptyPopFields = () => {
+        setWorkexperiencePost({
+            current_job_title: '',
+            company_name: '',
+            is_current_company: '',
+            start_date: '',
+            end_date: '',
+            workplace: '',
+            employment_type: '',
+            current_salary: '',
+            description: ''
+        });
+    };
 
     const handlePopulateWorkExp = async (id: number) => {
         setSaveBtn(false)
@@ -124,7 +118,7 @@ const WorkExperience = ({ date }: any) => {
             setLoading(false)
         }
     }
-
+    
     const workExpUpdated = async (id: number) => {
         setSaveBtn(false)
         try {
@@ -179,39 +173,21 @@ const WorkExperience = ({ date }: any) => {
         alert("Are you sure you want to delete?");
         try {
             axios.delete(`http://127.0.0.1:8000/user/Workexperience/${id}/`)
-
             setWorkExpData((preData: any) =>
                 Array.isArray(preData) ? preData.filter(item => item.id !== id) : []
             );
-
-
         } catch (error) {
             setError("Work experience not deleted")
-
         }
     }
-
-    // const handleDeleteProject = async (id: any) => {
-    //     try {
-    //         alert("Are you sure you want to delete?");
-    //         // Proceed with delete request if ID is valid
-    //         await axios.delete(`http://127.0.0.1:8000/user/Projects/${id}/`);
-    //         setProjectsData((prevItems: any) =>
-    //             Array.isArray(prevItems) ? prevItems.filter(item => item.id !== id) : []
-    //         );
-    //     } catch (error) {
-    //         console.error("Error deleting item:", error);
-    //         alert("Failed to delete the item");
-    //     }
-    // };
-
-    // work experiance end 
 
     return (
         <main>
             <ToastContainer />
             <div className="card-header fw-bold">
-                <span><i className="bi bi-duffle text-secondary me-2"></i> Work Experience</span>  <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addWorkExperiance"> +Add</button></div>
+                <span><i className="bi bi-duffle text-secondary me-2"></i> Work Experience</span>  
+                <button className='btn btn btn-success btn-sm float-end' onClick={emptyPopFields} data-bs-toggle="modal" data-bs-target="#addWorkExperiance"> +Add</button>
+            </div>
             <div className="card-body">
                 {loading ? (
                     <p>Loading...</p>
@@ -233,7 +209,7 @@ const WorkExperience = ({ date }: any) => {
                                     ></button>
                                 </li>
                                 <li><span className='text-secondary'>Company Name:</span> {item.company_name}</li>
-                                <li><span className='text-secondary'>Date:</span> {item.start_date.split('T')[0]} to {item.end_date.split('T')[0]}</li>
+                                <li><span className='text-secondary'>Date:</span> {item.start_date.split('T')[0]} <small className='text-secondary'>to</small>  {item.end_date.split('T')[0]}</li>
                                 <li><span className='text-secondary'>Is Current Company:</span> {item.is_current_company ? "Yes" : "No"}</li>
                                 <li><span className='text-secondary'>Workplace:</span> {item.workplace}</li>
                                 <li><span className='text-secondary'>Employment Type:</span> {item.employment_type}</li>
@@ -326,8 +302,8 @@ const WorkExperience = ({ date }: any) => {
                                                         name='start_date'
                                                         value={WorkexperiencePost.start_date}
                                                         onChange={handleInputWorkExpForm} />
-                                                        
-                                                         
+
+
                                                     {/* <DatePicker
                                                         showIcon
                                                         selected={startDate}
@@ -346,8 +322,8 @@ const WorkExperience = ({ date }: any) => {
                                                         id="end_date"
                                                         name='end_date'
                                                         value={WorkexperiencePost.end_date}
-                                                        onChange={handleInputWorkExpForm}/>
-                                                        
+                                                        onChange={handleInputWorkExpForm} />
+
                                                     {/* <DatePicker
                                                         showIcon
                                                         selected={endDate}
@@ -375,23 +351,33 @@ const WorkExperience = ({ date }: any) => {
                                                         <label className="form-check-label" htmlFor="inOffice">In-Office</label>
                                                     </div>
                                                     <div className="form-check form-check-inline">
+                                                        <input className="form-check-input"
+                                                            type="radio"
+                                                            name="workplace"
+                                                            id="workFromHome"
+                                                            value="work_from_home"
+                                                            checked={WorkexperiencePost.workplace === "work_from_home"}
+                                                            onChange={handleInputWorkExpForm} />
+                                                        <label className="form-check-label" htmlFor="workFromHome">Work from home</label>
+                                                    </div>
+                                                    <div className="form-check form-check-inline">
                                                         <input className="form-check-input" type="radio"
-                                                            name="workplace" id="hybrid"
+                                                            name="workplace"
+                                                            id="hybrid"
                                                             value="hybrid"
                                                             checked={WorkexperiencePost.workplace === "hybrid"}
                                                             onChange={handleInputWorkExpForm} />
                                                         <label className="form-check-label" htmlFor="hybrid">Hybrid</label>
                                                     </div>
                                                     <div className="form-check form-check-inline">
-                                                        <input className="form-check-input"
-                                                            type="radio"
-                                                            name="workplace"
-                                                            id="workFromHome"
-                                                            value="work_from_home"
-                                                            checked={WorkexperiencePost.workplace === "Work From Home"}
+                                                        <input className="form-check-input" type="radio"
+                                                            name="workplace" id="Remote"
+                                                            value="remote"
+                                                            checked={WorkexperiencePost.workplace === "remote"}
                                                             onChange={handleInputWorkExpForm} />
-                                                        <label className="form-check-label" htmlFor="workFromHome">Work from home</label>
+                                                        <label className="form-check-label" htmlFor="Remote">Remote</label>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>

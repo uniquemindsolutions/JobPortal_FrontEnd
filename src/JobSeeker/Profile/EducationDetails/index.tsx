@@ -100,99 +100,85 @@ const EducationDetails = () => {
         return qualiData ? qualiData.name : ""
     }
 
+    // const handleInputEduForm = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    //     const { name, value } = e.target;
+    //     SetPostEducationDetails({ ...postEducationDetails, [name]: value });
+    // }
+    const handleInputEduForm = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        SetPostEducationDetails((prevDetails: any) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
+
     const GetEducationDetails = async () => {
         setLoading(true);
         try {
-            const res_edu = await axios.get(`http://127.0.0.1:8000/user/EducationDetails/`);
-            console.log("API response:", res_edu.data); // Log to check data structure
-            const edu_list = Array.isArray(res_edu.data) ? res_edu.data : [res_edu.data];
-            setGetEducation(edu_list);
-            setLoading(false);
+            const response = await axios.get(`http://127.0.0.1:8000/user/EducationDetails/`);
+            setGetEducation(response.data);
         } catch (error) {
             setError("Education data not found");
             setLoading(false);
         }
     };
 
-    const handleInputEduForm = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-        const { name, value } = e.target;
-        SetPostEducationDetails({ ...postEducationDetails, [name]: value });
-    }
-
-    const handlePostEduDetailsForm = async (e: React.FormEvent<HTMLFormElement>) => {
-        setSaveBtn(true)
-        e.preventDefault(); // Prevents page reload on form submit
-
+    const handlePostEduDetailsForm = async (e: any) => {
+        e.preventDefault();
+        setSaveBtn(true);
         try {
-            // Make POST request to the API endpoint
-            const response = await axios.post("http://127.0.0.1:8000/user/EducationDetails/", postEducationDetails,)
-            const post_res = response.data
-            SetPostEducationDetails(post_res)
-            setMessage("EducationDetails Created sucessfully");
-            console.log(response.data);
+            const response = await axios.post(
+                "http://127.0.0.1:8000/user/EducationDetails/", postEducationDetails
+            );
+            const newEducation = response.data;
 
-            // toast.success("Education Details Created sucessfully", {
-            //     position: "bottom-right",
-            //     theme: "colored"
-            // });
+            // Add the new education to the list
+            setGetEducation((prevEducation: any[]) => [...prevEducation, newEducation]);
         } catch (error) {
-            setError('Failed to create EducationDetails');
+            console.error("Error creating education:", error);
         }
     };
 
-    const handlePopuplateEduDetails = async (id: number) => {
-        setUpdateBtn(true)
-        setSaveBtn(false)
-        try {
-            const pupulateEduData = await axios.get(`http://127.0.0.1:8000/user/EducationDetails/${id}/`)
-            const eduDataList = pupulateEduData.data;
-
-            if (Object.keys(eduDataList).length > 0) {
-                Object.entries(eduDataList).forEach(([keys, value]) => {
-                    SetPostEducationDetails((educationData: any) => ({
-                        ...educationData, [keys]: value
-                    }))
-                })
+    const emptyPopFieldsEducation = () => {
+        SetPostEducationDetails(
+            {
+                qualification: '',
+                specialization: '',
+                institute: '',
+                grading_system: '',
+                marks: '',
+                passing_year: '',
+                education_type: ''
             }
-        } catch (error) {
-            setError("not data found")
-        }
+        )
     }
+
+    const handlePopuplateEduDetails = (education: any) => {
+        setUpdateBtn(true);
+        setSaveBtn(false);
+        SetPostEducationDetails({ ...education }); // Populate form with selected education details
+    };
 
     const updateEduDetails = async (id: number) => {
         try {
-            console.log("Updating education details:", id);
-            const payloadEduDetails = {
-                passing_year: postEducationDetails.passing_year,
-                grading_system: postEducationDetails.grading_system,
-                marks: postEducationDetails.marks,
-                education_type: postEducationDetails.education_type,
-                qualification: postEducationDetails.qualification,
-                specialization: postEducationDetails.specialization,
-                institute: postEducationDetails.institute,
-            }
+            const response = await axios.put(
+                `http://127.0.0.1:8000/user/EducationDetails/${id}/`, // Use the correct ID
+                postEducationDetails
+            );
+            const updatedData = response.data;
 
-            const res_updateEdu = await axios.put(`http://127.0.0.1:8000/user/EducationDetails/${id}/`, payloadEduDetails)
-            const updateEdu = res_updateEdu.data
+            // Replace the updated item in the state
+            setGetEducation((prevEducation: any[]) =>
+                prevEducation.map((edu) =>
+                    edu.id === id ? updatedData : edu // Replace the item with matching ID
+                )
+            );
 
-            const eudUpdateObj = Array.isArray(getEducation)
-            if (eudUpdateObj) {
-                const eduUpdate = getEducation?.map(edu => edu.id === updateEdu.id ? updateEdu : edu)
-                setGetEducation(eduUpdate)
-            }
-
-            // toast.success("Education Details Updated sucessfully", {
-            //     position: "bottom-right",
-            //     theme: "colored",
-            // });
+            console.log("Education Updated:", updatedData);
         } catch (error) {
-            setError("Error: Education details not updated")
-            // toast.error("Failed to submit the education details", {
-            //     position: "bottom-right",
-            //     theme: "colored"
-            // });
+            console.error("Error updating education details:", error);
         }
-    }
+    };
 
     const cancelEduDeatial = () => {
         SetPostEducationDetails({
@@ -242,7 +228,7 @@ const EducationDetails = () => {
         <main>
             <ToastContainer />
             <div className="card-header fw-bold">
-                <span><i className="bi bi-book text-secondary me-2"></i> Education Details </span>  <button className='btn btn btn-success btn-sm float-end' data-bs-toggle="modal" data-bs-target="#addEducation"> +Add</button></div>
+                <span><i className="bi bi-book text-secondary me-2"></i> Education Details </span>  <button className='btn btn btn-success btn-sm float-end' onClick={emptyPopFieldsEducation} data-bs-toggle="modal" data-bs-target="#addEducation"> +Add</button></div>
             <div className="card-body">
 
                 {loading ? (
@@ -258,7 +244,7 @@ const EducationDetails = () => {
                                     className="bi bi-pencil-square float-end btn"
                                     data-bs-toggle="modal"
                                     data-bs-target="#addEducation"
-                                    onClick={() => handlePopuplateEduDetails(education.id)}
+                                    onClick={() => handlePopuplateEduDetails(education)}
                                 ></button>
                             </li>
                             <li><span className='text-secondary'>Specialization: </span> {SpzList(education.specialization)}</li>
@@ -398,7 +384,7 @@ const EducationDetails = () => {
                                 <span>
                                     <button type="button" onClick={cancelEduDeatial} className="cancel-btn  me-3">Cancel</button>
                                     {updateBtn ?
-                                        <button type="button" onClick={() => updateEduDetails(postEducationDetails.id)} className="update-btn me-3" data-bs-dismiss="modal">Update</button> : ""
+                                        <button type="button" onClick={() => updateEduDetails(postEducationDetails.id)} className="update-btn" data-bs-dismiss="modal">Update</button> : ""
                                     }
                                     {saveBtn ?
                                         <button type="submit" className="save-btn" data-bs-dismiss="modal">Save</button> : ""
